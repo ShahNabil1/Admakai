@@ -25,3 +25,7 @@
 - SEO uses the shared browser-safe `seoHead` helper in each leaf route and Organization data in the public layout, not Helmet or root share images, to preserve SSR tags and per-page sharing.
 - Public SEO route inventory drives build-time sitemap generation and explicit prerender paths; admin is lazily imported and never prerendered, while unavailable public project data falls back atomically to static URLs.
 - Omit unknown prices, team identities, project video facts and contacts from structured data; only emit complete record schemas when the corresponding public content exists.
+- Inner pages prime public-content Query options in route loaders; the existing typed hooks subscribe with Suspense and server reads use allowlisted tables/projections and static fallbacks so missing tables still SSR useful content.
+- Public enquiries validate fields and image signatures on the server, use publishable-key RLS writes and store private attachment paths; never log personal data or report an unsaved enquiry as delivered.
+- Inner-page styling is scoped to public-page elements and shared PageElements; reuse Home motion, FAQ and tool-stack without modifying Home content.
+- Booking-only contact placeholders remain separate from approved Home/footer fallbacks so unfinished contact information is never silently published sitewide.

@@ -1,8 +1,4 @@
-import { useSupabaseTable } from "./useSupabaseTable";
-
-export interface TeamMember {
-  id: string;
-  [key: string]: unknown;
-}
-
-export const useTeam = () => useSupabaseTable<TeamMember>("team");
+import { useSupabaseTable } from './useSupabaseTable';
+import type { TeamMember } from '@/data/team';
+export type { TeamMember } from '@/data/team';
+export const useTeam = () => useSupabaseTable<TeamMember>('team');

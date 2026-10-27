@@ -1,11 +1,12 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { z } from 'zod';
 import { pageSeo, seoHead, breadcrumbs } from '@/lib/seo';
-import { createFileRoute } from "@tanstack/react-router";
-
-export const Route = createFileRoute("/_site/work/")({
-  head: () => seoHead({ ...pageSeo.work, path: '/work', jsonLd: [breadcrumbs([{ name: 'Work', path: '/work' }])] }),
-  component: Page,
+import { publicTableQuery } from '@/hooks/useSupabaseTable';
+import { WorkPage } from '@/components/public/WorkPage';
+import { PageError, ProjectNotFound } from '@/components/public/PageElements';
+export const Route=createFileRoute('/_site/work/')({
+ validateSearch:(search)=>z.object({type:z.string().optional(),client:z.string().optional()}).parse(search),
+ loader:async({context})=>{await context.queryClient.ensureQueryData(publicTableQuery('projects'));},
+ head:()=>seoHead({...pageSeo.work,path:'/work',jsonLd:[breadcrumbs([{name:'Work',path:'/work'}])]}),
+ component:WorkPage,errorComponent:PageError,notFoundComponent:ProjectNotFound,
 });
-
-function Page() {
-  return <><h1>Work</h1><p className="seo-intro">Browse AI ad examples: commercials, product films, UGC and brand models for brands in Bangladesh and beyond.</p></>;
-}
