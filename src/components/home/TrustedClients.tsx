@@ -23,8 +23,8 @@ function LogoRow({ reverse = false, started }: { reverse?: boolean; started: boo
   const { active, activate } = useTimedLogo();
   const items = reduce ? (reverse ? clients.slice(5) : clients.slice(0, 5)) : (reverse ? [...marqueeClients].reverse() : marqueeClients);
   const timing = {
-    '--desktop-duration': `${marqueeClients.length * (190 + 48) / 40}s`,
-    '--mobile-duration': `${marqueeClients.length * (150 + 48) / 40}s`,
+    '--desktop-duration': `${marqueeClients.length * (160 + 20) / 40}s`,
+    '--mobile-duration': `${marqueeClients.length * (130 + 16) / 40}s`,
   } as MotionStyle;
   return (
     <motion.div

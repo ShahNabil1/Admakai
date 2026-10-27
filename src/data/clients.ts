@@ -1,13 +1,13 @@
-import akboria from '../../public/brand/clients/6RevC1709404776.png.asset.json';
-import towbah from '../../public/brand/clients/1788961235819_Towbah---Remove-BG_e66510.webp.asset.json';
-import arot from '../../public/brand/clients/B29puLqPsqfB1Ahkuc0FjTl8RbQICEUyJ8OPWfbr.png.asset.json';
-import chardike from '../../public/brand/clients/CHARDIKE.png.asset.json';
-import hawar from '../../public/brand/clients/HawarIT-logo-300-subtitle.png.asset.json';
-import jimJolly from '../../public/brand/clients/images_1.jpeg.asset.json';
-import innsaei from '../../public/brand/clients/Innsaei-Logo.webp.asset.json';
-import skinfo from '../../public/brand/clients/skinfo-170x80.webp.asset.json';
-import beautyScience from '../../public/brand/clients/TBS-logo.png.asset.json';
-import gentlePark from '../../public/brand/clients/Asset_1.png.asset.json';
+import akboria from '@/assets/clients/6RevC1709404776.png.asset.json';
+import towbah from '@/assets/clients/1788961235819_Towbah---Remove-BG_e66510.png.asset.json';
+import arot from '@/assets/clients/B29puLqPsqfB1Ahkuc0FjTl8RbQICEUyJ8OPWfbr.png.asset.json';
+import chardike from '@/assets/clients/CHARDIKE.png.asset.json';
+import hawar from '@/assets/clients/HawarIT-logo-300-subtitle.png.asset.json';
+import jimJolly from '@/assets/clients/images_1.png.asset.json';
+import innsaei from '@/assets/clients/Innsaei-Logo.png.asset.json';
+import skinfo from '@/assets/clients/skinfo-170x80.png.asset.json';
+import beautyScience from '@/assets/clients/TBS-logo.png.asset.json';
+import gentlePark from '@/assets/clients/Asset_1.png.asset.json';
 
 export const BRAND_COUNT = 40;
 export const AD_COUNT = 300;
