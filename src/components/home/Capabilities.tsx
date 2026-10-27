@@ -20,12 +20,12 @@ function CapCard({ c, i, reduce }: { c: Capability; i: number; reduce: boolean }
     const v = ref.current;
     if (!v) return;
     const io = new IntersectionObserver(([e]) => {
-      if (e?.isIntersecting) v.play().catch(() => {});
+      if (e?.isIntersecting) { if (!v.getAttribute("src")) { v.src = c.video; v.load(); } v.play().catch(() => {}); }
       else v.pause();
     }, { threshold: 0.25 });
     io.observe(v);
     return () => io.disconnect();
-  }, []);
+  }, [c.video]);
   return (
     <motion.div
       initial={reduce ? false : { opacity: 0, y: 40, scale: 0.96 }}
@@ -35,7 +35,7 @@ function CapCard({ c, i, reduce }: { c: Capability; i: number; reduce: boolean }
     >
       <Link to="/services" hash={c.slug} className="cap-card" onPointerMove={track}>
         <div className="cap-card__media">
-          <video ref={ref} src={c.video} poster={c.poster} muted loop playsInline preload="metadata" aria-label={c.label} />
+          <video ref={ref} data-src={c.video} poster={c.poster} muted loop playsInline preload="none" aria-label={c.label} />
         </div>
         <div className="cap-card__body">
           <h3 className="cap-card__title">{c.title}</h3>

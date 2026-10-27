@@ -1,19 +1,11 @@
+import { pageSeo, seoHead, breadcrumbs, monthlyPlanSchema } from '@/lib/seo';
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_site/pricing")({
-  head: () => ({
-    meta: [
-      { title: "Pricing — Admakai" },
-      { name: "description", content: "Admakai — AI advertising agency. Pricing." },
-      { property: "og:title", content: "Pricing — Admakai" },
-      { property: "og:description", content: "Admakai — AI advertising agency. Pricing." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () => seoHead({ ...pageSeo.pricing, path: '/pricing', jsonLd: [breadcrumbs([{ name: 'Pricing', path: '/pricing' }]), monthlyPlanSchema()] }),
   component: Page,
 });
 
 function Page() {
-  return <h1>Pricing</h1>;
+  return <><h1>Pricing</h1><p className="seo-intro">Explore AI ad pricing for monthly content plans and individual projects, including commercials, UGC ads and product photoshoots.</p></>;
 }

@@ -79,7 +79,7 @@ const Rocket = () => (
 function IconGroup({ kind, filled, reduce }: { kind: "bolt" | "diamond"; filled: number; reduce: boolean }) {
   const Icon = kind === "bolt" ? Bolt : Diamond;
   return (
-    <span className="wf-icons" aria-label={`${filled} of 3`}>
+    <span className="wf-icons" role="img" aria-label={`${filled} of 3`}>
       {[0, 1, 2].map((i) => {
         const on = i >= 3 - filled;
         return (

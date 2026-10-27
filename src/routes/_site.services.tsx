@@ -1,19 +1,11 @@
+import { pageSeo, seoHead, breadcrumbs, serviceSchemas } from '@/lib/seo';
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_site/services")({
-  head: () => ({
-    meta: [
-      { title: "Services — Admakai" },
-      { name: "description", content: "Admakai — AI advertising agency. Services." },
-      { property: "og:title", content: "Services — Admakai" },
-      { property: "og:description", content: "Admakai — AI advertising agency. Services." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () => seoHead({ ...pageSeo.services, path: '/services', jsonLd: [breadcrumbs([{ name: 'Services', path: '/services' }]), ...serviceSchemas()] }),
   component: Page,
 });
 
 function Page() {
-  return <h1>Services</h1>;
+  return <><h1>Services</h1><p className="seo-intro">Explore AI advertising services in Bangladesh, from human-led commercials and UGC ads to product photoshoots, voice and dubbing.</p><div className="sr-only"><span id="ai-commercials" /><span id="ai-ugc-ads" /><span id="ai-product-photoshoot" /><span id="brand-models-digital-clones" /><span id="brand-models-and-clones" /><span id="ai-voice-dubbing" /><span id="ai-voice-and-dubbing" /><span id="motion-logo-animation" /><span id="fashion-films-lookbooks" /><span id="ad-variants-localisation" /></div></>;
 }

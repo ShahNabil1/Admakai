@@ -39,7 +39,7 @@ export function Navbar({ hero = false }: { hero?: boolean }) {
   return (
     <header className={`hero-navbar-wrapper${scroll.scrolled ? ' is-scrolled' : ''}${scroll.hidden && !open ? ' is-hidden' : ''}`}>
       <motion.nav className="hero-navbar" aria-label="Main navigation" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : .2, duration: reduce ? 0 : .6 }}>
-        <Link to="/" aria-label="Admakai home"><img className="hero-logo" src="/brand/logo-white.png" alt="Admakai" /></Link>
+        <Link to="/" aria-label="Admakai home"><img className="hero-logo" src="/brand/logo-white.png" alt="Admakai" width="218" height="44" /></Link>
         <div className="hero-nav-links">
           {links.map(link => <Link key={link.to} to={link.to} className="hero-nav-link">{link.label}</Link>)}
         </div>
@@ -49,7 +49,7 @@ export function Navbar({ hero = false }: { hero?: boolean }) {
           <Dialog.Portal>
             <Dialog.Content className="hero-mobile-menu" aria-describedby={undefined}>
               <Dialog.Title className="sr-only">Navigation</Dialog.Title>
-              <Link to="/" onClick={() => setOpen(false)} aria-label="Admakai home"><img className="hero-logo" src="/brand/logo-white.png" alt="Admakai" /></Link>
+              <Link to="/" onClick={() => setOpen(false)} aria-label="Admakai home"><img className="hero-logo" src="/brand/logo-white.png" alt="Admakai" width="218" height="44" /></Link>
               <Dialog.Close asChild><Button variant="ghost" size="icon" className="hero-menu-close" aria-label="Close menu"><X /></Button></Dialog.Close>
               <motion.nav className="hero-menu-items" aria-label="Mobile navigation" initial="hidden" animate="visible" transition={{ staggerChildren: reduce ? 0 : .05 }}>
                 {[...links, { label: 'Book a call', to: '/book-a-call' } as const].map(link => (

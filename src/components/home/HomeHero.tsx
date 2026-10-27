@@ -46,7 +46,7 @@ export function HomeHero() {
     <div className="home-page">
       <section className="home-hero" ref={hero} aria-labelledby="hero-title">
         <motion.div className="hero-media" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reduce ? 0 : 1 }}>
-          <video ref={video} className="hero-video" key={src ?? 'poster'} autoPlay muted loop playsInline poster="/hero/hero-poster.jpg" aria-hidden="true">
+          <video ref={video} className="hero-video" key={src ?? 'poster'} autoPlay muted loop playsInline preload="metadata" poster="/hero/hero-poster.jpg" aria-hidden="true">
             {src && <source src={src} type="video/mp4" />}
           </video>
         </motion.div>

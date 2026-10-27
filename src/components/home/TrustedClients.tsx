@@ -30,7 +30,7 @@ function LogoRow({ reverse = false, started }: { reverse?: boolean; started: boo
     <motion.div
       className={`client-marquee${reverse ? ' client-marquee--reverse' : ''}`}
       style={timing}
-      aria-label={`${reverse ? 'Second' : 'First'} client logo row`}
+      role="group" aria-label={`${reverse ? 'Second' : 'First'} client logo row`}
       initial={{ opacity: 0 }}
       animate={{ opacity: reduce || started ? 1 : 0 }}
       transition={{ duration: reduce ? 0 : 0.8, ease: [0.22, 1, 0.36, 1] }}
@@ -40,7 +40,7 @@ function LogoRow({ reverse = false, started }: { reverse?: boolean; started: boo
           <div className="client-marquee__group" key={String(duplicate)} aria-hidden={duplicate || undefined}>
             {items.map((client, index) => (
               <Button variant="ghost" className="client-marquee__cell" key={`${client.name}-${index}`} aria-label={client.name} tabIndex={duplicate ? -1 : 0} data-active={active === client.name} onPointerUp={(event) => { if (event.pointerType !== 'mouse') activate(client.name); }} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') activate(client.name); }}>
-                <img className="client-marquee__logo" src={client.src} alt={duplicate ? '' : client.name} decoding="async" draggable={false} />
+                <img className="client-marquee__logo" src={client.src} alt={duplicate ? '' : client.name} loading="lazy" width="132" height="46" decoding="async" draggable={false} />
               </Button>
             ))}
           </div>

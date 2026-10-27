@@ -1,16 +1,8 @@
+import { seoHead, breadcrumbs } from '@/lib/seo';
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_site/blog")({
-  head: () => ({
-    meta: [
-      { title: "Blog — Admakai" },
-      { name: "description", content: "Admakai — AI advertising agency. Blog." },
-      { property: "og:title", content: "Blog — Admakai" },
-      { property: "og:description", content: "Admakai — AI advertising agency. Blog." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () => seoHead({ title: 'Blog | Admakai', description: 'News and perspectives from Admakai, the AI advertising studio in Dhaka.', path: '/blog', jsonLd: [breadcrumbs([{ name: 'Blog', path: '/blog' }])] }),
   component: Page,
 });
 

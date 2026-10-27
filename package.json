@@ -4,9 +4,10 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
+    "prebuild": "bun scripts/sitemap.ts",
     "dev": "vite dev",
     "build": "vite build",
-    "build:dev": "vite build --mode development",
+    "build:dev": "bun scripts/sitemap.ts && vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",

@@ -44,22 +44,22 @@ export function Footer() {
   return <footer className="site-footer">
     <div className="container-site footer-top">
       <div className="footer-grid">
-        <div><Link to="/" aria-label="Admakai home"><img src={logo.url} className="footer-logo" alt="Admakai" width="198" height="40" /></Link>
+        <div><Link to="/" aria-label="Admakai home"><img src={logo.url} className="footer-logo" loading="lazy" alt="Admakai" width="198" height="40" /></Link>
           <p className="footer-tagline">{site.TAGLINE}</p>
           <div className="footer-socials">
             {(Object.keys(socialIcons) as (keyof typeof socialIcons)[]).map(name => { const Icon = socialIcons[name]; return site.SOCIALS[name] ? <a className="footer-social" key={name} href={site.SOCIALS[name]} aria-label={name} target="_blank" rel="noopener noreferrer"><Icon /></a> : null; })}
-            {site.WHATSAPP && <a className="footer-social" href={`https://wa.me/${site.WHATSAPP}`} aria-label="WhatsApp"><MessageCircle /></a>}
+            {site.WHATSAPP && <a className="footer-social" href={`https://wa.me/${site.WHATSAPP}`} rel="noopener" aria-label="WhatsApp"><MessageCircle /></a>}
           </div>
         </div>
         <div className="footer-columns">{columns.map(column => <nav className="footer-column" key={column.label} aria-label={`Footer ${column.label}`}><h2>{column.label}</h2><ul>
           {column.links.map(([label, href]) => <li key={label}><a className="footer-link" href={href}>{label}</a></li>)}
-          {column.label === "Company" && <>{site.WHATSAPP && <li><a className="footer-link" href={`https://wa.me/${site.WHATSAPP}`}>WhatsApp</a></li>}{site.EMAIL && <li><a className="footer-link" href={`mailto:${site.EMAIL}`}>Email</a></li>}</>}
+          {column.label === "Company" && <>{site.WHATSAPP && <li><a className="footer-link" href={`https://wa.me/${site.WHATSAPP}`} rel="noopener">WhatsApp</a></li>}{site.EMAIL && <li><a className="footer-link" href={`mailto:${site.EMAIL}`} rel="noopener">Email</a></li>}</>}
         </ul></nav>)}</div>
       </div>
       <p className="footer-copyright">© {year} {site.LEGAL_NAME}.{site.ADDRESS && <>{" "}<span>{site.ADDRESS}</span></>}</p>
     </div>
     <div className="footer-landscape" ref={scene}>
-      <img className="footer-landscape-image" src={landscape.url} alt="Green rolling hills beneath a blue sky" loading="lazy" width="1280" height="720" />
+      <img className="footer-landscape-image" src={landscape.url} alt="" loading="lazy" width="1280" height="720" />
       <div className="footer-wordmark-parallax" ref={wordmark}><motion.span ref={text} className="footer-wordmark" aria-hidden="true" initial={reduce ? false : { opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: reduce ? 0 : 1, ease: [0.22, 1, 0.36, 1] }}>admakai</motion.span></div>
       <img className="footer-landscape-image footer-foreground" src={landscape.url} alt="" aria-hidden="true" loading="lazy" width="1280" height="720" />
     </div>

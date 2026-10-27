@@ -79,20 +79,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Admakai" },
-      { name: "description", content: "Admakai — AI advertising agency." },
       { name: "theme-color", content: "#0A0A0A" },
       { property: "og:site_name", content: "Admakai" },
-      { property: "og:title", content: "Admakai" },
-      { property: "og:description", content: "Admakai — AI advertising agency." },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: "/og/og-default.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Admakai" },
-      { name: "twitter:description", content: "Admakai — AI advertising agency." },
-      { name: "twitter:image", content: "/og/og-default.jpg" },
     ],
     links: [
+      { rel: "preload", href: "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" },
+      { rel: "preload", href: "https://fonts.gstatic.com/s/instrumentserif/v5/jizHRFtNs2ka5fXjeivQ4LroWlx-6zAjjH7M.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" },
+
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

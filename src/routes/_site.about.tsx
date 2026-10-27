@@ -1,19 +1,11 @@
+import { pageSeo, seoHead, breadcrumbs, canonicalUrl } from '@/lib/seo';
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_site/about")({
-  head: () => ({
-    meta: [
-      { title: "About — Admakai" },
-      { name: "description", content: "Admakai — AI advertising agency. About." },
-      { property: "og:title", content: "About — Admakai" },
-      { property: "og:description", content: "Admakai — AI advertising agency. About." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () => seoHead({ ...pageSeo.about, path: '/about', jsonLd: [breadcrumbs([{ name: 'About', path: '/about' }]), { '@context': 'https://schema.org', '@type': 'AboutPage', name: 'About Admakai', url: canonicalUrl('/about'), about: { '@id': 'https://admakai.com/#organization' } }] }),
   component: Page,
 });
 
 function Page() {
-  return <h1>About</h1>;
+  return <h1 id="ai-policy">About</h1>;
 }

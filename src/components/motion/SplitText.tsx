@@ -19,8 +19,8 @@ export function SplitText({ text, className, delay = 0, stagger = 0.04 }: SplitT
       whileInView="visible"
       viewport={{ once: true }}
       transition={{ staggerChildren: stagger, delayChildren: delay }}
-      aria-label={text}
     >
+      <span className="sr-only">{text}</span>
       {words.map((word, i) => (
         <span key={i} aria-hidden className="inline-block overflow-hidden align-bottom">
           <motion.span

@@ -20,6 +20,7 @@ import { Route as SitePrivacyRouteImport } from './routes/_site.privacy'
 import { Route as SiteRefundRouteImport } from './routes/_site.refund'
 import { Route as SiteServicesRouteImport } from './routes/_site.services'
 import { Route as SiteTermsRouteImport } from './routes/_site.terms'
+import { Route as AdminSplatRouteImport } from './routes/admin_.$'
 import { Route as SiteWorkIndexRouteImport } from './routes/_site.work.index'
 import { Route as SiteWorkSlugRouteImport } from './routes/_site.work.$slug'
 
@@ -77,6 +78,11 @@ const SiteTermsRoute = SiteTermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => SiteRoute,
 } as any)
+const AdminSplatRoute = AdminSplatRouteImport.update({
+  id: '/admin_/$',
+  path: '/admin/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SiteWorkIndexRoute = SiteWorkIndexRouteImport.update({
   id: '/work/',
   path: '/work/',
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/refund': typeof SiteRefundRoute
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
+  '/admin/$': typeof AdminSplatRoute
   '/work/$slug': typeof SiteWorkSlugRoute
   '/work/': typeof SiteWorkIndexRoute
 }
@@ -112,6 +119,7 @@ export interface FileRoutesByTo {
   '/refund': typeof SiteRefundRoute
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
+  '/admin/$': typeof AdminSplatRoute
   '/': typeof SiteIndexRoute
   '/work/$slug': typeof SiteWorkSlugRoute
   '/work': typeof SiteWorkIndexRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   '/_site/refund': typeof SiteRefundRoute
   '/_site/services': typeof SiteServicesRoute
   '/_site/terms': typeof SiteTermsRoute
+  '/admin_/$': typeof AdminSplatRoute
   '/_site/': typeof SiteIndexRoute
   '/_site/work/$slug': typeof SiteWorkSlugRoute
   '/_site/work/': typeof SiteWorkIndexRoute
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
     | '/refund'
     | '/services'
     | '/terms'
+    | '/admin/$'
     | '/work/$slug'
     | '/work/'
   fileRoutesByTo: FileRoutesByTo
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/refund'
     | '/services'
     | '/terms'
+    | '/admin/$'
     | '/'
     | '/work/$slug'
     | '/work'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/_site/refund'
     | '/_site/services'
     | '/_site/terms'
+    | '/admin_/$'
     | '/_site/'
     | '/_site/work/$slug'
     | '/_site/work/'
@@ -181,6 +193,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   SiteRoute: typeof SiteRouteWithChildren
   AdminRoute: typeof AdminRoute
+  AdminSplatRoute: typeof AdminSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -262,6 +275,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteTermsRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/admin_/$': {
+      id: '/admin_/$'
+      path: '/admin/$'
+      fullPath: '/admin/$'
+      preLoaderRoute: typeof AdminSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_site/work/': {
       id: '/_site/work/'
       path: '/work'
@@ -312,6 +332,7 @@ const SiteRouteWithChildren = SiteRoute._addFileChildren(SiteRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   SiteRoute: SiteRouteWithChildren,
   AdminRoute: AdminRoute,
+  AdminSplatRoute: AdminSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

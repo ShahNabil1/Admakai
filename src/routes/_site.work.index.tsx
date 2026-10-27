@@ -1,19 +1,11 @@
+import { pageSeo, seoHead, breadcrumbs } from '@/lib/seo';
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_site/work/")({
-  head: () => ({
-    meta: [
-      { title: "Work — Admakai" },
-      { name: "description", content: "Admakai — AI advertising agency. Work." },
-      { property: "og:title", content: "Work — Admakai" },
-      { property: "og:description", content: "Admakai — AI advertising agency. Work." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () => seoHead({ ...pageSeo.work, path: '/work', jsonLd: [breadcrumbs([{ name: 'Work', path: '/work' }])] }),
   component: Page,
 });
 
 function Page() {
-  return <h1>Work</h1>;
+  return <><h1>Work</h1><p className="seo-intro">Browse AI ad examples: commercials, product films, UGC and brand models for brands in Bangladesh and beyond.</p></>;
 }
