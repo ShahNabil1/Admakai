@@ -1,0 +1,34 @@
+:root {
+  --dai-panel: oklch(0.17 0 0);
+  --dai-border: oklch(0.225 0 0);
+  --dai-eyebrow-line: oklch(0.53 0 0);
+  --dai-eyebrow: oklch(0.79 0 0);
+  --dai-two: oklch(0.885 0 0);
+  --dai-body: oklch(0.85 0 0);
+}
+.director-ai { background: var(--bg); padding-block: 96px; overflow: hidden; }
+.director-ai__panel { margin: 0 48px; padding: 96px; background: var(--dai-panel); border: 1px solid var(--dai-border); border-radius: 32px; }
+.director-ai__eyebrow { display: flex; align-items: center; gap: 20px; }
+.director-ai__line { display: block; flex-shrink: 0; height: 1px; width: 48px; background: var(--dai-eyebrow-line); }
+.director-ai__eyebrow-text { font-family: var(--font-serif); font-style: italic; font-size: 18px; color: var(--dai-eyebrow); }
+.director-ai__title { margin: 56px 0 0; display: flex; flex-direction: column; }
+.director-ai__one { display: block; font-family: var(--font-sans); font-weight: 500; font-size: 84px; line-height: 1.05; letter-spacing: -.03em; color: var(--accent); }
+.director-ai__two-wrap { display: block; text-align: right; }
+.director-ai__two { display: inline-block; font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: 92px; line-height: 1.1; letter-spacing: -.01em; color: var(--dai-two); }
+.director-ai__cols { margin-top: 120px; display: grid; grid-template-columns: 4fr 6fr; gap: 64px; align-items: end; }
+.director-ai__lead { margin: 0; max-width: 380px; font-family: var(--font-serif); font-style: italic; font-size: 26px; line-height: 1.3; color: var(--fg); }
+.director-ai__body { max-width: 620px; display: grid; gap: 24px; font-size: 17px; line-height: 1.6; color: var(--dai-body); }
+.director-ai__body p { margin: 0; }
+@media (width < 1200px) {
+  .director-ai__panel { padding: 72px 56px; }
+  .director-ai__one { font-size: 64px; }
+  .director-ai__two { font-size: 70px; }
+}
+@media (width < 768px) {
+  .director-ai { padding-block: 56px; }
+  .director-ai__panel { margin: 0 16px; padding: 56px 24px; border-radius: 20px; }
+  .director-ai__one { font-size: 40px; }
+  .director-ai__two-wrap { text-align: left; }
+  .director-ai__two { font-size: 44px; }
+  .director-ai__cols { margin-top: 56px; grid-template-columns: 1fr; gap: 32px; }
+}
