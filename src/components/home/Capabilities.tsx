@@ -20,7 +20,7 @@ function CapCard({ c, i, reduce }: { c: Capability; i: number; reduce: boolean }
     const v = ref.current;
     if (!v) return;
     const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) v.play().catch(() => {});
+      if (e?.isIntersecting) v.play().catch(() => {});
       else v.pause();
     }, { threshold: 0.25 });
     io.observe(v);
