@@ -50,7 +50,8 @@
 .hero-menu-items a { display: inline-block; font-size: 40px; line-height: 1.15; font-weight: 500; }
 
 @media (width < 1024px) {
-  .hero-nav-links { gap: 24px; margin-left: 40px; }
+  .hero-logo { height: 36px; }
+  .hero-nav-links { gap: 18px; margin-left: 26px; }
   .hero-headline { font-size: 52px; }
 }
 @media (width < 768px) {
