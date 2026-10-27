@@ -4,7 +4,7 @@ import { loadEnv } from 'vite';
 import { SITE_URL } from '../src/data/site';
 import { publicSeoPaths } from '../src/data/seo-routes';
 
-export type SitemapEntry = { path: string; lastmod?: string };
+export type SitemapEntry = { path: string; lastmod?: string | undefined };
 export function sitemapXml(entries: SitemapEntry[]) {
   const escape = (value: string) => value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[char] ?? char));
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.map(entry => `<url><loc>${escape(new URL(entry.path, SITE_URL).href.replace(/\/$/, ''))}</loc>${entry.lastmod && Number.isFinite(Date.parse(entry.lastmod)) ? `<lastmod>${escape(new Date(entry.lastmod).toISOString())}</lastmod>` : ''}</url>`).join('\n')}\n</urlset>\n`;

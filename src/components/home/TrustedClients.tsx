@@ -30,7 +30,7 @@ function LogoRow({ reverse = false, started }: { reverse?: boolean; started: boo
     <motion.div
       className={`client-marquee${reverse ? ' client-marquee--reverse' : ''}`}
       style={timing}
-      aria-label={`${reverse ? 'Second' : 'First'} client logo row`}
+      role="group" aria-label={`${reverse ? 'Second' : 'First'} client logo row`}
       initial={{ opacity: 0 }}
       animate={{ opacity: reduce || started ? 1 : 0 }}
       transition={{ duration: reduce ? 0 : 0.8, ease: [0.22, 1, 0.36, 1] }}
