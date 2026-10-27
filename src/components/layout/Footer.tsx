@@ -7,7 +7,7 @@ import { useMotionPreference } from "@/hooks/use-motion-preference";
 import { gsap, registerGsap } from "@/lib/gsap";
 import { siteQueryOptions } from "@/lib/site-query";
 import landscape from "@/assets/footer/footer-bg.jpg.asset.json";
-import logo from "@/assets/brand/logo-dark.png.asset.json";
+import logo from "@/assets/brand/logo-dark-cropped.png.asset.json";
 import "./footer.css";
 
 const columns = [
