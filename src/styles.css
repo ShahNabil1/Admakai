@@ -82,6 +82,7 @@
   --pricing-guarantee: oklch(0.888 0.058 89);
   --pricing-button-hover: oklch(0.252 0 0);
   --pricing-card-shadow: 0 30px 80px oklch(0 0 0 / 0.35);
+  --faq-answer: oklch(0.853 0 0);
 
   --background: var(--bg);
   --foreground: var(--fg);
