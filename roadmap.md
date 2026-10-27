@@ -1,4 +1,7 @@
 # Tasks
+- [ ] Apply full-site metadata, structured data, crawl rules and requested hidden text/links without redesigning pages.
+- [ ] Add build-time sitemap and public-page prerendering with safe public-data fallbacks.
+- [ ] Verify all route heads, media, navigation, tests and Lighthouse; report missing content or settings.
 - [x] Build shared footer, safe settings fallback and linked legal placeholders.
 - [x] Verify footer image layers, public routes and mobile links.
 - [x] Add Home FAQ with seven answers and head structured data.
