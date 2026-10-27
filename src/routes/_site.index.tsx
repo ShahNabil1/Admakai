@@ -4,6 +4,7 @@ import { TrustedClients } from '@/components/home/TrustedClients';
 import { DirectorAi } from '@/components/home/DirectorAi';
 import { ToolStack } from '@/components/home/ToolStack';
 import { Capabilities } from '@/components/home/Capabilities';
+import { WorkingFormats } from '@/components/home/WorkingFormats';
 
 export const Route = createFileRoute("/_site/")({
   head: () => ({
@@ -20,5 +21,5 @@ export const Route = createFileRoute("/_site/")({
 });
 
 function Page() {
-  return <><HomeHero /><TrustedClients /><DirectorAi /><Capabilities /><ToolStack /></>;
+  return <><HomeHero /><TrustedClients /><DirectorAi /><Capabilities /><ToolStack /><WorkingFormats /></>;
 }
