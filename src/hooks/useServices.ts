@@ -1,8 +1,4 @@
-import { useSupabaseTable } from "./useSupabaseTable";
-
-export interface Service {
-  id: string;
-  [key: string]: unknown;
-}
-
-export const useServices = () => useSupabaseTable<Service>("services");
+import { useSupabaseTable } from './useSupabaseTable';
+import type { Service } from '@/data/services';
+export type { Service } from '@/data/services';
+export const useServices = () => useSupabaseTable<Service>('services');

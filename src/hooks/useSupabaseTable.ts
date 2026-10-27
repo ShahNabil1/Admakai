@@ -1,32 +1,6 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
-
-export interface TableResult<T> {
-  data: T[];
-  loading: boolean;
-  error: Error | null;
-}
-
-export function useSupabaseTable<T>(table: string): TableResult<T> {
-  const [state, setState] = useState<TableResult<T>>({ data: [], loading: true, error: null });
-
-  useEffect(() => {
-    let active = true;
-    supabase
-      .from(table)
-      .select("*")
-      .then(({ data, error }) => {
-        if (!active) return;
-        setState({
-          data: (data as T[] | null) ?? [],
-          loading: false,
-          error: error ? new Error(error.message) : null,
-        });
-      });
-    return () => {
-      active = false;
-    };
-  }, [table]);
-
-  return state;
-}
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
+import { getPublicRows } from '@/lib/public-data.functions';
+export type PublicTable = 'projects'|'services'|'pricing_tiers'|'team'|'site_settings';
+export interface TableResult<T> { data:T[]; loading:boolean; error:Error|null; }
+export const publicTableQuery = (table:PublicTable) => queryOptions({queryKey:['public-content',table],queryFn:()=>getPublicRows({data:table}),staleTime:300000});
+export function useSupabaseTable<T>(table:PublicTable):TableResult<T> { const {data}=useSuspenseQuery(publicTableQuery(table)); return {data:data as unknown as T[],loading:false,error:null}; }
