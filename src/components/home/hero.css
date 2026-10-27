@@ -52,6 +52,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-call, .hero-nav-link, .hero-nav-link::after { transition: none; }
-  .home-page, .home-page *, .home-page > * { opacity: revert !important; }
+  .hero-image-reveal, .hero-image, .hero-navbar, .hero-play, .hero-content, .hero-actions, .hero-headline span { opacity: 1 !important; }
+  .hero-sub { opacity: .8 !important; }
   .hero-image-reveal, .hero-image, .hero-navbar, .hero-play, .hero-content, .hero-sub, .hero-actions, .hero-headline span { transform: none !important; }
 }

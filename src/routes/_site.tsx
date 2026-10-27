@@ -13,9 +13,7 @@ function Layout() {
     <>
       {!isHome && <Navbar />}
       <main>
-        <PageTransition>
-          <Outlet />
-        </PageTransition>
+        {isHome ? <Outlet /> : <PageTransition><Outlet /></PageTransition>}
       </main>
       {!isHome && <Footer />}
     </>
