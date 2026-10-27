@@ -44,7 +44,7 @@ export function Footer() {
   return <footer className="site-footer">
     <div className="container-site footer-top">
       <div className="footer-grid">
-        <div><Link to="/" aria-label="Admakai home"><img src={logo.url} className="footer-logo" alt="Admakai" width="180" height="28" /></Link>
+        <div><Link to="/" aria-label="Admakai home"><img src={logo.url} className="footer-logo" alt="Admakai" width="198" height="40" /></Link>
           <p className="footer-tagline">{site.TAGLINE}</p>
           <div className="footer-socials">
             {(Object.keys(socialIcons) as (keyof typeof socialIcons)[]).map(name => { const Icon = socialIcons[name]; return site.SOCIALS[name] ? <a className="footer-social" key={name} href={site.SOCIALS[name]} aria-label={name} target="_blank" rel="noopener noreferrer"><Icon /></a> : null; })}

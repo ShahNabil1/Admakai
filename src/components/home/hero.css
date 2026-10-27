@@ -56,6 +56,7 @@
 @media (width < 768px) {
   .home-hero { height: 100svh; }
   .hero-navbar { padding: 0 20px; }
+  .hero-logo { height: 34px; }
   .hero-nav-links { display: none; }
   .hero-menu-trigger { display: inline-flex; }
   .hero-nav-call { margin-left: auto; padding: 12px 14px; font-size: 12px; letter-spacing: 0; }
