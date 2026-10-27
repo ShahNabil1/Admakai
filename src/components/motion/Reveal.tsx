@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useMotionPreference } from '@/hooks/use-motion-preference';
 import type { ReactNode } from "react";
 
 interface RevealProps {
@@ -9,7 +10,7 @@ interface RevealProps {
 }
 
 export function Reveal({ children, delay = 0, duration = 0.7, className }: RevealProps) {
-  const reduce = useReducedMotion();
+  const reduce = useMotionPreference();
   if (reduce) return <div className={className}>{children}</div>;
   return (
     <motion.div
