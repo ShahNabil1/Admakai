@@ -13,6 +13,7 @@ import { Route as SiteRouteImport } from './routes/_site'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as SiteIndexRouteImport } from './routes/_site.index'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
+import { Route as SiteBlogRouteImport } from './routes/_site.blog'
 import { Route as SiteBookACallRouteImport } from './routes/_site.book-a-call'
 import { Route as SitePricingRouteImport } from './routes/_site.pricing'
 import { Route as SiteServicesRouteImport } from './routes/_site.services'
@@ -36,6 +37,11 @@ const SiteIndexRoute = SiteIndexRouteImport.update({
 const SiteAboutRoute = SiteAboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteBlogRoute = SiteBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteBookACallRoute = SiteBookACallRouteImport.update({
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
   '/admin': typeof AdminRoute
   '/about': typeof SiteAboutRoute
+  '/blog': typeof SiteBlogRoute
   '/book-a-call': typeof SiteBookACallRoute
   '/pricing': typeof SitePricingRoute
   '/services': typeof SiteServicesRoute
@@ -77,6 +84,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/about': typeof SiteAboutRoute
+  '/blog': typeof SiteBlogRoute
   '/book-a-call': typeof SiteBookACallRoute
   '/pricing': typeof SitePricingRoute
   '/services': typeof SiteServicesRoute
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/_site': typeof SiteRouteWithChildren
   '/admin': typeof AdminRoute
   '/_site/about': typeof SiteAboutRoute
+  '/_site/blog': typeof SiteBlogRoute
   '/_site/book-a-call': typeof SiteBookACallRoute
   '/_site/pricing': typeof SitePricingRoute
   '/_site/services': typeof SiteServicesRoute
@@ -102,6 +111,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/about'
+    | '/blog'
     | '/book-a-call'
     | '/pricing'
     | '/services'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
   to:
     | '/admin'
     | '/about'
+    | '/blog'
     | '/book-a-call'
     | '/pricing'
     | '/services'
@@ -122,6 +133,7 @@ export interface FileRouteTypes {
     | '/_site'
     | '/admin'
     | '/_site/about'
+    | '/_site/blog'
     | '/_site/book-a-call'
     | '/_site/pricing'
     | '/_site/services'
@@ -165,6 +177,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteAboutRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_site/blog': {
+      id: '/_site/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof SiteBlogRouteImport
+      parentRoute: typeof SiteRoute
+    }
     '/_site/book-a-call': {
       id: '/_site/book-a-call'
       path: '/book-a-call'
@@ -205,6 +224,7 @@ declare module '@tanstack/react-router' {
 
 interface SiteRouteChildren {
   SiteAboutRoute: typeof SiteAboutRoute
+  SiteBlogRoute: typeof SiteBlogRoute
   SiteBookACallRoute: typeof SiteBookACallRoute
   SitePricingRoute: typeof SitePricingRoute
   SiteServicesRoute: typeof SiteServicesRoute
@@ -215,6 +235,7 @@ interface SiteRouteChildren {
 
 const SiteRouteChildren: SiteRouteChildren = {
   SiteAboutRoute: SiteAboutRoute,
+  SiteBlogRoute: SiteBlogRoute,
   SiteBookACallRoute: SiteBookACallRoute,
   SitePricingRoute: SitePricingRoute,
   SiteServicesRoute: SiteServicesRoute,
