@@ -37,5 +37,24 @@ export const toolCards: ToolCard[] = [
   },
 ];
 
-/** Slugs with a real logo in public/tools/<slug>.png. Add a slug here once its logo is uploaded. */
-export const toolLogos = new Set<string>([]);
+/**
+ * Sprite cell position (x, y in sheet pixels) for tools that have a real logo in
+ * public/tools/tools-sprite.png: 12 icons on a 4 column x 3 row grid of 64px cells
+ * on a 256 x 192 sheet. ToolIcon renders a 20px window by scaling the whole sheet
+ * down 3.2x, so the offset it needs is the position divided by 3.2.
+ * Tools with no entry here keep the coloured monogram.
+ */
+export const toolSprites: Record<string, [number, number]> = {
+  seedance: [0, 0],
+  veo: [64, 0],
+  kling: [128, 0],
+  higgsfield: [192, 0],
+  seedream: [0, 64],
+  'nano-banana': [64, 64],
+  magnific: [128, 64],
+  'omni-flash': [192, 64],
+  elevenlabs: [0, 128],
+  suno: [64, 128],
+  claude: [128, 128],
+  'gpt-5': [192, 128], // the OpenAI mark
+};

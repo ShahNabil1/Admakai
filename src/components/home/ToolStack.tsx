@@ -2,15 +2,30 @@ import { motion } from 'framer-motion';
 import { Clapperboard, Camera, AudioLines, Scissors } from 'lucide-react';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
 import { Reveal } from '@/components/motion/Reveal';
-import { toolCards, toolLogos, type Tool } from '@/data/tools';
+import { toolCards, toolSprites, type Tool } from '@/data/tools';
 import './tool-stack.css';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const icons = { video: Clapperboard, image: Camera, voice: AudioLines, edit: Scissors };
 
+const SPRITE = '/tools/tools-sprite.png';
+const SPRITE_SCALE = 3.2; // one 64px sheet cell becomes a 20px icon
+
 export function ToolIcon({ tool }: { tool: Tool }) {
-  if (toolLogos.has(tool.slug)) {
-    return <img className="ts-badge__icon" src={`/tools/${tool.slug}.png`} alt="" width={20} height={20} />;
+  const pos = toolSprites[tool.slug];
+  if (pos) {
+    return (
+      <span
+        className="ts-badge__icon"
+        aria-hidden="true"
+        style={{
+          backgroundImage: `url(${SPRITE})`,
+          backgroundSize: '80px 60px',
+          backgroundPosition: `${-pos[0] / SPRITE_SCALE}px ${-pos[1] / SPRITE_SCALE}px`,
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
+    );
   }
   return (
     <span className="ts-badge__icon ts-badge__mono" style={{ background: tool.color, color: tool.dark ? '#111' : '#fff' }} aria-hidden="true">
