@@ -14,3 +14,4 @@
 - Lenis + GSAP ScrollTrigger are initialised once from `__root.tsx` via `src/lib/smooth-scroll.ts`; motion helpers in `src/components/motion/` must honour prefers-reduced-motion.
 - Home owns its hero-embedded Navbar and scoped hero styles; the public layout skips its standalone Navbar/Footer on Home so other pages retain their foundation shell.
 - Motion components use the hydration-safe motion preference hook to keep server and initial browser markup identical before applying reduced motion.
+- The Home client section owns its scoped styles and reads logo pointers and counts from `src/data/clients.ts`; CSS translates duplicated marquee tracks so continuous motion needs no JavaScript loop.

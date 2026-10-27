@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { HomeHero } from '@/components/home/HomeHero';
+import { TrustedClients } from '@/components/home/TrustedClients';
 
 export const Route = createFileRoute("/_site/")({
   head: () => ({
@@ -16,5 +17,5 @@ export const Route = createFileRoute("/_site/")({
 });
 
 function Page() {
-  return <HomeHero />;
+  return <><HomeHero /><TrustedClients /></>;
 }
