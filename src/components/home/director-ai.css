@@ -9,7 +9,7 @@
 .director-ai { background: var(--bg); padding-block: 96px; overflow: hidden; }
 .director-ai__panel { margin: 0 48px; padding: 96px; background: var(--dai-panel); border: 1px solid var(--dai-border); border-radius: 32px; }
 .director-ai__eyebrow { display: flex; align-items: center; gap: 20px; }
-.director-ai__line { display: block; height: 1px; width: 48px; background: var(--dai-eyebrow-line); }
+.director-ai__line { display: block; flex-shrink: 0; height: 1px; width: 48px; background: var(--dai-eyebrow-line); }
 .director-ai__eyebrow-text { font-family: var(--font-serif); font-style: italic; font-size: 18px; color: var(--dai-eyebrow); }
 .director-ai__title { margin: 56px 0 0; display: flex; flex-direction: column; }
 .director-ai__one { display: block; font-family: var(--font-sans); font-weight: 500; font-size: 84px; line-height: 1.05; letter-spacing: -.03em; color: var(--accent); }
