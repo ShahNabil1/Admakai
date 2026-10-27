@@ -1,4 +1,3 @@
-:root { --page-secondary: #A8A8A8; --page-body: #CFCFCF; --page-border: #1E1E1E; --page-input-border:#2A2A2A; --page-zebra:color-mix(in oklab,var(--ink) 3%,transparent); }
 .public-page {background:var(--bg);color:var(--fg);font-size:16px;letter-spacing:0;}
 .public-page h1,.public-page h2,.public-page h3{letter-spacing:0;}
 .page-hero{padding-top:160px;padding-bottom:96px;}

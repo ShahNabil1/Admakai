@@ -17,7 +17,7 @@ function Layout() {
   const isHome = useLocation({ select: location => location.pathname === '/' });
   return (
     <>
-      <Navbar hero={isHome} />
+      <Navbar hero />
       <main>
         {isHome ? <Outlet /> : <PageTransition><Outlet /></PageTransition>}
       </main>

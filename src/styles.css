@@ -194,3 +194,5 @@ html.lenis body {
 .seo-intro { color: var(--seo-intro); font-size: 16px; line-height: 1.6; max-width: 680px; margin-top: 16px; }
 
 .seo-related-link { display: inline-block; margin-right: 20px; text-decoration: underline; }
+
+:root { --page-secondary: #A8A8A8; --page-body: #CFCFCF; --page-border: #1E1E1E; --page-input-border:#2A2A2A; --page-zebra:color-mix(in oklab,var(--ink) 3%,transparent); }

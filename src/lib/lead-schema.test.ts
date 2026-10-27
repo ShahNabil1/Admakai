@@ -1,0 +1,15 @@
+import { expect,it } from 'vitest';
+import { normalizeWhatsApp, leadSchema, validateAttachment, whatsappUrl } from './lead-schema';
+const base={name:'A person',brand:'A brand',whatsapp:'01712345678',email:'',service_slug:'not-sure',budget_range:''};
+it('accepts local Bangladesh numbers',()=>expect(normalizeWhatsApp('01712345678')).toBe('8801712345678'));
+it('accepts international Bangladesh numbers',()=>expect(normalizeWhatsApp('+880 1712 345678')).toBe('8801712345678'));
+it('requires a name',()=>expect(leadSchema.safeParse({...base,name:''}).success).toBe(false));
+it('requires a brand',()=>expect(leadSchema.safeParse({...base,brand:''}).success).toBe(false));
+it('rejects invalid phone numbers',()=>expect(leadSchema.safeParse({...base,whatsapp:'123'}).success).toBe(false));
+it('rejects invalid optional email',()=>expect(leadSchema.safeParse({...base,email:'bad'}).success).toBe(false));
+it('accepts an omitted email',()=>expect(leadSchema.safeParse(base).success).toBe(true));
+it('requires files under 5 MB',()=>expect(validateAttachment(new File([new Uint8Array(5*1024*1024)],'photo.png',{type:'image/png'}))).toBe('The photo must be under 5 MB.'));
+it('rejects non-image attachments',()=>expect(validateAttachment(new File(['hello'],'document.txt',{type:'text/plain'}))).toBe('Choose a JPG or PNG photo.'));
+it('accepts a small JPG',()=>expect(validateAttachment(new File(['photo'],'photo.jpg',{type:'image/jpeg'}))).toBeNull());
+it('never links a placeholder WhatsApp number',()=>expect(whatsappUrl('[number]','Hi')).toBeNull());
+it('encodes WhatsApp message',()=>expect(whatsappUrl('8801712345678','Hi & hello')).toBe('https://wa.me/8801712345678?text=Hi%20%26%20hello'));

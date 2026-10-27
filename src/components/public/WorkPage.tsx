@@ -18,7 +18,7 @@ function ProjectCard({project}:{project:Project}) {
   </Link>
  </motion.article>;
 }
-export function WorkPage(){const {data}=useProjects();const {type,client}=route.useSearch();const navigate=route.useNavigate();const selected=type||'all';const rows=filterProjects(data,selected,client);return <div className="public-page">
+export function WorkPage(){const {data}=useProjects();const {type,client}=route.useSearch();const navigate=route.useNavigate();const selected=type||'all';const rows=filterProjects(data,selected,client||'');return <div className="public-page">
  <PageHero eyebrow="Portfolio" title="AI ads that pass as human made." intro="Every piece here was generated, directed and finished by Admakai. No crew, no studio."/>
  <nav className="work-filters" aria-label="Project filters"><div className="container-site">{projectTypes.map(item=><Button key={item.slug} variant="ghost" className={`filter-pill ${selected===item.slug?'active':''}`} aria-pressed={selected===item.slug} onClick={()=>void navigate({search:prev=>({...prev,type:item.slug==='all'?'':item.slug})})}>{item.label}</Button>)}{client&&<Button variant="ghost" className="filter-pill" onClick={()=>void navigate({search:prev=>({...prev,client:''})})}>Clear client filter ×</Button>}</div></nav>
  <section className="container-site page-section" aria-label="Projects">{rows.length?<motion.div className="work-grid"><AnimatePresence mode="popLayout">{rows.map(project=><ProjectCard key={project.id} project={project}/>)}</AnimatePresence></motion.div>:<div className="empty-state"><h2>No projects in this view yet.</h2><Button variant="outline" onClick={()=>void navigate({search:{type:'',client:''}})}>See all work</Button></div>}</section>
