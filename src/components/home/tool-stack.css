@@ -18,7 +18,7 @@
 .ts-card__rule { border: 0; border-top: 1px dotted #d9d9d9; margin: 28px 0; }
 .ts-card__label { font-size: 18px; color: #111; }
 .ts-card__label + .ts-card__text { margin-top: 8px; }
-.ts-card__badges { margin-top: auto; display: flex; flex-wrap: wrap; gap: 10px 22px; list-style: none; padding: 0; }
+.ts-card__badges { display: flex; flex-wrap: wrap; gap: 10px 22px; list-style: none; padding: 0; }
 .ts-card__rule:last-of-type { margin-top: auto; }
 .ts-badge { display: inline-flex; align-items: center; gap: 8px; cursor: default; }
 .ts-badge__icon { width: 20px; height: 20px; border-radius: 999px; flex: none; transition: transform .25s ease; object-fit: cover; }
