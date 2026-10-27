@@ -1,4 +1,6 @@
 # Tasks
+- [x] Build shared footer, safe settings fallback and linked legal placeholders.
+- [x] Verify footer image layers, public routes and mobile links.
 - [x] Add Home FAQ with seven answers and head structured data.
 - [x] Verify accordion behaviour, mobile layout and FAQ rules.
 - [x] Add the Home pricing card with supplied plan terms and placeholder price.

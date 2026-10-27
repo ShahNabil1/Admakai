@@ -83,6 +83,7 @@
   --pricing-button-hover: oklch(0.252 0 0);
   --pricing-card-shadow: 0 30px 80px oklch(0 0 0 / 0.35);
   --faq-answer: oklch(0.853 0 0);
+  --footer-hills-mask: linear-gradient(to bottom, transparent 0%, transparent 65%, oklch(0 0 0) 66%, oklch(0 0 0) 100%);
 
   --background: var(--bg);
   --foreground: var(--fg);

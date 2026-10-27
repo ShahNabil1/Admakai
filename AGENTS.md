@@ -12,7 +12,7 @@
 - Supabase is connected directly via `src/lib/supabase.ts` (supabase-js, VITE_ env vars); never enable Lovable Cloud — user requirement.
 - Public pages live under the pathless `_site` layout (Navbar/Footer/page transition); `/admin` sits outside it so the admin area gets its own shell.
 - Lenis + GSAP ScrollTrigger are initialised once from `__root.tsx` via `src/lib/smooth-scroll.ts`; motion helpers in `src/components/motion/` must honour prefers-reduced-motion.
-- The public Layout renders the Home fixed Navbar directly before main, outside hero isolation and page-transition containers, so no section can trap its stacking context; Home still skips the foundation Footer.
+- The public Layout renders the Home fixed Navbar directly before main, outside hero isolation and page-transition containers, and the shared Footer after main on every public route.
 - Navbar scroll direction is resolved by a tested browser-safe helper; the Navbar owns its listener and keeps the mobile menu above the fixed wrapper.
 - Motion components use the hydration-safe motion preference hook to keep server and initial browser markup identical before applying reduced motion.
 - The Home client section owns its scoped styles and reads logo pointers and counts from `src/data/clients.ts`; CSS translates duplicated marquee tracks so continuous motion needs no JavaScript loop.
@@ -20,3 +20,5 @@
 - Home ethics owns its scoped styling and uploaded image pointer; its scroll animation is locally cleaned up and disabled for reduced motion to preserve the shared scroll lifecycle.
 - Home pricing reads its amounts and plan terms from a browser-safe pricing data module, not the unused database hook; numeric amounts alone count up and placeholders stay literal until configured.
 - Home FAQ and its route-head FAQPage structured data share one browser-safe data module; use the TanStack head scripts API rather than react-helmet, and keep accordion state single-valued with accessible button headings.
+- Footer settings use a public publishable-key server read of allowlisted key/value site_settings rows and a route-primed Query cache; missing tables or settings resolve to safe local fallbacks, never admin reads.
+- Footer legal destinations remain explicitly unfilled placeholders until approved policy text is supplied; footer imagery is stored as asset pointers and the foreground mask uses a duplicated landscape.

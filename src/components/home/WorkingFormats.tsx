@@ -102,7 +102,7 @@ function IconGroup({ kind, filled, reduce }: { kind: "bolt" | "diamond"; filled:
 export function WorkingFormats() {
   const reduce = useMotionPreference();
   return (
-    <section className="wf" aria-labelledby="wf-title">
+    <section id="formats" className="wf" aria-labelledby="wf-title">
       <div className="wf-inner">
         <Reveal className="wf-center">
           <span className="wf-pill"><Rocket /> Get started</span>
