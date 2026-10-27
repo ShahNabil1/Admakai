@@ -5,6 +5,7 @@ import { DirectorAi } from '@/components/home/DirectorAi';
 import { ToolStack } from '@/components/home/ToolStack';
 import { Capabilities } from '@/components/home/Capabilities';
 import { WorkingFormats } from '@/components/home/WorkingFormats';
+import { Ethics } from '@/components/home/Ethics';
 
 export const Route = createFileRoute("/_site/")({
   head: () => ({
@@ -21,5 +22,5 @@ export const Route = createFileRoute("/_site/")({
 });
 
 function Page() {
-  return <><HomeHero /><TrustedClients /><DirectorAi /><Capabilities /><ToolStack /><WorkingFormats /></>;
+  return <><HomeHero /><TrustedClients /><DirectorAi /><Capabilities /><ToolStack /><WorkingFormats /><Ethics /></>;
 }

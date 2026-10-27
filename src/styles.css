@@ -67,6 +67,14 @@
   --paper: oklch(0.975 0 0); /* #F6F6F6 */
   --ink: oklch(0.178 0 0); /* #111111 */
   --client-eyebrow: #777;
+  --ethics-panel: oklch(0.169 0 0);
+  --ethics-line: oklch(0.235 0 0);
+  --ethics-eyebrow: oklch(0.797 0 0);
+  --ethics-eyebrow-line: oklch(0.535 0 0);
+  --ethics-copy: oklch(0.731 0 0);
+  --ethics-number: oklch(0.888 0 0);
+  --ethics-number-line: oklch(0.348 0 0);
+  --ethics-overlay: oklch(0 0 0 / 0.55);
 
   --background: var(--bg);
   --foreground: var(--fg);
