@@ -16,7 +16,10 @@ import { Route as SiteAboutRouteImport } from './routes/_site.about'
 import { Route as SiteBlogRouteImport } from './routes/_site.blog'
 import { Route as SiteBookACallRouteImport } from './routes/_site.book-a-call'
 import { Route as SitePricingRouteImport } from './routes/_site.pricing'
+import { Route as SitePrivacyRouteImport } from './routes/_site.privacy'
+import { Route as SiteRefundRouteImport } from './routes/_site.refund'
 import { Route as SiteServicesRouteImport } from './routes/_site.services'
+import { Route as SiteTermsRouteImport } from './routes/_site.terms'
 import { Route as SiteWorkIndexRouteImport } from './routes/_site.work.index'
 import { Route as SiteWorkSlugRouteImport } from './routes/_site.work.$slug'
 
@@ -54,9 +57,24 @@ const SitePricingRoute = SitePricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => SiteRoute,
 } as any)
+const SitePrivacyRoute = SitePrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteRefundRoute = SiteRefundRouteImport.update({
+  id: '/refund',
+  path: '/refund',
+  getParentRoute: () => SiteRoute,
+} as any)
 const SiteServicesRoute = SiteServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteTermsRoute = SiteTermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteWorkIndexRoute = SiteWorkIndexRouteImport.update({
@@ -77,7 +95,10 @@ export interface FileRoutesByFullPath {
   '/blog': typeof SiteBlogRoute
   '/book-a-call': typeof SiteBookACallRoute
   '/pricing': typeof SitePricingRoute
+  '/privacy': typeof SitePrivacyRoute
+  '/refund': typeof SiteRefundRoute
   '/services': typeof SiteServicesRoute
+  '/terms': typeof SiteTermsRoute
   '/work/$slug': typeof SiteWorkSlugRoute
   '/work/': typeof SiteWorkIndexRoute
 }
@@ -87,7 +108,10 @@ export interface FileRoutesByTo {
   '/blog': typeof SiteBlogRoute
   '/book-a-call': typeof SiteBookACallRoute
   '/pricing': typeof SitePricingRoute
+  '/privacy': typeof SitePrivacyRoute
+  '/refund': typeof SiteRefundRoute
   '/services': typeof SiteServicesRoute
+  '/terms': typeof SiteTermsRoute
   '/': typeof SiteIndexRoute
   '/work/$slug': typeof SiteWorkSlugRoute
   '/work': typeof SiteWorkIndexRoute
@@ -100,7 +124,10 @@ export interface FileRoutesById {
   '/_site/blog': typeof SiteBlogRoute
   '/_site/book-a-call': typeof SiteBookACallRoute
   '/_site/pricing': typeof SitePricingRoute
+  '/_site/privacy': typeof SitePrivacyRoute
+  '/_site/refund': typeof SiteRefundRoute
   '/_site/services': typeof SiteServicesRoute
+  '/_site/terms': typeof SiteTermsRoute
   '/_site/': typeof SiteIndexRoute
   '/_site/work/$slug': typeof SiteWorkSlugRoute
   '/_site/work/': typeof SiteWorkIndexRoute
@@ -114,7 +141,10 @@ export interface FileRouteTypes {
     | '/blog'
     | '/book-a-call'
     | '/pricing'
+    | '/privacy'
+    | '/refund'
     | '/services'
+    | '/terms'
     | '/work/$slug'
     | '/work/'
   fileRoutesByTo: FileRoutesByTo
@@ -124,7 +154,10 @@ export interface FileRouteTypes {
     | '/blog'
     | '/book-a-call'
     | '/pricing'
+    | '/privacy'
+    | '/refund'
     | '/services'
+    | '/terms'
     | '/'
     | '/work/$slug'
     | '/work'
@@ -136,7 +169,10 @@ export interface FileRouteTypes {
     | '/_site/blog'
     | '/_site/book-a-call'
     | '/_site/pricing'
+    | '/_site/privacy'
+    | '/_site/refund'
     | '/_site/services'
+    | '/_site/terms'
     | '/_site/'
     | '/_site/work/$slug'
     | '/_site/work/'
@@ -198,11 +234,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitePricingRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_site/privacy': {
+      id: '/_site/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof SitePrivacyRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/refund': {
+      id: '/_site/refund'
+      path: '/refund'
+      fullPath: '/refund'
+      preLoaderRoute: typeof SiteRefundRouteImport
+      parentRoute: typeof SiteRoute
+    }
     '/_site/services': {
       id: '/_site/services'
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof SiteServicesRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/terms': {
+      id: '/_site/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof SiteTermsRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/work/': {
@@ -227,7 +284,10 @@ interface SiteRouteChildren {
   SiteBlogRoute: typeof SiteBlogRoute
   SiteBookACallRoute: typeof SiteBookACallRoute
   SitePricingRoute: typeof SitePricingRoute
+  SitePrivacyRoute: typeof SitePrivacyRoute
+  SiteRefundRoute: typeof SiteRefundRoute
   SiteServicesRoute: typeof SiteServicesRoute
+  SiteTermsRoute: typeof SiteTermsRoute
   SiteIndexRoute: typeof SiteIndexRoute
   SiteWorkSlugRoute: typeof SiteWorkSlugRoute
   SiteWorkIndexRoute: typeof SiteWorkIndexRoute
@@ -238,7 +298,10 @@ const SiteRouteChildren: SiteRouteChildren = {
   SiteBlogRoute: SiteBlogRoute,
   SiteBookACallRoute: SiteBookACallRoute,
   SitePricingRoute: SitePricingRoute,
+  SitePrivacyRoute: SitePrivacyRoute,
+  SiteRefundRoute: SiteRefundRoute,
   SiteServicesRoute: SiteServicesRoute,
+  SiteTermsRoute: SiteTermsRoute,
   SiteIndexRoute: SiteIndexRoute,
   SiteWorkSlugRoute: SiteWorkSlugRoute,
   SiteWorkIndexRoute: SiteWorkIndexRoute,
