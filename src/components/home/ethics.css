@@ -1,0 +1,21 @@
+.ethics { background: var(--bg); padding: 120px 0; }
+.ethics-panel { display: grid; grid-template-columns: minmax(0, 48fr) minmax(0, 52fr); gap: 48px; padding: 32px; border: 1px solid var(--ethics-line); border-radius: 28px; background: var(--ethics-panel); }
+.ethics-media { position: relative; overflow: hidden; border-radius: 20px; min-height: 100%; }
+.ethics-image { height: 100%; overflow: hidden; }
+.ethics-image img { width: 100%; height: 100%; min-height: 100%; object-fit: cover; object-position: center; transform: scale(1.08); }
+.ethics-caption { position: absolute; bottom: 20px; left: 20px; right: 20px; width: fit-content; padding: 8px 14px; border-radius: 999px; background: var(--ethics-overlay); backdrop-filter: blur(8px); color: var(--accent); font-size: 12px; font-weight: 600; line-height: 1.5; }
+.ethics-content { min-width: 0; padding: 12px 0; }
+.ethics-eyebrow { display: flex; align-items: center; gap: 12px; color: var(--ethics-eyebrow); font-family: var(--font-serif); font-size: 18px; font-style: italic; }
+.ethics-eyebrow::before { content: ''; width: 48px; height: 1px; background: var(--ethics-eyebrow-line); flex: none; }
+.ethics h2 { margin-top: 24px; font-size: 44px; line-height: 1.12; font-weight: 500; letter-spacing: 0; color: var(--accent); }
+.ethics-points { list-style: none; margin: 32px 0 0; padding: 0; }
+.ethics-point { display: grid; grid-template-columns: 36px minmax(0, 1fr); column-gap: 16px; padding: 28px 0; border-top: 1px solid var(--ethics-line); }
+.ethics-point:first-child { padding-top: 0; border-top: 0; }
+.ethics-number { position: relative; width: 36px; height: 36px; display: grid; place-items: center; font-family: var(--font-serif); font-style: italic; font-size: 18px; color: var(--ethics-number); }
+.ethics-number svg { position: absolute; inset: 0; width: 36px; height: 36px; fill: none; stroke: var(--ethics-number-line); stroke-width: 1px; transform: rotate(-90deg); }
+.ethics-point h3 { color: var(--accent); font-size: 20px; font-weight: 600; line-height: 1.3; }
+.ethics-point p { margin-top: 8px; color: var(--ethics-copy); font-size: 16px; line-height: 1.5; }
+.ethics-policy { padding: 0; height: auto; font-size: 15px; color: var(--ethics-number); font-weight: 400; white-space: normal; }
+@media (max-width: 1023px) { .ethics-panel { grid-template-columns: minmax(0, 1fr); gap: 32px; } .ethics-media { min-height: 0; aspect-ratio: 4 / 3; } .ethics-content { padding: 0; } }
+@media (max-width: 767px) { .ethics { padding: 72px 0; } .ethics-panel { padding: 20px; gap: 28px; } .ethics h2 { font-size: 30px; } .ethics-caption { left: 12px; right: 12px; bottom: 12px; } .ethics-point { column-gap: 12px; } }
+@media (prefers-reduced-motion: reduce) { .ethics-image img { transform: none; } }
