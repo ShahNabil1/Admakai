@@ -5,10 +5,10 @@ import { TrustedClients } from '@/components/home/TrustedClients';
 export const Route = createFileRoute("/_site/")({
   head: () => ({
     meta: [
-      { title: "Admakai — AI commercials without a shoot" },
-      { name: "description", content: "AI commercials, product films and social content by Admakai. Brief us on a call and see the first cut in five days." },
-      { property: "og:title", content: "Admakai — Your next ad doesn't need a shoot" },
-      { property: "og:description", content: "AI commercials, product films and social content. Book a call with Admakai." },
+      { title: "Admakai | AI Ad Agency in Bangladesh for Commercials, Product Films and Social Content" },
+      { name: "description", content: "Admakai is an AI advertising studio in Dhaka. Human-led AI commercials, product films, UGC ads and social content, delivered in days without a shoot." },
+      { property: "og:title", content: "Admakai | AI Ad Agency in Bangladesh for Commercials, Product Films and Social Content" },
+      { property: "og:description", content: "Admakai is an AI advertising studio in Dhaka. Human-led AI commercials, product films, UGC ads and social content, delivered in days without a shoot." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
