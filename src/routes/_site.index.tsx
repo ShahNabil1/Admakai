@@ -6,6 +6,7 @@ import { ToolStack } from '@/components/home/ToolStack';
 import { Capabilities } from '@/components/home/Capabilities';
 import { WorkingFormats } from '@/components/home/WorkingFormats';
 import { Ethics } from '@/components/home/Ethics';
+import { Pricing } from '@/components/home/Pricing';
 
 export const Route = createFileRoute("/_site/")({
   head: () => ({
@@ -22,5 +23,5 @@ export const Route = createFileRoute("/_site/")({
 });
 
 function Page() {
-  return <><HomeHero /><TrustedClients /><DirectorAi /><Capabilities /><ToolStack /><WorkingFormats /><Ethics /></>;
+  return <><HomeHero /><TrustedClients /><DirectorAi /><Capabilities /><ToolStack /><WorkingFormats /><Ethics /><Pricing /></>;
 }
