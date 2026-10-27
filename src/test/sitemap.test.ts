@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { collectPublishedProjects, sitemapXml } from './sitemap';
+import { collectPublishedProjects, sitemapXml } from '../../scripts/sitemap';
 describe('Sitemap rules', () => {
   it('reads every published project batch', async () => {
     const offsets: number[] = [];

@@ -22,8 +22,8 @@ export async function collectPublishedProjects(readPage: (offset: number) => Pro
 export async function generateSitemap() {
   const entries: SitemapEntry[] = publicSeoPaths.map(path => ({ path }));
   const env = { ...loadEnv('production', process.cwd(), ''), ...process.env };
-  const url = env.SUPABASE_URL || env.VITE_SUPABASE_URL;
-  const key = env.SUPABASE_PUBLISHABLE_KEY || env.VITE_SUPABASE_PUBLISHABLE_KEY || env.VITE_SUPABASE_ANON_KEY;
+  const url = env['SUPABASE_URL'] || env['VITE_SUPABASE_URL'];
+  const key = env['SUPABASE_PUBLISHABLE_KEY'] || env['VITE_SUPABASE_PUBLISHABLE_KEY'] || env['VITE_SUPABASE_ANON_KEY'];
   if (url?.startsWith('https://') && key) {
     try {
       const client = createClient(url, key, {
@@ -45,4 +45,4 @@ export async function generateSitemap() {
   await writeFile('public/sitemap.xml', sitemapXml(entries));
   console.log(`Sitemap: wrote ${entries.length} public URLs.`);
 }
-if (import.meta.main) await generateSitemap();
+if ('main' in import.meta && import.meta.main) await generateSitemap();
