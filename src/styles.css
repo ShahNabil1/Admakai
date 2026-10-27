@@ -75,6 +75,8 @@
   --ethics-number: oklch(0.888 0 0);
   --ethics-number-line: oklch(0.348 0 0);
   --ethics-overlay: oklch(0 0 0 / 0.55);
+  --navbar-scrolled-bg: oklch(0.145 0 0 / 0.92);
+  --navbar-border: oklch(0.235 0 0);
 
   --background: var(--bg);
   --foreground: var(--fg);

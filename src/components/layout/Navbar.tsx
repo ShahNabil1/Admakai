@@ -3,8 +3,10 @@ import { motion } from 'framer-motion';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
 import * as Dialog from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { getNavbarScrollState } from '@/lib/navbar-scroll';
+import '@/components/home/hero.css';
 
 const links = [
   { label: 'Pricing', to: '/pricing' },
@@ -14,19 +16,34 @@ const links = [
   { label: 'Blog', to: '/blog' },
 ] as const;
 
-export function Navbar({ hero = false, stuck = false }: { hero?: boolean; stuck?: boolean }) {
+export function Navbar({ hero = false }: { hero?: boolean }) {
   const [open, setOpen] = useState(false);
+  const [scroll, setScroll] = useState({ scrolled: false, hidden: false });
+  const previousY = useRef(0);
   const reduce = useMotionPreference();
+  useEffect(() => {
+    if (!hero) return;
+    previousY.current = Math.max(0, window.scrollY);
+    setScroll({ scrolled: window.scrollY > 80, hidden: false });
+    const onScroll = () => {
+      const y = Math.max(0, window.scrollY);
+      const previous = previousY.current;
+      previousY.current = y;
+      setScroll(state => getNavbarScrollState(y, previous, state.hidden));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [hero]);
   if (!hero) return <nav>Navbar</nav>;
 
   return (
-    <>
-      <motion.nav className={`hero-navbar${stuck ? ' is-stuck' : ''}`} aria-label="Main navigation" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : .2, duration: reduce ? 0 : .6 }}>
+    <header className={`hero-navbar-wrapper${scroll.scrolled ? ' is-scrolled' : ''}${scroll.hidden && !open ? ' is-hidden' : ''}`}>
+      <motion.nav className="hero-navbar" aria-label="Main navigation" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : .2, duration: reduce ? 0 : .6 }}>
         <Link to="/" aria-label="Admakai home"><img className="hero-logo" src="/brand/logo-white.png" alt="Admakai" /></Link>
         <div className="hero-nav-links">
           {links.map(link => <Link key={link.to} to={link.to} className="hero-nav-link">{link.label}</Link>)}
         </div>
-        <Button asChild className="hero-nav-call max-md:hidden"><Link to="/book-a-call">Book a call</Link></Button>
+        <Button asChild className="hero-nav-call"><Link to="/book-a-call">Book a call</Link></Button>
         <Dialog.Root open={open} onOpenChange={setOpen}>
           <Dialog.Trigger asChild><Button variant="ghost" size="icon" className="hero-menu-trigger" aria-label="Open menu"><span className="hero-menu-icon" aria-hidden="true"><span /><span /></span></Button></Dialog.Trigger>
           <Dialog.Portal>
@@ -45,6 +62,6 @@ export function Navbar({ hero = false, stuck = false }: { hero?: boolean; stuck?
           </Dialog.Portal>
         </Dialog.Root>
       </motion.nav>
-    </>
+    </header>
   );
 }
