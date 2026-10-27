@@ -1,6 +1,7 @@
 # Tasks
-- [ ] Build Work, project details, Services, Pricing, About, Book a call and legal pages without changing Home.
-- [ ] Add static content fallbacks, shared page elements, enquiry validation and honest unavailable-service states.
+- [x] Build Work, project details, Services, Pricing, About, Book a call and legal pages without changing Home.
+- [x] Add static content fallbacks, shared page elements, enquiry validation and honest unavailable-service states.
+- [ ] Enable saved enquiries and private uploads — blocked by deferred leads table, private bucket and public insert/upload policies.
 - [ ] Verify public page navigation, filters, form, mobile layout and tests.
 - [x] Apply available full-site metadata, structured data, crawl rules and requested hidden text/links without redesigning pages.
 - [x] Add build-time sitemap and configure explicit public-page prerendering with safe public-data fallbacks.
