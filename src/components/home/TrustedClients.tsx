@@ -40,7 +40,7 @@ function LogoRow({ reverse = false, started }: { reverse?: boolean; started: boo
           <div className="client-marquee__group" key={String(duplicate)} aria-hidden={duplicate || undefined}>
             {items.map((client, index) => (
               <Button variant="ghost" className="client-marquee__cell" key={`${client.name}-${index}`} aria-label={client.name} tabIndex={duplicate ? -1 : 0} data-active={active === client.name} onPointerUp={(event) => { if (event.pointerType !== 'mouse') activate(client.name); }} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') activate(client.name); }}>
-                <img className="client-marquee__logo" src={client.src} alt={duplicate ? '' : client.name} decoding="async" draggable={false} />
+                <img className="client-marquee__logo" src={client.src} alt={duplicate ? '' : client.name} loading="lazy" width="132" height="46" decoding="async" draggable={false} />
               </Button>
             ))}
           </div>

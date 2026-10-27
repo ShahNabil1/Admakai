@@ -1,19 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { seoHead } from '@/lib/seo';
+import { createFileRoute, lazyRouteComponent } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({
-    meta: [
-      { title: "Admin — Admakai" },
-      { name: "description", content: "Admakai — AI advertising agency. Admin." },
-      { property: "og:title", content: "Admin — Admakai" },
-      { property: "og:description", content: "Admakai — AI advertising agency. Admin." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: Page,
+  head: () => seoHead({ title: 'Admin | Admakai', description: 'Admakai administration area.', path: '/admin', noindex: true }),
+  component: lazyRouteComponent(() => import("@/components/admin/AdminPage"), "AdminPage"),
 });
-
-function Page() {
-  return <h1>Admin</h1>;
-}
