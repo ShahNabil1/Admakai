@@ -1,5 +1,6 @@
+import { capabilities } from '@/data/capabilities';
 import { seoHead, breadcrumbs } from '@/lib/seo';
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_site/work/$slug")({
   head: ({ params }) => seoHead({ title: `${params.slug.replace(/-/g, ' ')} | AI Project | Admakai`, description: 'AI advertising project by Admakai. Project details have not yet been provided.', path: `/work/${encodeURIComponent(params.slug)}`, noindex: true, jsonLd: [breadcrumbs([{ name: 'Work', path: '/work' }, { name: params.slug, path: `/work/${encodeURIComponent(params.slug)}` }])] }),
@@ -8,5 +9,5 @@ export const Route = createFileRoute("/_site/work/$slug")({
 
 function Page() {
   const { slug } = Route.useParams();
-  return <h1>{slug}</h1>;
+  return <><h1>{slug}</h1><nav aria-label="Related services"><h2>Related services</h2>{capabilities.map(service => <Link className="seo-related-link" key={service.slug} to="/services" hash={service.slug}>{service.title}</Link>)}</nav></>;
 }
