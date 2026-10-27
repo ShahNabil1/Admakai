@@ -7,25 +7,26 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
 const links = [
-  { label: 'Work', to: '/work' },
-  { label: 'Services', to: '/services' },
   { label: 'Pricing', to: '/pricing' },
+  { label: 'Services', to: '/services' },
+  { label: 'Work', to: '/work' },
   { label: 'About', to: '/about' },
+  { label: 'Blog', to: '/blog' },
 ] as const;
 
-export function Navbar({ hero = false }: { hero?: boolean }) {
+export function Navbar({ hero = false, stuck = false }: { hero?: boolean; stuck?: boolean }) {
   const [open, setOpen] = useState(false);
   const reduce = useMotionPreference();
   if (!hero) return <nav>Navbar</nav>;
 
   return (
     <>
-      <motion.nav className="hero-navbar" aria-label="Main navigation" initial={reduce ? false : { opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reduce ? 0 : .3, duration: reduce ? 0 : .6 }}>
+      <motion.nav className={`hero-navbar${stuck ? ' is-stuck' : ''}`} aria-label="Main navigation" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : .2, duration: reduce ? 0 : .6 }}>
         <Link to="/" aria-label="Admakai home"><img className="hero-logo" src="/brand/logo-white.png" alt="Admakai" /></Link>
         <div className="hero-nav-links">
           {links.map(link => <Link key={link.to} to={link.to} className="hero-nav-link">{link.label}</Link>)}
-          <Button asChild className="hero-call hero-nav-call"><Link to="/book-a-call">Book a call</Link></Button>
         </div>
+        <Button asChild className="hero-nav-call max-md:hidden"><Link to="/book-a-call">Book a call</Link></Button>
         <Dialog.Root open={open} onOpenChange={setOpen}>
           <Dialog.Trigger asChild><Button variant="ghost" size="icon" className="hero-menu-trigger" aria-label="Open menu"><span className="hero-menu-icon" aria-hidden="true"><span /><span /></span></Button></Dialog.Trigger>
           <Dialog.Portal>
