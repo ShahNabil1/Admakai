@@ -7,9 +7,12 @@ import { Capabilities } from '@/components/home/Capabilities';
 import { WorkingFormats } from '@/components/home/WorkingFormats';
 import { Ethics } from '@/components/home/Ethics';
 import { Pricing } from '@/components/home/Pricing';
+import { Faq } from '@/components/home/Faq';
+import { faqSchema } from '@/data/faq';
 
 export const Route = createFileRoute("/_site/")({
   head: () => ({
+    scripts: [{ type: "application/ld+json", children: JSON.stringify(faqSchema).replace(/</g, "\\u003c") }],
     meta: [
       { title: "Admakai | AI Ad Agency in Bangladesh for Commercials, Product Films and Social Content" },
       { name: "description", content: "Admakai is an AI advertising studio in Dhaka. Human-led AI commercials, product films, UGC ads and social content, delivered in days without a shoot." },
@@ -23,5 +26,5 @@ export const Route = createFileRoute("/_site/")({
 });
 
 function Page() {
-  return <><HomeHero /><TrustedClients /><DirectorAi /><Capabilities /><ToolStack /><WorkingFormats /><Ethics /><Pricing /></>;
+  return <><HomeHero /><TrustedClients /><DirectorAi /><Capabilities /><ToolStack /><WorkingFormats /><Ethics /><Pricing /><Faq /></>;
 }

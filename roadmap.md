@@ -1,4 +1,6 @@
 # Tasks
+- [x] Add Home FAQ with seven answers and head structured data.
+- [x] Verify accordion behaviour, mobile layout and FAQ rules.
 - [x] Add the Home pricing card with supplied plan terms and placeholder price.
 - [x] Test plan values and verify pricing layout, motion and links.
 - [x] Move Home navbar outside section stacking contexts and add scroll visibility behaviour.
