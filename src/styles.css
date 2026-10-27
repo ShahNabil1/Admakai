@@ -66,6 +66,7 @@
   --accent: oklch(1 0 0); /* #FFFFFF */
   --paper: oklch(0.975 0 0); /* #F6F6F6 */
   --ink: oklch(0.178 0 0); /* #111111 */
+  --client-eyebrow: #777;
 
   --background: var(--bg);
   --foreground: var(--fg);
