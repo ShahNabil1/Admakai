@@ -34,10 +34,10 @@ export function DirectorAi() {
   return (
     <section className="director-ai" ref={section} aria-labelledby="director-ai-title">
       <Reveal className="director-ai__panel">
-        <div className="director-ai__eyebrow">
-          <motion.span className="director-ai__line" style={{ transformOrigin: 'left' }} initial={reduce ? false : { scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={view} transition={{ duration: reduce ? 0 : .6, ease }} />
+        <motion.div className="director-ai__eyebrow" initial={reduce ? false : "hidden"} whileInView="visible" viewport={view}>
+          <motion.span className="director-ai__line" style={{ transformOrigin: 'left' }} variants={{ hidden: { scaleX: 0 }, visible: { scaleX: 1 } }} transition={{ duration: reduce ? 0 : .6, ease }} />
           <span className="director-ai__eyebrow-text">Director + AI</span>
-        </div>
+        </motion.div>
         <h2 id="director-ai-title" className="director-ai__title">
           <span ref={one} className="director-ai__one"><SplitText text="We don't replace the director." /></span>
           <span ref={two} className="director-ai__two-wrap">
