@@ -35,7 +35,7 @@ export function DirectorAi() {
     <section className="director-ai" ref={section} aria-labelledby="director-ai-title">
       <Reveal className="director-ai__panel">
         <div className="director-ai__eyebrow">
-          <motion.span className="director-ai__line" initial={reduce ? false : { width: 0 }} whileInView={{ width: 48 }} viewport={view} transition={{ duration: reduce ? 0 : .6, ease }} />
+          <motion.span className="director-ai__line" style={{ transformOrigin: 'left' }} initial={reduce ? false : { scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={view} transition={{ duration: reduce ? 0 : .6, ease }} />
           <span className="director-ai__eyebrow-text">Director + AI</span>
         </div>
         <h2 id="director-ai-title" className="director-ai__title">
