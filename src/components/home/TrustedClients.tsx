@@ -1,5 +1,5 @@
-import { animate, motion, useInView } from 'framer-motion';
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { animate, motion, useInView, type MotionStyle } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import { AD_COUNT, BRAND_COUNT, clients, marqueeClients } from '@/data/clients';
 import { Reveal } from '@/components/motion/Reveal';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
@@ -23,7 +23,7 @@ function LogoRow({ reverse = false, started }: { reverse?: boolean; started: boo
   const timing = {
     '--desktop-duration': `${marqueeClients.length * (180 + 56) / 40}s`,
     '--mobile-duration': `${marqueeClients.length * (140 + 36) / 30}s`,
-  } as CSSProperties;
+  } as MotionStyle;
   return (
     <motion.div
       className={`client-marquee${reverse ? ' client-marquee--reverse' : ''}`}
