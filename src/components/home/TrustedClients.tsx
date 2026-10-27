@@ -34,7 +34,7 @@ function LogoRow({ reverse = false, started }: { reverse?: boolean; started: boo
       tabIndex={reduce ? undefined : 0}
       onKeyDown={(event) => { if (event.key === ' ' || event.key === 'Enter') { event.preventDefault(); setPaused((previous) => !previous); } }}
       initial={{ opacity: 0, x: reverse ? -60 : 60 }}
-      animate={reduce || started ? { opacity: 1, x: 0 } : undefined}
+      animate={reduce || started ? { opacity: 1, x: 0 } : { opacity: 0, x: reverse ? -60 : 60 }}
       transition={{ duration: reduce ? 0 : 0.8, delay: reduce ? 0 : reverse ? 0.2 : 0.1, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="client-marquee__track">
