@@ -2,7 +2,6 @@ import { Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
 import { useEffect, useRef, useState } from 'react';
-import { Navbar } from '@/components/layout/Navbar';
 import { Magnetic } from '@/components/motion/Magnetic';
 import { SplitText } from '@/components/motion/SplitText';
 import { Button } from '@/components/ui/button';
@@ -17,7 +16,6 @@ export function HomeHero() {
   const video = useRef<HTMLVideoElement>(null);
   const content = useRef<HTMLDivElement>(null);
   const [src, setSrc] = useState<string | null>(null);
-  const [stuck, setStuck] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)');
@@ -25,16 +23,6 @@ export function HomeHero() {
     pick();
     mq.addEventListener('change', pick);
     return () => mq.removeEventListener('change', pick);
-  }, []);
-
-  useEffect(() => {
-    const onScroll = () => {
-      const h = hero.current?.offsetHeight ?? 0;
-      setStuck(window.scrollY > h - 80);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
@@ -63,7 +51,6 @@ export function HomeHero() {
           </video>
         </motion.div>
         <div className="hero-shade" />
-        <Navbar hero stuck={stuck} />
         <div className="hero-content" ref={content}>
           <div className="hero-tagline">
             <motion.span className="hero-tagline-line" initial={reduce ? false : { width: 0 }} animate={{ width: 56 }} transition={{ delay: reduce ? 0 : .3, duration: reduce ? 0 : .6, ease }} />
