@@ -1,11 +1,12 @@
-import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
+import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useMotionPreference } from '@/hooks/use-motion-preference';
 import { useRef, type MouseEvent, type ReactNode } from "react";
 
 const MAX = 8;
 
 export function Magnetic({ children, className }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
+  const reduce = useMotionPreference();
   const x = useSpring(useMotionValue(0), { stiffness: 300, damping: 20 });
   const y = useSpring(useMotionValue(0), { stiffness: 300, damping: 20 });
 

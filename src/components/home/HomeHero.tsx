@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { useMotionPreference } from '@/hooks/use-motion-preference';
 import { ArrowUpRight } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
@@ -12,7 +13,7 @@ import './hero.css';
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export function HomeHero() {
-  const reduce = useReducedMotion();
+  const reduce = useMotionPreference();
   const hero = useRef<HTMLElement>(null);
   const image = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);

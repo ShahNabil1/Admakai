@@ -13,3 +13,4 @@
 - Public pages live under the pathless `_site` layout (Navbar/Footer/page transition); `/admin` sits outside it so the admin area gets its own shell.
 - Lenis + GSAP ScrollTrigger are initialised once from `__root.tsx` via `src/lib/smooth-scroll.ts`; motion helpers in `src/components/motion/` must honour prefers-reduced-motion.
 - Home owns its hero-embedded Navbar and scoped hero styles; the public layout skips its standalone Navbar/Footer on Home so other pages retain their foundation shell.
+- Motion components use the hydration-safe motion preference hook to keep server and initial browser markup identical before applying reduced motion.

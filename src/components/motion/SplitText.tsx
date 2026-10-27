@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useMotionPreference } from '@/hooks/use-motion-preference';
 
 interface SplitTextProps {
   text: string;
@@ -8,7 +9,7 @@ interface SplitTextProps {
 }
 
 export function SplitText({ text, className, delay = 0, stagger = 0.04 }: SplitTextProps) {
-  const reduce = useReducedMotion();
+  const reduce = useMotionPreference();
   const words = text.split(" ");
   if (reduce) return <span className={className}>{text}</span>;
   return (

@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { useMotionPreference } from '@/hooks/use-motion-preference';
 import * as Dialog from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
 import { useState } from 'react';
@@ -14,7 +15,7 @@ const links = [
 
 export function Navbar({ hero = false }: { hero?: boolean }) {
   const [open, setOpen] = useState(false);
-  const reduce = useReducedMotion();
+  const reduce = useMotionPreference();
   if (!hero) return <nav>Navbar</nav>;
 
   return (
