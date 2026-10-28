@@ -27,7 +27,7 @@ function TiltCard({ card, reduce }: { card: (typeof cards)[number]; reduce: bool
     <motion.div
       onPointerMove={move}
       onPointerLeave={() => { rx.set(0); ry.set(0); }}
-      whileHover={reduce ? undefined : { scale: 1.02 }}
+      whileHover={{ scale: reduce ? 1 : 1.02 }}
       transition={spring}
       style={{ rotateX: rx, rotateY: ry, transformPerspective: 800, willChange: 'transform' }}
       className="rounded-[20px] border border-foreground/10 bg-background/55 p-6 backdrop-blur-md"
