@@ -66,9 +66,10 @@ export function SlotBookingPage() {
     submitLock.current = true; setBusy(true); setError('');
     try {
       const id = await createPublicBooking(selectedSlot.slot_at, parsed.data, source.current);
-      setBookingId(id); setConfirmation(selectedSlot);
+      setBookingId(id);
       try { await sendBookingLink(parsed.data.email); setEmailSent(true); }
       catch (reason) { setEmailError(reason instanceof Error ? reason.message : 'The email could not be sent.'); }
+      setConfirmation(selectedSlot);
     } catch (reason) {
       const message = reason instanceof Error ? reason.message : 'Your booking could not be saved. Please try again.';
       if (message.includes('slot_unavailable')) { setError('Someone just took that time. Please pick another available time.'); setTime(''); await slots.refetch(); }
