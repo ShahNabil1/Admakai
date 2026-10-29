@@ -43,7 +43,10 @@ export const prepareClientUpload = createServerFn({method:'POST'}).middleware([r
   const path=`${client.data.id}/${data.bookingId}/${crypto.randomUUID()}-${name}`;
   const upload=await db.storage.from('client-uploads').createSignedUploadUrl(path,{upsert:false});
   if(upload.error) throw new Error('Upload could not start. Please try again.');
-  return {path,signedUrl:upload.data.signedUrl};
+  const browserUrl=import.meta.env['VITE_SUPABASE_URL'] as string | undefined;
+  const signedUrl=new URL(upload.data.signedUrl);
+  if(browserUrl) { const publicUrl=new URL(browserUrl); signedUrl.protocol=publicUrl.protocol; signedUrl.host=publicUrl.host; }
+  return {path,signedUrl:signedUrl.href};
 });
 export const finishClientUpload = createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(z.object({bookingId:z.string().uuid(),path:z.string().max(500),name:z.string().max(200)})).handler(async ({data,context}) => {
   const db=context.supabase;
