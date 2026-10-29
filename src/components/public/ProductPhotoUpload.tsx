@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { validateAttachment } from '@/lib/lead-schema';
 import './product-photo-upload.css';
 
-type Props = { error?: string; disabled?: boolean; onError: (error: string | null) => void };
+type Props = { error?: string | undefined; disabled?: boolean; onError: (error: string | null) => void };
 
 export function ProductPhotoUpload({ error, disabled = false, onError }: Props) {
   const input = useRef<HTMLInputElement>(null);
