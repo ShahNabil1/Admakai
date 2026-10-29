@@ -26,11 +26,11 @@ export function BookingCalendar({ days, month, selected, today, onMonth, onSelec
     const offset = offsets[event.key];
     if (!offset) return;
     event.preventDefault();
-    const current = cells.indexOf((event.target as HTMLElement).dataset.day ?? '');
+    const current = cells.indexOf((event.target as HTMLElement).dataset['day'] ?? '');
     let index = current + offset;
     while (index >= 0 && index < cells.length) {
       const candidate = cells[index];
-      if (available.has(candidate)) { grid.current?.querySelector<HTMLButtonElement>(`[data-day="${candidate}"]`)?.focus(); break; }
+      if (candidate && available.has(candidate)) { grid.current?.querySelector<HTMLButtonElement>(`[data-day="${candidate}"]`)?.focus(); break; }
       index += offset;
     }
   };
