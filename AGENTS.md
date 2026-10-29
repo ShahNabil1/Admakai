@@ -36,5 +36,5 @@
 - Inner pages prime public-content Query options in route loaders; the existing typed hooks subscribe with Suspense and server reads use allowlisted tables/projections and static fallbacks so missing tables still SSR useful content.
 - Public enquiries validate fields and image signatures on the server, use publishable-key RLS writes and store private attachment paths; never log personal data or report an unsaved enquiry as delivered.
 - Inner-page styling is scoped to public-page elements and shared PageElements; reuse Home motion, FAQ and tool-stack without modifying Home content.
-- Booking-only contact placeholders remain separate from approved Home/footer fallbacks so unfinished contact information is never silently published sitewide.
+- Booking contact placeholders stay separate from approved sitewide contacts. The enquiry photo picker synchronizes its native input with previews and drops, preserving shared validation and FormData submission.
 - Blog posts are hardcoded components with metadata in `src/data/blog.ts` and images under `public/blog/<post>/`; blog parts render a grey filename placeholder for any missing file so unsupplied media never breaks layout.
