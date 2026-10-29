@@ -9,6 +9,12 @@ export function normalizeBookingPhone(value: string) {
   if (/^8801[3-9]\d{8}$/.test(phone)) return `+${phone}`;
   return phone;
 }
+const NON_ASCII_DIGITS: Record<string, string> = {};
+for (const [base, zero] of [[0x09e6, '০'], [0x0660, '٠'], [0x06f0, '۰'], [0x0966, '०'], [0xff10, '０']] as const) for (let i = 0; i < 10; i++) NON_ASCII_DIGITS[String.fromCodePoint(base + i)] = String(i);
+export function normalizePhoneInput(value: string) {
+  const ascii = [...value].map(char => NON_ASCII_DIGITS[char] ?? char).join('');
+  return ascii.replace(/[^\d+\-() ]/g, '');
+}
 export const bookingFormSchema = z.object({
   name: z.string().trim().min(1, 'Enter your name.').max(100, 'Keep your name under 100 characters.'),
   email: z.string().trim().toLowerCase().email('Enter a valid email address.').max(254),
