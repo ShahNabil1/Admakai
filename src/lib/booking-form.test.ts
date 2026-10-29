@@ -8,6 +8,7 @@ describe('Public booking rules', () => {
   it('accepts ten international digits', () => expect(bookingFormSchema.safeParse({ ...valid, whatsapp: '+1234567890' }).success).toBe(true));
   it('normalizes Bangladesh phones to E.164', () => expect(normalizeBookingPhone('01712-345 678')).toBe('+8801712345678'));
   it('converts Bengali digits to English in phone input', () => expect(normalizePhoneInput('০১৭১২৩৪৫৬৭৮')).toBe('01712345678'));
+  it('accepts a Bengali-typed phone through the booking schema', () => expect(bookingFormSchema.parse({ ...valid, whatsapp: '০১৭১২-৩৪৫ ৬৭৮' }).whatsapp).toBe('+8801712345678'));
   it('converts Arabic-Indic and Devanagari digits to English', () => expect(normalizePhoneInput('٠١٧١٢ ३४५۶७८')).toBe('01712 345678'));
   it('keeps only digits and phone symbols in phone input', () => expect(normalizePhoneInput('+880-1712 (৩৪৫) abc ক')).toBe('+880-1712 (345)  '));
   it('normalizes email and allows optional brand/message', () => expect(bookingFormSchema.parse(valid)).toMatchObject({ name: 'Nadia', email: 'nadia@example.com', brand: '', message: '' }));
