@@ -7,7 +7,7 @@ type Booking = { id: string; slot_at: string; status: string; budget_band: strin
 type Lead = { id: string; stage: string; owner_id: string | null; value_estimate: number | null; stage_changed_at: string; clients: { contact_name: string | null; email: string | null } | null };
 
 const BOOKING_STATUSES = ['requested', 'in_review', 'confirmed', 'completed', 'cancelled', 'no_show'];
-const LEAD_STAGES = ['new', 'contacted', 'qualified', 'proposal', 'won', 'lost'];
+const LEAD_STAGES = ['new', 'contacted', 'qualified', 'proposal_sent', 'won', 'lost'];
 const fmt = (iso: string) => new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Dhaka', dateStyle: 'medium', timeStyle: 'short' }).format(new Date(iso));
 
 export function AdminPage() {

@@ -38,3 +38,4 @@
 - Inner-page styling is scoped to public-page elements and shared PageElements; reuse Home motion, FAQ and tool-stack without modifying Home content.
 - Booking contacts stay separate from sitewide contacts. Enquiries sync photo previews to FormData and use libphonenumber metadata with bundled country-flag-icons SVGs for international phone selection/validation.
 - Blog posts are hardcoded components with metadata in `src/data/blog.ts` and images under `public/blog/<post>/`; blog parts render a grey filename placeholder for any missing file so unsupplied media never breaks layout.
+- Staff sign in to /admin only through Branta Hub SSO (/sso/admakai → /auth/sso/callback with state-checked token fragment); Admakai has no staff login form, so staff identity and role assignment stay owned by Branta Hub.
