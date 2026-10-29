@@ -58,6 +58,90 @@ export type Database = {
           },
         ]
       }
+      availability: {
+        Row: {
+          created_at: string
+          end_time: string
+          id: string
+          is_active: boolean
+          start_time: string
+          weekday: number
+        }
+        Insert: {
+          created_at?: string
+          end_time: string
+          id?: string
+          is_active?: boolean
+          start_time: string
+          weekday: number
+        }
+        Update: {
+          created_at?: string
+          end_time?: string
+          id?: string
+          is_active?: boolean
+          start_time?: string
+          weekday?: number
+        }
+        Relationships: []
+      }
+      availability_rules: {
+        Row: {
+          business_timezone: string
+          default_meet_link: string | null
+          gap_minutes: number
+          id: boolean
+          max_horizon_days: number
+          max_per_day: number
+          min_notice_hours: number
+          slot_minutes: number
+        }
+        Insert: {
+          business_timezone?: string
+          default_meet_link?: string | null
+          gap_minutes?: number
+          id?: boolean
+          max_horizon_days?: number
+          max_per_day?: number
+          min_notice_hours?: number
+          slot_minutes?: number
+        }
+        Update: {
+          business_timezone?: string
+          default_meet_link?: string | null
+          gap_minutes?: number
+          id?: boolean
+          max_horizon_days?: number
+          max_per_day?: number
+          min_notice_hours?: number
+          slot_minutes?: number
+        }
+        Relationships: []
+      }
+      blocked_dates: {
+        Row: {
+          created_at: string
+          date_from: string
+          date_to: string
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          created_at?: string
+          date_from: string
+          date_to: string
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          created_at?: string
+          date_from?: string
+          date_to?: string
+          id?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
       booking_files: {
         Row: {
           booking_id: string | null
@@ -383,7 +467,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      open_slots: {
+        Args: { p_from?: string; p_to?: string }
+        Returns: {
+          local_day: string
+          local_time: string
+          slot_at: string
+        }[]
+      }
     }
     Enums: {
       booking_status:

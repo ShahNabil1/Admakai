@@ -1,0 +1,2 @@
+INSERT INTO public.clients(id,brand_name) VALUES('80cc8004-c9c5-4e0c-a7ea-af7c390ac501','Temporary slot verification — remove after test');
+INSERT INTO public.bookings(id,client_id,slot_at,status) VALUES('80cc8004-c9c5-4e0c-a7ea-af7c390ac502','80cc8004-c9c5-4e0c-a7ea-af7c390ac501','2026-10-29 14:30:00+00','requested');
