@@ -895,6 +895,10 @@ export type Database = {
           slot_at: string
         }[]
       }
+      password_previously_used: {
+        Args: { p_password: string }
+        Returns: boolean
+      }
     }
     Enums: {
       booking_status:
