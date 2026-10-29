@@ -27,7 +27,8 @@ export function InternationalPhoneField({ error, onChange }: { error?: string | 
     const clean = normalizePhoneInput(raw);
     if (clean.startsWith('+')) {
       const pasted = parsePhoneNumberFromString(clean);
-      if (pasted?.country) { setCountry(pasted.country); setNumber(pasted.nationalNumber); onChange(); return; }
+      const pastedCountry = pasted?.country ?? pasted?.getPossibleCountries()[0];
+      if (pasted && pastedCountry) { setCountry(pastedCountry); setNumber(pasted.nationalNumber); onChange(); return; }
     }
     setNumber(clean);
     onChange();
