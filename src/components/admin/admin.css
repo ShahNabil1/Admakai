@@ -185,3 +185,4 @@ button.admin-stat:hover{border-color:color-mix(in oklab,var(--foreground) 35%,tr
 .admin-shell>.admin-side{grid-column:1;grid-row:1}
 .admin-shell>.admin-main{grid-column:2;grid-row:1}
 @media (max-width:760px){.admin-shell>.admin-main,.admin-shell>.admin-topbar{grid-column:1;grid-row:auto}}
+.admin-dialog>div:first-child{text-align:left}
