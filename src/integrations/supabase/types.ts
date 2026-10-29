@@ -331,6 +331,63 @@ export type Database = {
           },
         ]
       }
+      deliverables: {
+        Row: {
+          created_at: string
+          decided_at: string | null
+          external_url: string | null
+          id: string
+          project_id: string
+          status: Database["public"]["Enums"]["deliverable_status"]
+          storage_path: string | null
+          submitted_by: string | null
+          title: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          decided_at?: string | null
+          external_url?: string | null
+          id?: string
+          project_id: string
+          status?: Database["public"]["Enums"]["deliverable_status"]
+          storage_path?: string | null
+          submitted_by?: string | null
+          title: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          created_at?: string
+          decided_at?: string | null
+          external_url?: string | null
+          id?: string
+          project_id?: string
+          status?: Database["public"]["Enums"]["deliverable_status"]
+          storage_path?: string | null
+          submitted_by?: string | null
+          title?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deliverables_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deliverables_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           booking_id: string | null
@@ -446,6 +503,206 @@ export type Database = {
           whatsapp?: string | null
         }
         Relationships: []
+      }
+      project_members: {
+        Row: {
+          created_at: string
+          project_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          project_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          project_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_members_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          brief: Json
+          client_id: string
+          created_at: string
+          due_at: string | null
+          id: string
+          lead_id: string | null
+          owner_id: string | null
+          revision_limit: number
+          stage: Database["public"]["Enums"]["project_stage"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          brief?: Json
+          client_id: string
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          lead_id?: string | null
+          owner_id?: string | null
+          revision_limit?: number
+          stage?: Database["public"]["Enums"]["project_stage"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          brief?: Json
+          client_id?: string
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          lead_id?: string | null
+          owner_id?: string | null
+          revision_limit?: number
+          stage?: Database["public"]["Enums"]["project_stage"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: true
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      review_comments: {
+        Row: {
+          author_id: string
+          body: string
+          created_at: string
+          deliverable_id: string
+          id: string
+          parent_id: string | null
+          resolved: boolean
+          timecode_ms: number | null
+        }
+        Insert: {
+          author_id: string
+          body: string
+          created_at?: string
+          deliverable_id: string
+          id?: string
+          parent_id?: string | null
+          resolved?: boolean
+          timecode_ms?: number | null
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          created_at?: string
+          deliverable_id?: string
+          id?: string
+          parent_id?: string | null
+          resolved?: boolean
+          timecode_ms?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_comments_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "review_comments_deliverable_id_fkey"
+            columns: ["deliverable_id"]
+            isOneToOne: false
+            referencedRelation: "deliverables"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "review_comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          assignee_id: string | null
+          created_at: string
+          due_at: string | null
+          id: string
+          project_id: string
+          status: Database["public"]["Enums"]["task_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assignee_id?: string | null
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          project_id: string
+          status?: Database["public"]["Enums"]["task_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assignee_id?: string | null
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          project_id?: string
+          status?: Database["public"]["Enums"]["task_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_assignee_id_fkey"
+            columns: ["assignee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
