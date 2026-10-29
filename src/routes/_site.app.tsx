@@ -13,5 +13,5 @@ function BookingAccess() {
     void supabase.auth.getSession().then(({ data, error }) => { if (active) setStatus(error ? 'This sign-in link could not be opened.' : data.session ? 'You’re signed in.' : 'Open the sign-in link in your booking email.'); });
     return () => { active = false; listener.subscription.unsubscribe(); };
   }, []);
-  return <div className="public-page"><section className="legal-document"><p className="page-eyebrow">Your booking</p><h1>Booking access</h1><p role="status">{status}</p><p>Your booking request is saved. Your dashboard and product-photo uploads are not available yet.</p><Button asChild variant="link"><a href="/book">Back to booking</a></Button></section></div>;
+  return <div className="public-page"><section className="legal-document"><p className="page-eyebrow">Your booking</p><h1>Booking access</h1><p role="status">{status}</p><p>Your dashboard and product-photo uploads are not available yet.</p><Button asChild variant="link"><a href="/book">Back to booking</a></Button></section></div>;
 }
