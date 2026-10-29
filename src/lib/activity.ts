@@ -5,7 +5,7 @@ const human = (v: string | null) => (v ?? '—').replace(/_/g, ' ');
 
 export function describeActivity(a: ActivityRow): string {
   const noun = NOUN[a.entity_type] ?? a.entity_type;
-  const title = typeof a.meta?.title === 'string' && a.meta.title ? ` “${a.meta.title}”` : '';
+  const title = typeof a.meta?.['title'] === 'string' && a.meta['title'] ? ` “${a.meta['title']}”` : '';
   if (a.verb === 'created') return a.entity_type === 'payments' ? `Payment of ${title.replace(/[“”]/g, '').trim()} recorded` : `${noun}${title} created`;
   if (a.verb.endsWith('_changed') || a.verb === 'stage_change') return `${noun}${title} moved from ${human(a.from_value)} to ${human(a.to_value)}`;
   return `${noun}${title} ${human(a.verb)}`;
