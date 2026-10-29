@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Replace Privacy Policy and Terms placeholders with verified business/data practices and approved privacy contact; check public access, links and mobile layout.
 - [x] Build signed-in client area, private uploads and call views; existing profiles, manager-only removal, safe Realtime publication, SQL rollback guard tests and 33 focused tests passed; signed-out redirect and 360px sign-in checked.
 - [ ] Grant owner to team@brantatech.org — no matching auth user exists; app.grant_owner is available for a manager or trusted database administrator after account creation/verification.
 - [x] Update /book to the supplied portrait split and five-step booking card; live calendar, keyboard controls, preserved details, simulated slot/email errors and 360px layout verified; 24 tests passed. Real email delivery and dashboard remain unverified as below.
