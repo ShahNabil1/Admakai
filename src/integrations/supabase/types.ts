@@ -14,6 +14,313 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          entity_id: string
+          entity_type: string
+          from_value: string | null
+          id: string
+          meta: Json | null
+          to_value: string | null
+          verb: string
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          from_value?: string | null
+          id?: string
+          meta?: Json | null
+          to_value?: string | null
+          verb: string
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          from_value?: string | null
+          id?: string
+          meta?: Json | null
+          to_value?: string | null
+          verb?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      booking_files: {
+        Row: {
+          booking_id: string | null
+          bytes: number | null
+          created_at: string
+          id: string
+          mime: string | null
+          original_name: string | null
+          storage_path: string
+        }
+        Insert: {
+          booking_id?: string | null
+          bytes?: number | null
+          created_at?: string
+          id?: string
+          mime?: string | null
+          original_name?: string | null
+          storage_path: string
+        }
+        Update: {
+          booking_id?: string | null
+          bytes?: number | null
+          created_at?: string
+          id?: string
+          mime?: string | null
+          original_name?: string | null
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_files_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bookings: {
+        Row: {
+          brief: Json
+          budget_band: string | null
+          client_id: string
+          completed_at: string | null
+          created_at: string
+          duration_minutes: number
+          id: string
+          lead_id: string | null
+          meet_link: string | null
+          notes_internal: string | null
+          notes_shared: string | null
+          owner_id: string | null
+          recording_url: string | null
+          reminder_1_sent_at: string | null
+          reminder_24_sent_at: string | null
+          reschedule_count: number
+          slot_at: string
+          source: Json | null
+          status: Database["public"]["Enums"]["booking_status"]
+          updated_at: string
+        }
+        Insert: {
+          brief?: Json
+          budget_band?: string | null
+          client_id: string
+          completed_at?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          lead_id?: string | null
+          meet_link?: string | null
+          notes_internal?: string | null
+          notes_shared?: string | null
+          owner_id?: string | null
+          recording_url?: string | null
+          reminder_1_sent_at?: string | null
+          reminder_24_sent_at?: string | null
+          reschedule_count?: number
+          slot_at: string
+          source?: Json | null
+          status?: Database["public"]["Enums"]["booking_status"]
+          updated_at?: string
+        }
+        Update: {
+          brief?: Json
+          budget_band?: string | null
+          client_id?: string
+          completed_at?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          lead_id?: string | null
+          meet_link?: string | null
+          notes_internal?: string | null
+          notes_shared?: string | null
+          owner_id?: string | null
+          recording_url?: string | null
+          reminder_1_sent_at?: string | null
+          reminder_24_sent_at?: string | null
+          reschedule_count?: number
+          slot_at?: string
+          source?: Json | null
+          status?: Database["public"]["Enums"]["booking_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          brand_name: string | null
+          created_at: string
+          id: string
+          is_customer: boolean
+          notes: string | null
+          owner_id: string | null
+          profile_id: string | null
+          updated_at: string
+          website: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          brand_name?: string | null
+          created_at?: string
+          id?: string
+          is_customer?: boolean
+          notes?: string | null
+          owner_id?: string | null
+          profile_id?: string | null
+          updated_at?: string
+          website?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          brand_name?: string | null
+          created_at?: string
+          id?: string
+          is_customer?: boolean
+          notes?: string | null
+          owner_id?: string | null
+          profile_id?: string | null
+          updated_at?: string
+          website?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clients_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "clients_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          booking_id: string | null
+          client_id: string
+          created_at: string
+          currency: string | null
+          id: string
+          lost_reason: string | null
+          lost_reason_category: string | null
+          owner_id: string | null
+          reopened_from: string | null
+          source: Json | null
+          stage: Database["public"]["Enums"]["lead_stage"]
+          stage_changed_at: string
+          updated_at: string
+          value_estimate: number | null
+        }
+        Insert: {
+          booking_id?: string | null
+          client_id: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          lost_reason?: string | null
+          lost_reason_category?: string | null
+          owner_id?: string | null
+          reopened_from?: string | null
+          source?: Json | null
+          stage?: Database["public"]["Enums"]["lead_stage"]
+          stage_changed_at?: string
+          updated_at?: string
+          value_estimate?: number | null
+        }
+        Update: {
+          booking_id?: string | null
+          client_id?: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          lost_reason?: string | null
+          lost_reason_category?: string | null
+          owner_id?: string | null
+          reopened_from?: string | null
+          source?: Json | null
+          stage?: Database["public"]["Enums"]["lead_stage"]
+          stage_changed_at?: string
+          updated_at?: string
+          value_estimate?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "leads_reopened_from_fkey"
+            columns: ["reopened_from"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
