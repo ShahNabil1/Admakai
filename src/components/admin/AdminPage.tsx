@@ -229,8 +229,8 @@ function BookingDetail({ b, manager, userId, names, update, confirm }: { b: Book
           <div><dt>WhatsApp</dt><dd>{b.clients?.whatsapp ?? '—'}</dd></div>
           <div><dt>Brand</dt><dd>{b.clients?.brand_name ?? '—'}</dd></div>
           <div><dt>Budget</dt><dd>{b.budget_band ?? '—'}</dd></div>
-          {typeof brief.need === 'string' && <div><dt>Need</dt><dd>{brief.need}</dd></div>}
-          {typeof brief.message === 'string' && brief.message && <div className="is-full"><dt>Message</dt><dd className="break-words">{brief.message}</dd></div>}
+          {typeof brief['need'] === 'string' && <div><dt>Need</dt><dd>{brief['need']}</dd></div>}
+          {typeof brief['message'] === 'string' && brief['message'] && <div className="is-full"><dt>Message</dt><dd className="break-words">{brief['message']}</dd></div>}
         </dl>
         <div className="admin-side-panel">
           <p className="admin-label">Status</p>

@@ -11,7 +11,7 @@ export function Pill({ value }: { value: string }) {
   return <span className={`admin-pill is-${value}`}>{label(value)}</span>;
 }
 
-export function Modal({ open, onOpenChange, title, description, wide, children }: { open: boolean; onOpenChange: (o: boolean) => void; title: string; description?: string; wide?: boolean; children: ReactNode }) {
+export function Modal({ open, onOpenChange, title, description, wide, children }: { open: boolean; onOpenChange: (o: boolean) => void; title: string; description?: string | undefined; wide?: boolean; children: ReactNode }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={`admin-dialog ${wide ? 'is-wide' : ''}`}>
