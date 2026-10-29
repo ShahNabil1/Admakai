@@ -1,4 +1,5 @@
 # Tasks
+- [x] Add searchable international enquiry phone selector with 245 bundled flags/calling codes; shared validation and 19 tests pass; country switching, Unicode digits and mobile menu verified. Enquiry saving remains blocked as recorded below.
 - [x] Replace Privacy/Terms placeholders with real business/data practices and hello@admakai.com; 31 tests passed, both public pages and links checked at desktop/360px. Google provider settings and approval remain unverified; publishing was not requested.
 - [x] Build signed-in client area, private uploads and call views; existing profiles, manager-only removal, safe Realtime publication, SQL rollback guard tests and 33 focused tests passed; signed-out redirect and 360px sign-in checked.
 - [ ] Grant owner to team@brantatech.org — no matching auth user exists; app.grant_owner is available for a manager or trusted database administrator after account creation/verification.
