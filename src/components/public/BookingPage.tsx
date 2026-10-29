@@ -9,6 +9,7 @@ import { useServices } from '@/hooks/useServices';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { resolveSiteSettings, bookingContacts } from '@/data/site';
 import { leadSchema, validateAttachment, whatsappUrl } from '@/lib/lead-schema';
+import { normalizePhoneInput } from '@/lib/booking-form';
 import { submitLead } from '@/lib/leads.functions';
 import { PageHero } from './PageElements';
 const route=getRouteApi('/_site/book-a-call');
