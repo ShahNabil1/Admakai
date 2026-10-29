@@ -13,7 +13,6 @@ import { Route as SiteRouteImport } from './routes/_site'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as SiteIndexRouteImport } from './routes/_site.index'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
-import { Route as SiteBlogRouteImport } from './routes/_site.blog'
 import { Route as SiteBookACallRouteImport } from './routes/_site.book-a-call'
 import { Route as SitePricingRouteImport } from './routes/_site.pricing'
 import { Route as SitePrivacyRouteImport } from './routes/_site.privacy'
@@ -21,6 +20,8 @@ import { Route as SiteRefundRouteImport } from './routes/_site.refund'
 import { Route as SiteServicesRouteImport } from './routes/_site.services'
 import { Route as SiteTermsRouteImport } from './routes/_site.terms'
 import { Route as AdminSplatRouteImport } from './routes/admin_.$'
+import { Route as SiteBlogIndexRouteImport } from './routes/_site.blog.index'
+import { Route as SiteBlogSazdahTvcRouteImport } from './routes/_site.blog.sazdah-tvc'
 import { Route as SiteWorkIndexRouteImport } from './routes/_site.work.index'
 import { Route as SiteWorkSlugRouteImport } from './routes/_site.work.$slug'
 
@@ -41,11 +42,6 @@ const SiteIndexRoute = SiteIndexRouteImport.update({
 const SiteAboutRoute = SiteAboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => SiteRoute,
-} as any)
-const SiteBlogRoute = SiteBlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteBookACallRoute = SiteBookACallRouteImport.update({
@@ -83,6 +79,16 @@ const AdminSplatRoute = AdminSplatRouteImport.update({
   path: '/admin/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SiteBlogIndexRoute = SiteBlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteBlogSazdahTvcRoute = SiteBlogSazdahTvcRouteImport.update({
+  id: '/blog/sazdah-tvc',
+  path: '/blog/sazdah-tvc',
+  getParentRoute: () => SiteRoute,
+} as any)
 const SiteWorkIndexRoute = SiteWorkIndexRouteImport.update({
   id: '/work/',
   path: '/work/',
@@ -98,7 +104,6 @@ export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
   '/admin': typeof AdminRoute
   '/about': typeof SiteAboutRoute
-  '/blog': typeof SiteBlogRoute
   '/book-a-call': typeof SiteBookACallRoute
   '/pricing': typeof SitePricingRoute
   '/privacy': typeof SitePrivacyRoute
@@ -106,13 +111,14 @@ export interface FileRoutesByFullPath {
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
   '/admin/$': typeof AdminSplatRoute
+  '/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
   '/work/$slug': typeof SiteWorkSlugRoute
+  '/blog/': typeof SiteBlogIndexRoute
   '/work/': typeof SiteWorkIndexRoute
 }
 export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/about': typeof SiteAboutRoute
-  '/blog': typeof SiteBlogRoute
   '/book-a-call': typeof SiteBookACallRoute
   '/pricing': typeof SitePricingRoute
   '/privacy': typeof SitePrivacyRoute
@@ -121,7 +127,9 @@ export interface FileRoutesByTo {
   '/terms': typeof SiteTermsRoute
   '/admin/$': typeof AdminSplatRoute
   '/': typeof SiteIndexRoute
+  '/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
   '/work/$slug': typeof SiteWorkSlugRoute
+  '/blog': typeof SiteBlogIndexRoute
   '/work': typeof SiteWorkIndexRoute
 }
 export interface FileRoutesById {
@@ -129,7 +137,6 @@ export interface FileRoutesById {
   '/_site': typeof SiteRouteWithChildren
   '/admin': typeof AdminRoute
   '/_site/about': typeof SiteAboutRoute
-  '/_site/blog': typeof SiteBlogRoute
   '/_site/book-a-call': typeof SiteBookACallRoute
   '/_site/pricing': typeof SitePricingRoute
   '/_site/privacy': typeof SitePrivacyRoute
@@ -138,7 +145,9 @@ export interface FileRoutesById {
   '/_site/terms': typeof SiteTermsRoute
   '/admin_/$': typeof AdminSplatRoute
   '/_site/': typeof SiteIndexRoute
+  '/_site/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
   '/_site/work/$slug': typeof SiteWorkSlugRoute
+  '/_site/blog/': typeof SiteBlogIndexRoute
   '/_site/work/': typeof SiteWorkIndexRoute
 }
 export interface FileRouteTypes {
@@ -147,7 +156,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/about'
-    | '/blog'
     | '/book-a-call'
     | '/pricing'
     | '/privacy'
@@ -155,13 +163,14 @@ export interface FileRouteTypes {
     | '/services'
     | '/terms'
     | '/admin/$'
+    | '/blog/sazdah-tvc'
     | '/work/$slug'
+    | '/blog/'
     | '/work/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/admin'
     | '/about'
-    | '/blog'
     | '/book-a-call'
     | '/pricing'
     | '/privacy'
@@ -170,14 +179,15 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin/$'
     | '/'
+    | '/blog/sazdah-tvc'
     | '/work/$slug'
+    | '/blog'
     | '/work'
   id:
     | '__root__'
     | '/_site'
     | '/admin'
     | '/_site/about'
-    | '/_site/blog'
     | '/_site/book-a-call'
     | '/_site/pricing'
     | '/_site/privacy'
@@ -186,7 +196,9 @@ export interface FileRouteTypes {
     | '/_site/terms'
     | '/admin_/$'
     | '/_site/'
+    | '/_site/blog/sazdah-tvc'
     | '/_site/work/$slug'
+    | '/_site/blog/'
     | '/_site/work/'
   fileRoutesById: FileRoutesById
 }
@@ -224,13 +236,6 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof SiteAboutRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/blog': {
-      id: '/_site/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof SiteBlogRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/book-a-call': {
@@ -282,6 +287,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_site/blog/': {
+      id: '/_site/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof SiteBlogIndexRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/blog/sazdah-tvc': {
+      id: '/_site/blog/sazdah-tvc'
+      path: '/blog/sazdah-tvc'
+      fullPath: '/blog/sazdah-tvc'
+      preLoaderRoute: typeof SiteBlogSazdahTvcRouteImport
+      parentRoute: typeof SiteRoute
+    }
     '/_site/work/': {
       id: '/_site/work/'
       path: '/work'
@@ -301,7 +320,6 @@ declare module '@tanstack/react-router' {
 
 interface SiteRouteChildren {
   SiteAboutRoute: typeof SiteAboutRoute
-  SiteBlogRoute: typeof SiteBlogRoute
   SiteBookACallRoute: typeof SiteBookACallRoute
   SitePricingRoute: typeof SitePricingRoute
   SitePrivacyRoute: typeof SitePrivacyRoute
@@ -309,13 +327,14 @@ interface SiteRouteChildren {
   SiteServicesRoute: typeof SiteServicesRoute
   SiteTermsRoute: typeof SiteTermsRoute
   SiteIndexRoute: typeof SiteIndexRoute
+  SiteBlogSazdahTvcRoute: typeof SiteBlogSazdahTvcRoute
   SiteWorkSlugRoute: typeof SiteWorkSlugRoute
+  SiteBlogIndexRoute: typeof SiteBlogIndexRoute
   SiteWorkIndexRoute: typeof SiteWorkIndexRoute
 }
 
 const SiteRouteChildren: SiteRouteChildren = {
   SiteAboutRoute: SiteAboutRoute,
-  SiteBlogRoute: SiteBlogRoute,
   SiteBookACallRoute: SiteBookACallRoute,
   SitePricingRoute: SitePricingRoute,
   SitePrivacyRoute: SitePrivacyRoute,
@@ -323,7 +342,9 @@ const SiteRouteChildren: SiteRouteChildren = {
   SiteServicesRoute: SiteServicesRoute,
   SiteTermsRoute: SiteTermsRoute,
   SiteIndexRoute: SiteIndexRoute,
+  SiteBlogSazdahTvcRoute: SiteBlogSazdahTvcRoute,
   SiteWorkSlugRoute: SiteWorkSlugRoute,
+  SiteBlogIndexRoute: SiteBlogIndexRoute,
   SiteWorkIndexRoute: SiteWorkIndexRoute,
 }
 
