@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Update /book to the supplied portrait split and five-step booking card; verify live calendar, keyboard controls, preserved details and 360px layout.
 - [x] Build /book with live SQL slots, accessible chips, validation, spam guards, tracking and booking/OTP states; live availability and 360px layout verified, simulated submission/error/email flows passed, 20 tests passed. /app is a safe email-link destination, not a dashboard.
 - [ ] Verify real booking-to-email delivery and dashboard access — blocked by unavailable dashboard/upload functionality and unverified external Supabase email/redirect settings; UI submission tests used simulated responses and left no test bookings.
 - [x] Add pre-login booking function, contact details and verified account linking; anonymous booking proof passed duplicate-slot and fourth-booking errors, lead reuse, verified linking and rollback cleanup; security linter clean.
