@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type DragEvent } from 'react';
 import { Toaster, toast } from 'sonner';
-import { Activity, CalendarDays, FolderKanban, LayoutDashboard, LogOut, Receipt, Search, Users } from 'lucide-react';
+import { Activity, ArrowLeft, CalendarDays, FolderKanban, LayoutDashboard, LogOut, Receipt, Search, Users } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { isStaffRole, startHubSignIn, type StaffRole } from '@/lib/sso';
 import type { ActivityRow } from '@/lib/activity';
@@ -55,7 +55,18 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
   const [bookings, setBookings] = useState<Booking[] | null>(null);
   const [leads, setLeads] = useState<Lead[] | null>(null);
   const [names, setNames] = useState<Record<string, string>>({});
-  const [openBooking, setOpenBooking] = useState<string | null>(null);
+  const [openBooking, setOpenBookingState] = useState<string | null>(() => new URLSearchParams(window.location.search).get('booking'));
+  const setOpenBooking = useCallback((id: string | null) => {
+    const url = new URL(window.location.href);
+    if (id) url.searchParams.set('booking', id); else url.searchParams.delete('booking');
+    window.history.pushState(null, '', url);
+    setOpenBookingState(id); window.scrollTo(0, 0);
+  }, []);
+  useEffect(() => {
+    const sync = () => setOpenBookingState(new URLSearchParams(window.location.search).get('booking'));
+    window.addEventListener('popstate', sync);
+    return () => window.removeEventListener('popstate', sync);
+  }, []);
   const [openLead, setOpenLead] = useState<string | null>(null);
   const manager = role !== 'member';
   const { confirm, node: confirmNode } = useConfirm();
@@ -119,7 +130,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
         <strong className="admin-brand">Admakai<small>Studio admin</small></strong>
         <nav>
           {NAV.map((n) => (
-            <button key={n.id} className={tab === n.id ? 'is-active' : ''} aria-current={tab === n.id ? 'page' : undefined} onClick={() => setTab(n.id)}>
+            <button key={n.id} className={tab === n.id ? 'is-active' : ''} aria-current={tab === n.id ? 'page' : undefined} onClick={() => { setTab(n.id); if (openBooking) setOpenBooking(null); }}>
               <n.icon size={17} /><span>{n.label}</span>
               {n.id === 'bookings' && pending.length > 0 && <em>{pending.length}</em>}
             </button>
@@ -135,7 +146,16 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
         <button className="admin-icon-btn" aria-label="Sign out" onClick={() => confirm({ title: 'Sign out?', description: 'You will need Branta Hub to sign in again.', confirmLabel: 'Sign out', run: async () => { await supabase.auth.signOut(); window.location.assign('/'); } })}><LogOut size={17} /></button>
       </header>
 
-      <main className="admin-main" key={tab}>
+      <main className="admin-main" key={openBooking ? `booking-${openBooking}` : tab}>
+        {openBooking ? (
+          <section className="booking-page">
+            <button className="admin-btn-ghost booking-page-back" onClick={() => setOpenBooking(null)}><ArrowLeft size={16} />Back to bookings</button>
+            {booking ? <>
+              <header className="admin-head"><div><p className="admin-eyebrow">{fmtDate(booking.slot_at)} · Dhaka time</p><h1>{who(booking.clients)}</h1></div><Pill value={booking.status} /></header>
+              <div className="admin-panel"><BookingDetail key={booking.id} b={booking} manager={manager} userId={userId} names={names} update={update} confirm={confirm} /></div>
+            </> : bookings === null ? <div className="admin-skeleton" /> : <Empty title="Booking not found" hint="It may have been removed or you may not have access." />}
+          </section>
+        ) : <>
         {tab === 'today' && (
           <section>
             <header className="admin-head"><div><p className="admin-eyebrow">{fmtDate(new Date().toISOString(), false)}</p><h1>Today</h1></div></header>
@@ -155,19 +175,17 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
         {tab === 'projects' && <StaffProjects userId={userId} />}
         {tab === 'billing' && <StaffBilling manager={manager} names={names} />}
         {tab === 'activity' && <ActivityLog names={names} />}
+        </>}
       </main>
 
       <nav className="admin-tabbar" aria-label="Admin sections">
         {NAV.map((n) => (
-          <button key={n.id} className={tab === n.id ? 'is-active' : ''} aria-current={tab === n.id ? 'page' : undefined} onClick={() => setTab(n.id)}>
+          <button key={n.id} className={tab === n.id ? 'is-active' : ''} aria-current={tab === n.id ? 'page' : undefined} onClick={() => { setTab(n.id); if (openBooking) setOpenBooking(null); }}>
             <n.icon size={19} /><span>{n.label}</span>
           </button>
         ))}
       </nav>
 
-      <Modal open={!!booking} onOpenChange={(o) => !o && setOpenBooking(null)} title={booking ? who(booking.clients) : ''} description={booking ? `${fmtDate(booking.slot_at)} · Dhaka time` : undefined} wide>
-        {booking && <BookingDetail key={booking.id} b={booking} manager={manager} userId={userId} names={names} update={update} confirm={confirm} />}
-      </Modal>
       <Modal open={!!lead} onOpenChange={(o) => !o && setOpenLead(null)} title={lead ? who(lead.clients) : ''} description={lead?.clients?.email ?? undefined} wide>
         {lead && <LeadDetail l={lead} manager={manager} userId={userId} names={names} update={update} onStage={(s) => changeLeadStage(lead, s)} />}
       </Modal>
