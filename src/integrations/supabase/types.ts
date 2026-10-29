@@ -180,18 +180,6 @@ export type Database = {
           },
         ]
       }
-      booking_setup_verification: {
-        Row: {
-          evidence: Json
-        }
-        Insert: {
-          evidence: Json
-        }
-        Update: {
-          evidence?: Json
-        }
-        Relationships: []
-      }
       bookings: {
         Row: {
           brief: Json
