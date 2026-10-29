@@ -23,7 +23,6 @@ import { Route as SitePrivacyRouteImport } from './routes/_site.privacy'
 import { Route as SiteRefundRouteImport } from './routes/_site.refund'
 import { Route as SiteServicesRouteImport } from './routes/_site.services'
 import { Route as SiteTermsRouteImport } from './routes/_site.terms'
-import { Route as AdminSplatRouteImport } from './routes/admin_.$'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
 import { Route as AuthenticatedAppBillingRouteImport } from './routes/_authenticated.app.billing'
 import { Route as AuthenticatedAppCallsRouteImport } from './routes/_authenticated.app.calls'
@@ -104,11 +103,6 @@ const SiteTermsRoute = SiteTermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => SiteRoute,
 } as any)
-const AdminSplatRoute = AdminSplatRouteImport.update({
-  id: '/admin_/$',
-  path: '/admin/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -179,7 +173,6 @@ export interface FileRoutesByFullPath {
   '/refund': typeof SiteRefundRoute
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
-  '/admin/$': typeof AdminSplatRoute
   '/app/billing': typeof AuthenticatedAppBillingRoute
   '/app/calls': typeof AuthenticatedAppCallsRoute
   '/app/files': typeof AuthenticatedAppFilesRoute
@@ -204,7 +197,6 @@ export interface FileRoutesByTo {
   '/refund': typeof SiteRefundRoute
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
-  '/admin/$': typeof AdminSplatRoute
   '/app/billing': typeof AuthenticatedAppBillingRoute
   '/app/calls': typeof AuthenticatedAppCallsRoute
   '/app/files': typeof AuthenticatedAppFilesRoute
@@ -232,7 +224,6 @@ export interface FileRoutesById {
   '/_site/refund': typeof SiteRefundRoute
   '/_site/services': typeof SiteServicesRoute
   '/_site/terms': typeof SiteTermsRoute
-  '/admin_/$': typeof AdminSplatRoute
   '/_site/': typeof SiteIndexRoute
   '/_authenticated/app/billing': typeof AuthenticatedAppBillingRoute
   '/_authenticated/app/calls': typeof AuthenticatedAppCallsRoute
@@ -261,7 +252,6 @@ export interface FileRouteTypes {
     | '/refund'
     | '/services'
     | '/terms'
-    | '/admin/$'
     | '/app/billing'
     | '/app/calls'
     | '/app/files'
@@ -286,7 +276,6 @@ export interface FileRouteTypes {
     | '/refund'
     | '/services'
     | '/terms'
-    | '/admin/$'
     | '/app/billing'
     | '/app/calls'
     | '/app/files'
@@ -313,7 +302,6 @@ export interface FileRouteTypes {
     | '/_site/refund'
     | '/_site/services'
     | '/_site/terms'
-    | '/admin_/$'
     | '/_site/'
     | '/_authenticated/app/billing'
     | '/_authenticated/app/calls'
@@ -333,7 +321,6 @@ export interface RootRouteChildren {
   SiteRoute: typeof SiteRouteWithChildren
   AdminRoute: typeof AdminRoute
   SigninRoute: typeof SigninRoute
-  AdminSplatRoute: typeof AdminSplatRoute
   AuthSsoCallbackRoute: typeof AuthSsoCallbackRoute
 }
 
@@ -436,13 +423,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/terms'
       preLoaderRoute: typeof SiteTermsRouteImport
       parentRoute: typeof SiteRoute
-    }
-    '/admin_/$': {
-      id: '/admin_/$'
-      path: '/admin/$'
-      fullPath: '/admin/$'
-      preLoaderRoute: typeof AdminSplatRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/app/': {
       id: '/_authenticated/app/'
@@ -596,7 +576,6 @@ const rootRouteChildren: RootRouteChildren = {
   SiteRoute: SiteRouteWithChildren,
   AdminRoute: AdminRoute,
   SigninRoute: SigninRoute,
-  AdminSplatRoute: AdminSplatRoute,
   AuthSsoCallbackRoute: AuthSsoCallbackRoute,
 }
 export const routeTree = rootRouteImport
