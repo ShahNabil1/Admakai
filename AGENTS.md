@@ -29,7 +29,7 @@
 - Home pricing reads its amounts and plan terms from a browser-safe pricing data module, not the unused database hook; numeric amounts alone count up and placeholders stay literal until configured.
 - Home FAQ and its route-head FAQPage structured data share one browser-safe data module; use the TanStack head scripts API rather than react-helmet, and keep accordion state single-valued with accessible button headings.
 - Footer settings use a public publishable-key server read of allowlisted key/value site_settings rows and a route-primed Query cache; missing tables or settings resolve to safe local fallbacks, never admin reads.
-- Footer legal destinations remain explicitly unfilled placeholders until approved policy text is supplied; footer imagery is stored as asset pointers and the foreground mask uses a duplicated landscape.
+- LegalPage reads Privacy/Terms from browser-safe legal data; refund stays unapproved. Footer imagery uses asset pointers and a duplicated landscape mask.
 - SEO uses the shared browser-safe `seoHead` helper in each leaf route and Organization data in the public layout, not Helmet or root share images, to preserve SSR tags and per-page sharing.
 - Public SEO route inventory drives build-time sitemap generation and explicit prerender paths; admin is lazily imported and never prerendered, while unavailable public project data falls back atomically to static URLs.
 - Omit unknown prices, team identities, project video facts and contacts from structured data; only emit complete record schemas when the corresponding public content exists.
