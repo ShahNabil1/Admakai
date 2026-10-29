@@ -180,3 +180,7 @@ button.admin-stat:hover{border-color:color-mix(in oklab,var(--foreground) 35%,tr
   .admin-actions>*,.admin-dialog-actions>*{width:100%}
 }
 @media (prefers-reduced-motion:reduce){.admin-main,.admin-timeline li,.admin-skeleton,.admin-spinner{animation:none}.admin-card-item,.admin-stat,.admin-btn{transition:none;transform:none!important}}
+/* Pin each shell region so injected siblings can never reflow the grid */
+.admin-shell>.admin-side{grid-column:1;grid-row:1}
+.admin-shell>.admin-main{grid-column:2;grid-row:1}
+@media (max-width:760px){.admin-shell>.admin-main,.admin-shell>.admin-topbar{grid-column:1;grid-row:auto}}

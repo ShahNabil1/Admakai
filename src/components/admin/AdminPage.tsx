@@ -110,8 +110,10 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
   const lead = (leads ?? []).find((l) => l.id === openLead) ?? null;
 
   return (
-    <div className="admin-shell">
+    <>
       <Toaster position="top-center" theme="dark" richColors closeButton />
+    <div className="admin-shell">
+
       <aside className="admin-side" aria-label="Admin navigation">
         <strong className="admin-brand">Admakai<small>Studio admin</small></strong>
         <nav>
@@ -170,6 +172,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
       </Modal>
       {confirmNode}
     </div>
+    </>
   );
 }
 
