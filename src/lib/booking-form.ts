@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const needs = [{ value: 'tvc', label: 'TVC' }, { value: 'product_photos', label: 'Product photos' }, { value: 'ugc', label: 'UGC pack' }, { value: 'brand_face', label: 'Brand face' }, { value: 'unsure', label: 'Not sure yet' }] as const;
 export const budgets = [{ value: 'not_decided', label: 'Not decided' }, { value: '30k_80k', label: '30k to 80k' }, { value: '80k_plus', label: '80k and above' }] as const;
 export function normalizeBookingPhone(value: string) {
-  const phone = value.replace(/[\s-]/g, '');
+  const phone = normalizePhoneInput(value).replace(/[\s()-]/g, '');
   if (/^01[3-9]\d{8}$/.test(phone)) return `+88${phone}`;
   if (/^1[3-9]\d{8}$/.test(phone)) return `+880${phone}`;
   if (/^8801[3-9]\d{8}$/.test(phone)) return `+${phone}`;
