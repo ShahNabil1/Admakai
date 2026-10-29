@@ -7,11 +7,12 @@ import type { ActivityRow } from '@/lib/activity';
 import { StaffProjects } from '@/components/delivery/ProjectsWorkspace';
 import { StaffBilling } from './Billing';
 import { ActivityLog, fetchActivity } from './ActivityLog';
+import { BookingSubmission, type BookingSubmissionData } from './BookingSubmission';
 import { Empty, Modal, Pill, Timeline, fmtDate, label, useConfirm } from './ui';
 import './admin.css';
 
 type ClientRef = { contact_name: string | null; email: string | null; brand_name?: string | null; whatsapp?: string | null } | null;
-type Booking = { id: string; slot_at: string; status: string; budget_band: string | null; owner_id: string | null; meet_link: string | null; notes_shared: string | null; brief: Record<string, unknown> | null; clients: ClientRef };
+type Booking = BookingSubmissionData & { status: string; owner_id: string | null; meet_link: string | null; notes_shared: string | null };
 type Lead = { id: string; stage: string; owner_id: string | null; value_estimate: number | null; currency: string | null; lost_reason_category: string | null; lost_reason: string | null; stage_changed_at: string; clients: ClientRef };
 type Tab = 'today' | 'bookings' | 'leads' | 'projects' | 'billing' | 'activity';
 
@@ -61,7 +62,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
 
   const load = useCallback(async () => {
     const [b, l] = await Promise.all([
-      supabase.from('bookings').select('id, slot_at, status, budget_band, owner_id, meet_link, notes_shared, brief, clients(contact_name, email, brand_name, whatsapp)').order('slot_at', { ascending: false }).limit(300),
+      supabase.from('bookings').select('id, slot_at, duration_minutes, created_at, source, status, budget_band, owner_id, meet_link, notes_shared, brief, clients(contact_name, email, brand_name, whatsapp)').order('slot_at', { ascending: false }).limit(300),
       supabase.from('leads').select('id, stage, owner_id, value_estimate, currency, lost_reason_category, lost_reason, stage_changed_at, clients(contact_name, email, brand_name, whatsapp)').order('stage_changed_at', { ascending: false }).limit(400),
     ]);
     if (b.error || l.error) toast.error('Some data could not be loaded.');
@@ -165,7 +166,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
       </nav>
 
       <Modal open={!!booking} onOpenChange={(o) => !o && setOpenBooking(null)} title={booking ? who(booking.clients) : ''} description={booking ? `${fmtDate(booking.slot_at)} · Dhaka time` : undefined} wide>
-        {booking && <BookingDetail b={booking} manager={manager} userId={userId} names={names} update={update} confirm={confirm} />}
+        {booking && <BookingDetail key={booking.id} b={booking} manager={manager} userId={userId} names={names} update={update} confirm={confirm} />}
       </Modal>
       <Modal open={!!lead} onOpenChange={(o) => !o && setOpenLead(null)} title={lead ? who(lead.clients) : ''} description={lead?.clients?.email ?? undefined} wide>
         {lead && <LeadDetail l={lead} manager={manager} userId={userId} names={names} update={update} onStage={(s) => changeLeadStage(lead, s)} />}
@@ -218,7 +219,6 @@ function BookingDetail({ b, manager, userId, names, update, confirm }: { b: Book
   const [link, setLink] = useState(b.meet_link ?? '');
   const [notes, setNotes] = useState(b.notes_shared ?? '');
   const activity = useEntityActivity(b.id, b.status);
-  const brief = b.brief ?? {};
   const setStatus = (s: string) => {
     if (['cancelled', 'no_show', 'completed'].includes(s)) {
       confirm({ title: `Mark booking ${label(s)}?`, description: s === 'cancelled' ? 'The time slot becomes available again for other clients.' : 'This is recorded permanently in the activity log.', confirmLabel: `Mark ${label(s)}`, danger: s !== 'completed', run: () => update('bookings', b.id, { status: s }, `Booking ${label(s)}`) });
@@ -226,16 +226,8 @@ function BookingDetail({ b, manager, userId, names, update, confirm }: { b: Book
   };
   return (
     <div className="admin-detail">
-      <div className="admin-detail-grid">
-        <dl className="admin-facts">
-          <div><dt>Email</dt><dd className="break-all">{b.clients?.email ?? '—'}</dd></div>
-          <div><dt>WhatsApp</dt><dd>{b.clients?.whatsapp ?? '—'}</dd></div>
-          <div><dt>Brand</dt><dd>{b.clients?.brand_name ?? '—'}</dd></div>
-          <div><dt>Budget</dt><dd>{b.budget_band ?? '—'}</dd></div>
-          {typeof brief['need'] === 'string' && <div><dt>Need</dt><dd>{brief['need']}</dd></div>}
-          {typeof brief['message'] === 'string' && brief['message'] && <div className="is-full"><dt>Message</dt><dd className="break-words">{brief['message']}</dd></div>}
-        </dl>
-        <div className="admin-side-panel">
+      <BookingSubmission booking={b} />
+        <div className="admin-side-panel booking-management">
           <p className="admin-label">Status</p>
           <div className="admin-segment">
             {BOOKING_STATUSES.map((s) => <button key={s} disabled={!canEdit} className={b.status === s ? 'is-active' : ''} onClick={() => s !== b.status && setStatus(s)}>{label(s)}</button>)}
@@ -243,7 +235,6 @@ function BookingDetail({ b, manager, userId, names, update, confirm }: { b: Book
           <p className="admin-label">Owner</p>
           {b.owner_id ? <p>{b.owner_id === userId ? 'You' : names[b.owner_id] ?? 'Assigned'}</p> : manager ? <button className="admin-btn-ghost" onClick={() => update('bookings', b.id, { owner_id: userId }, 'Booking assigned to you')}>Take this booking</button> : <p>Unassigned</p>}
         </div>
-      </div>
       {canEdit && (
         <div className="admin-form">
           <label>Meeting link<input type="url" placeholder="https://meet.google.com/…" value={link} onChange={(e) => setLink(e.target.value)} /></label>
@@ -254,6 +245,7 @@ function BookingDetail({ b, manager, userId, names, update, confirm }: { b: Book
           }}>Save details</button></div>
         </div>
       )}
+      {!canEdit && <dl className="admin-facts"><div><dt>Meeting link</dt><dd>{b.meet_link || 'Not provided'}</dd></div><div><dt>Notes shared with the client</dt><dd className="booking-submission-message">{b.notes_shared || 'Not provided'}</dd></div></dl>}
       <h3 className="admin-sub">Activity</h3>
       <Timeline rows={activity} names={names} />
     </div>
