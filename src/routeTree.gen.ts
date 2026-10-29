@@ -13,6 +13,8 @@ import { Route as SiteRouteImport } from './routes/_site'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as SiteIndexRouteImport } from './routes/_site.index'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
+import { Route as SiteAppRouteImport } from './routes/_site.app'
+import { Route as SiteBookRouteImport } from './routes/_site.book'
 import { Route as SiteBookACallRouteImport } from './routes/_site.book-a-call'
 import { Route as SitePricingRouteImport } from './routes/_site.pricing'
 import { Route as SitePrivacyRouteImport } from './routes/_site.privacy'
@@ -42,6 +44,16 @@ const SiteIndexRoute = SiteIndexRouteImport.update({
 const SiteAboutRoute = SiteAboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteAppRoute = SiteAppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteBookRoute = SiteBookRouteImport.update({
+  id: '/book',
+  path: '/book',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteBookACallRoute = SiteBookACallRouteImport.update({
@@ -104,6 +116,8 @@ export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
   '/admin': typeof AdminRoute
   '/about': typeof SiteAboutRoute
+  '/app': typeof SiteAppRoute
+  '/book': typeof SiteBookRoute
   '/book-a-call': typeof SiteBookACallRoute
   '/pricing': typeof SitePricingRoute
   '/privacy': typeof SitePrivacyRoute
@@ -119,6 +133,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/about': typeof SiteAboutRoute
+  '/app': typeof SiteAppRoute
+  '/book': typeof SiteBookRoute
   '/book-a-call': typeof SiteBookACallRoute
   '/pricing': typeof SitePricingRoute
   '/privacy': typeof SitePrivacyRoute
@@ -137,6 +153,8 @@ export interface FileRoutesById {
   '/_site': typeof SiteRouteWithChildren
   '/admin': typeof AdminRoute
   '/_site/about': typeof SiteAboutRoute
+  '/_site/app': typeof SiteAppRoute
+  '/_site/book': typeof SiteBookRoute
   '/_site/book-a-call': typeof SiteBookACallRoute
   '/_site/pricing': typeof SitePricingRoute
   '/_site/privacy': typeof SitePrivacyRoute
@@ -156,6 +174,8 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/about'
+    | '/app'
+    | '/book'
     | '/book-a-call'
     | '/pricing'
     | '/privacy'
@@ -171,6 +191,8 @@ export interface FileRouteTypes {
   to:
     | '/admin'
     | '/about'
+    | '/app'
+    | '/book'
     | '/book-a-call'
     | '/pricing'
     | '/privacy'
@@ -188,6 +210,8 @@ export interface FileRouteTypes {
     | '/_site'
     | '/admin'
     | '/_site/about'
+    | '/_site/app'
+    | '/_site/book'
     | '/_site/book-a-call'
     | '/_site/pricing'
     | '/_site/privacy'
@@ -236,6 +260,20 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof SiteAboutRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/app': {
+      id: '/_site/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof SiteAppRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/book': {
+      id: '/_site/book'
+      path: '/book'
+      fullPath: '/book'
+      preLoaderRoute: typeof SiteBookRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/book-a-call': {
@@ -320,6 +358,8 @@ declare module '@tanstack/react-router' {
 
 interface SiteRouteChildren {
   SiteAboutRoute: typeof SiteAboutRoute
+  SiteAppRoute: typeof SiteAppRoute
+  SiteBookRoute: typeof SiteBookRoute
   SiteBookACallRoute: typeof SiteBookACallRoute
   SitePricingRoute: typeof SitePricingRoute
   SitePrivacyRoute: typeof SitePrivacyRoute
@@ -335,6 +375,8 @@ interface SiteRouteChildren {
 
 const SiteRouteChildren: SiteRouteChildren = {
   SiteAboutRoute: SiteAboutRoute,
+  SiteAppRoute: SiteAppRoute,
+  SiteBookRoute: SiteBookRoute,
   SiteBookACallRoute: SiteBookACallRoute,
   SitePricingRoute: SitePricingRoute,
   SitePrivacyRoute: SitePrivacyRoute,
