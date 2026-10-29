@@ -1,6 +1,6 @@
 // Branta Hub single sign-on for Admakai staff. Branta Hub owns staff login;
 // Admakai only accepts a session Hub minted for its own Supabase project.
-export const BRANTA_HUB_URL = ((import.meta.env['VITE_BRANTA_HUB_URL'] as string | undefined) || 'https://branta-nexus.lovable.app').replace(/\/$/, '');
+export const BRANTA_HUB_URL = 'https://console.brantatech.com';
 export const SSO_STATE_KEY = 'admakai-sso-state';
 export const STAFF_ROLES = ['owner', 'manager', 'member'] as const;
 export type StaffRole = (typeof STAFF_ROLES)[number];
