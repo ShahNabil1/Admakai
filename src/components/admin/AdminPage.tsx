@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { isStaffRole, startHubSignIn, type StaffRole } from '@/lib/sso';
 import './admin.css';
+import { StaffProjects } from '@/components/delivery/ProjectsWorkspace';
 
 type Booking = { id: string; slot_at: string; status: string; budget_band: string | null; owner_id: string | null; clients: { contact_name: string | null; email: string | null } | null };
 type Lead = { id: string; stage: string; owner_id: string | null; value_estimate: number | null; stage_changed_at: string; clients: { contact_name: string | null; email: string | null } | null };
@@ -31,7 +32,7 @@ export function AdminPage() {
 }
 
 function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; email: string }) {
-  const [tab, setTab] = useState<'today' | 'bookings' | 'leads'>('today');
+  const [tab, setTab] = useState<'today' | 'bookings' | 'leads' | 'projects'>('today');
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [msg, setMsg] = useState<string | null>(null);
@@ -73,7 +74,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
     <div className="admin-shell">
       <aside className="admin-side">
         <strong className="admin-brand">Admakai</strong>
-        {(['today', 'bookings', 'leads'] as const).map((t) => (
+        {(['today', 'bookings', 'leads', 'projects'] as const).map((t) => (
           <button key={t} className={tab === t ? 'is-active' : ''} onClick={() => setTab(t)}>{t[0]!.toUpperCase() + t.slice(1)}</button>
         ))}
         <div className="admin-me"><span>{email}</span><small>{role}</small>
@@ -97,6 +98,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
           </>
         )}
         {tab === 'bookings' && (<><h1>Bookings</h1><BookingTable rows={bookings} manager={manager} userId={userId} update={update} /></>)}
+        {tab === 'projects' && <StaffProjects userId={userId} />}
         {tab === 'leads' && (
           <><h1>Leads</h1>
             <div className="admin-kanban">
