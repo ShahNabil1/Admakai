@@ -38,4 +38,4 @@
 - Inner-page styling is scoped to public-page elements and shared PageElements; reuse Home motion, FAQ and tool-stack without modifying Home content.
 - Booking contacts stay separate from sitewide contacts. Enquiries sync photo previews to FormData and use libphonenumber metadata with bundled country-flag-icons SVGs for international phone selection/validation.
 - Blog posts are hardcoded components (metadata in `src/data/blog.ts`); missing media renders a filename placeholder so layout never breaks.
-- /admin staff auth is Branta Hub SSO only (state-checked callback); Hub owns staff identity/roles.
+- /admin uses sso.ts's fixed Hub origin to avoid stale overrides, with a same-origin state-checked callback; Hub owns staff roles.
