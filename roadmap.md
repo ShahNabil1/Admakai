@@ -1,4 +1,7 @@
 # Tasks
+- [x] Phase 2 delivery: projects, tasks, versioned deliverables, private 15-min links, timecoded review, client approve/request changes within revision limit, won lead opens project; 5 tests pass. Real signed-in review flow unverified (no session here).
+- [ ] Phase 3 billing (milestones, invoices AD-YYYY-NNNN, payments, PDF, overdue reminders) — next.
+- [ ] Phase 4 notifications, analytics, cleanup jobs.
 - [x] Use official console.brantatech.com Hub, remove shadowing admin wildcard route, test same-origin callback URLs; Hub snapshot allows main/www/Lovable/current preview. Browser reaches Hub login and rejects incomplete callbacks; public UI unchanged.
 - [ ] Save external Supabase Site URL/redirect allowlist and verify a real Hub-authenticated round trip — dashboard settings cannot be changed here and no authenticated Hub session is available; exact settings supplied in chat. Published Admakai requires publishing the corrections.
 - [x] Add searchable international enquiry phone selector with 245 bundled flags/calling codes; shared validation and 19 tests pass; country switching, Unicode digits and mobile menu verified. Enquiry saving remains blocked as recorded below.
