@@ -1,5 +1,5 @@
 # Tasks
-- [ ] Add database-only clients, leads, bookings, booking files and immutable activity; test ownership permissions, stage auditing and unique active booking slots, then run security linter.
+- [x] Add database-only clients, leads, bookings, booking files and immutable activity; tested ownership permissions, stage auditing, private internal notes and unique active booking slots; security linter clean.
 - [x] Set up database-only profiles, protected roles, seven enums, signup/timestamp triggers and app permission helpers; runtime SQL tests passed with synthetic data rolled back.
 - [x] Build Work, project details, Services, Pricing, About, Book a call and legal pages without changing Home.
 - [x] Add static content fallbacks, shared page elements, enquiry validation and honest unavailable-service states.
