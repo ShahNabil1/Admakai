@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Add pre-login booking function, contact details and verified account linking; test duplicate slots, three-per-day email limit and atomic audit cleanup, then security lint.
 - [x] Add seeded availability, single-row booking rules, blocked dates and shared SQL slot engine; verified first 15 slots, taken-slot exclusion and test cleanup; rollback rule tests passed and security linter clean.
 - [x] Add database-only clients, leads, bookings, booking files and immutable activity; tested ownership permissions, stage auditing, private internal notes and unique active booking slots; security linter clean.
 - [x] Set up database-only profiles, protected roles, seven enums, signup/timestamp triggers and app permission helpers; runtime SQL tests passed with synthetic data rolled back.
