@@ -34,6 +34,7 @@ import { Route as SiteBlogIndexRouteImport } from './routes/_site.blog.index'
 import { Route as SiteBlogSazdahTvcRouteImport } from './routes/_site.blog.sazdah-tvc'
 import { Route as SiteWorkIndexRouteImport } from './routes/_site.work.index'
 import { Route as SiteWorkSlugRouteImport } from './routes/_site.work.$slug'
+import { Route as AuthSsoCallbackRouteImport } from './routes/auth.sso.callback'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
@@ -159,6 +160,11 @@ const SiteWorkSlugRoute = SiteWorkSlugRouteImport.update({
   path: '/work/$slug',
   getParentRoute: () => SiteRoute,
 } as any)
+const AuthSsoCallbackRoute = AuthSsoCallbackRouteImport.update({
+  id: '/auth/sso/callback',
+  path: '/auth/sso/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
@@ -181,6 +187,7 @@ export interface FileRoutesByFullPath {
   '/app/reviews': typeof AuthenticatedAppReviewsRoute
   '/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
   '/work/$slug': typeof SiteWorkSlugRoute
+  '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/blog/': typeof SiteBlogIndexRoute
   '/work/': typeof SiteWorkIndexRoute
@@ -205,6 +212,7 @@ export interface FileRoutesByTo {
   '/app/reviews': typeof AuthenticatedAppReviewsRoute
   '/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
   '/work/$slug': typeof SiteWorkSlugRoute
+  '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/blog': typeof SiteBlogIndexRoute
   '/work': typeof SiteWorkIndexRoute
@@ -233,6 +241,7 @@ export interface FileRoutesById {
   '/_authenticated/app/reviews': typeof AuthenticatedAppReviewsRoute
   '/_site/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
   '/_site/work/$slug': typeof SiteWorkSlugRoute
+  '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_site/blog/': typeof SiteBlogIndexRoute
   '/_site/work/': typeof SiteWorkIndexRoute
@@ -260,6 +269,7 @@ export interface FileRouteTypes {
     | '/app/reviews'
     | '/blog/sazdah-tvc'
     | '/work/$slug'
+    | '/auth/sso/callback'
     | '/app/'
     | '/blog/'
     | '/work/'
@@ -284,6 +294,7 @@ export interface FileRouteTypes {
     | '/app/reviews'
     | '/blog/sazdah-tvc'
     | '/work/$slug'
+    | '/auth/sso/callback'
     | '/app'
     | '/blog'
     | '/work'
@@ -311,6 +322,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/reviews'
     | '/_site/blog/sazdah-tvc'
     | '/_site/work/$slug'
+    | '/auth/sso/callback'
     | '/_authenticated/app/'
     | '/_site/blog/'
     | '/_site/work/'
@@ -322,6 +334,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   SigninRoute: typeof SigninRoute
   AdminSplatRoute: typeof AdminSplatRoute
+  AuthSsoCallbackRoute: typeof AuthSsoCallbackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -501,6 +514,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteWorkSlugRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/auth/sso/callback': {
+      id: '/auth/sso/callback'
+      path: '/auth/sso/callback'
+      fullPath: '/auth/sso/callback'
+      preLoaderRoute: typeof AuthSsoCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -577,6 +597,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   SigninRoute: SigninRoute,
   AdminSplatRoute: AdminSplatRoute,
+  AuthSsoCallbackRoute: AuthSsoCallbackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
