@@ -50,13 +50,13 @@ function BookingAttachments({ bookingId }: { bookingId: string }) {
 }
 export function BookingSubmission({ booking }: { booking: BookingSubmissionData }) {
   const brief = booking.brief ?? {};
-  const name = submissionText(brief.name) || booking.clients?.contact_name || '';
-  const email = submissionText(brief.email) || booking.clients?.email || '';
-  const whatsapp = submissionText(brief.whatsapp) || booking.clients?.whatsapp || '';
-  const brand = submissionText(brief.brand ?? brief.brand_name) || booking.clients?.brand_name || '';
-  const need = submissionText(brief.need);
-  const budget = bookingBudgetLabel(brief.budget_band ?? brief.budget ?? booking.budget_band);
-  const message = submissionText(brief.message);
+  const name = submissionText(brief['name']) || booking.clients?.contact_name || '';
+  const email = submissionText(brief['email']) || booking.clients?.email || '';
+  const whatsapp = submissionText(brief['whatsapp']) || booking.clients?.whatsapp || '';
+  const brand = submissionText(brief['brand'] ?? brief['brand_name']) || booking.clients?.brand_name || '';
+  const need = submissionText(brief['need']);
+  const budget = bookingBudgetLabel(brief['budget_band'] ?? brief['budget'] ?? booking.budget_band);
+  const message = submissionText(brief['message']);
   const extra = additionalBookingFields(brief);
   const source = Object.entries(booking.source ?? {});
   const date = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Dhaka', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(booking.slot_at));
