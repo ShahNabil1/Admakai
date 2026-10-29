@@ -24,10 +24,6 @@
 - Navbar scroll direction is resolved by a tested browser-safe helper; the Navbar owns its listener and keeps the mobile menu above the fixed wrapper.
 - Motion components use the hydration-safe motion preference hook to keep server and initial browser markup identical before applying reduced motion.
 - The Home client section owns its scoped styles and reads logo pointers and counts from `src/data/clients.ts`; CSS translates duplicated marquee tracks so continuous motion needs no JavaScript loop.
-- Home tool-stack badges resolve their icon from a position in `toolSprites` (`src/data/tools.ts`) sampled out of the single `public/tools/tools-sprite.png` sheet, so adding a tool logo is one position entry rather than a new file plus a component branch; a tool with no position keeps the coloured monogram.
-- Home ethics owns its scoped styling and uploaded image pointer; its scroll animation is locally cleaned up and disabled for reduced motion to preserve the shared scroll lifecycle.
-- Home pricing reads its amounts and plan terms from a browser-safe pricing data module, not the unused database hook; numeric amounts alone count up and placeholders stay literal until configured.
-- Home FAQ and its route-head FAQPage structured data share one browser-safe data module; use the TanStack head scripts API rather than react-helmet, and keep accordion state single-valued with accessible button headings.
 - Footer settings use a public publishable-key server read of allowlisted key/value site_settings rows and a route-primed Query cache; missing tables or settings resolve to safe local fallbacks, never admin reads.
 - LegalPage reads Privacy/Terms from browser-safe legal data; refund stays unapproved. Footer imagery uses asset pointers and a duplicated landscape mask.
 - SEO uses the shared browser-safe `seoHead` helper in each leaf route and Organization data in the public layout, not Helmet or root share images, to preserve SSR tags and per-page sharing.
@@ -39,3 +35,6 @@
 - Booking contacts stay separate from sitewide contacts. Enquiries sync photo previews to FormData and use libphonenumber metadata with bundled country-flag-icons SVGs for international phone selection/validation.
 - Blog posts are hardcoded components (metadata in `src/data/blog.ts`); missing media renders a filename placeholder so layout never breaks.
 - /admin uses sso.ts's fixed Hub origin to avoid stale overrides, with a same-origin state-checked callback; Hub owns staff roles.
+- Invoice totals, numbers and paid status come only from DB triggers; payments are insert-only, so money state cannot drift.
+- Entity changes are logged by the shared log_activity trigger; UIs only read public.activity, keeping audit append-only.
+- src/components/admin and src/components/home have their own AGENTS.md; read it before changing files there.
