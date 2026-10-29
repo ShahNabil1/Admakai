@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 - Supabase is connected directly via `src/lib/supabase.ts` (supabase-js, VITE_ env vars); never enable Lovable Cloud — user requirement.
+- Authorization roles live only in protected public.user_roles, never editable profiles or signup metadata; app helpers read this table to prevent self-promotion. Explicitly revoke inherited table grants before granting least-privilege access, because this external database has broad default privileges.
 - Public pages live under the pathless `_site` layout (Navbar/Footer/page transition); `/admin` sits outside it so the admin area gets its own shell.
 - Lenis + GSAP ScrollTrigger are initialised once from `__root.tsx` via `src/lib/smooth-scroll.ts`; motion helpers in `src/components/motion/` must honour prefers-reduced-motion.
 - The public Layout renders the Home fixed Navbar directly before main, outside hero isolation and page-transition containers, and the shared Footer after main on every public route.
