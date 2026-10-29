@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Build signed-in client area, private uploads and call views — awaiting owner email, profile confirmation and resolution of manager-only deletion versus client removal.
 - [x] Update /book to the supplied portrait split and five-step booking card; live calendar, keyboard controls, preserved details, simulated slot/email errors and 360px layout verified; 24 tests passed. Real email delivery and dashboard remain unverified as below.
 - [x] Build /book with live SQL slots, accessible chips, validation, spam guards, tracking and booking/OTP states; live availability and 360px layout verified, simulated submission/error/email flows passed, 20 tests passed. /app is a safe email-link destination, not a dashboard.
 - [ ] Verify real booking-to-email delivery and dashboard access — blocked by unavailable dashboard/upload functionality and unverified external Supabase email/redirect settings; UI submission tests used simulated responses and left no test bookings.
