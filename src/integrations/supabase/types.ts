@@ -473,6 +473,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      client_call_host: { Args: { p_booking_id: string }; Returns: string }
       create_booking: {
         Args: {
           p_brand: string
