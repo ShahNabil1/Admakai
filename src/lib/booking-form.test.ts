@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { bookingFormSchema, skipSpam, groupSlots, captureBookingSource, normalizeBookingPhone, needs, budgets } from './booking-form';
+import { bookingFormSchema, skipSpam, groupSlots, captureBookingSource, normalizeBookingPhone, normalizePhoneInput, needs, budgets } from './booking-form';
 const valid = { name: ' Nadia ', email: ' Nadia@Example.com ', whatsapp: '01712-345 678', brand: '', need: 'tvc', message: '', budget: 'not_decided' };
 describe('Public booking rules', () => {
   it('requires a name', () => expect(bookingFormSchema.safeParse({ ...valid, name: '  ' }).success).toBe(false));
@@ -7,6 +7,9 @@ describe('Public booking rules', () => {
   it('rejects fewer than ten phone digits', () => expect(bookingFormSchema.safeParse({ ...valid, whatsapp: '+123456789' }).success).toBe(false));
   it('accepts ten international digits', () => expect(bookingFormSchema.safeParse({ ...valid, whatsapp: '+1234567890' }).success).toBe(true));
   it('normalizes Bangladesh phones to E.164', () => expect(normalizeBookingPhone('01712-345 678')).toBe('+8801712345678'));
+  it('converts Bengali digits to English in phone input', () => expect(normalizePhoneInput('০১৭১২৩৪৫৬৭৮')).toBe('01712345678'));
+  it('converts Arabic-Indic and Devanagari digits to English', () => expect(normalizePhoneInput('٠١٧١٢ ३४५۶७८')).toBe('01712 345678'));
+  it('keeps only digits and phone symbols in phone input', () => expect(normalizePhoneInput('+880-1712 (৩৪৫) abc ক')).toBe('+880-1712 (345) '));
   it('normalizes email and allows optional brand/message', () => expect(bookingFormSchema.parse(valid)).toMatchObject({ name: 'Nadia', email: 'nadia@example.com', brand: '', message: '' }));
   it('skips submission before three seconds', () => expect(skipSpam('', 1000, 3999)).toBe(true));
   it('allows submission at three seconds', () => expect(skipSpam('', 1000, 4000)).toBe(false));
