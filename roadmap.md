@@ -32,4 +32,6 @@
 - [x] Move Home navbar outside section stacking contexts and add scroll visibility behaviour.
 - [x] Audit section layers and verify navigation across desktop and mobile scroll positions.
 - [x] Add the Home ethics section with supplied image and motion.
-- [x] Verify desktop, mobile and reduced-motion presentation.
+- [x] Verify desktop, mobile and reduced-motion presentation.- [x] Phase 3 billing: invoices (AD-YYYY-NNNN), line items, payments, auto paid/partial status, overdue helper, client billing page, printable invoice; rollback SQL proof passed.
+- [x] Admin UI overhaul: card layouts, popups, confirmation dialogs, drag-and-drop pipeline, permanent activity log, mobile/tablet/desktop navigation.
+- [ ] Schedule app.mark_overdue_invoices daily and verify signed-in admin screens visually — needs pg_cron setup and a Hub-authenticated session.

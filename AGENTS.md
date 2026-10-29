@@ -39,3 +39,6 @@
 - Booking contacts stay separate from sitewide contacts. Enquiries sync photo previews to FormData and use libphonenumber metadata with bundled country-flag-icons SVGs for international phone selection/validation.
 - Blog posts are hardcoded components (metadata in `src/data/blog.ts`); missing media renders a filename placeholder so layout never breaks.
 - /admin uses sso.ts's fixed Hub origin to avoid stale overrides, with a same-origin state-checked callback; Hub owns staff roles.
+- Invoice totals, numbering and paid status are owned by database triggers (payments only insert, never edit); the UI never writes subtotal/paid_total, so money state cannot drift.
+- Entity changes are logged to public.activity by the shared log_activity trigger; admin timelines read it instead of writing their own records, keeping the audit trail append-only.
+- Admin popups/confirmations use the shared Modal/useConfirm helpers in src/components/admin/ui.tsx so every irreversible action gets the same confirmation flow.
