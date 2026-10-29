@@ -1,4 +1,5 @@
 /* Admin shell — uses site tokens only; cards, dialogs and pipeline. */
+.admin-shell,.admin-center,.admin-dialog,.client-content{--line:oklch(0.31 0 0)}
 .admin-center{min-height:100dvh;display:grid;place-items:center;background:var(--background);color:var(--foreground);padding:1.5rem}
 .admin-card{max-width:26rem;width:100%;border:1px solid var(--line);border-radius:1.25rem;padding:2rem;background:var(--card);text-align:center}
 .admin-card h1{font-size:1.25rem;font-weight:600;margin-bottom:.5rem}
