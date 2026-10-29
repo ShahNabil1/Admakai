@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Build /book with live SQL slots, accessible chip selection, validated details, spam guards, tracking, booking/OTP states and mobile verification; provide a safe /app email-link destination without inventing a dashboard.
 - [x] Add pre-login booking function, contact details and verified account linking; anonymous booking proof passed duplicate-slot and fourth-booking errors, lead reuse, verified linking and rollback cleanup; security linter clean.
 - [x] Add seeded availability, single-row booking rules, blocked dates and shared SQL slot engine; verified first 15 slots, taken-slot exclusion and test cleanup; rollback rule tests passed and security linter clean.
 - [x] Add database-only clients, leads, bookings, booking files and immutable activity; tested ownership permissions, stage auditing, private internal notes and unique active booking slots; security linter clean.
