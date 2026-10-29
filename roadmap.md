@@ -3,7 +3,7 @@
 - [x] Set up database-only profiles, protected roles, seven enums, signup/timestamp triggers and app permission helpers; runtime SQL tests passed with synthetic data rolled back.
 - [x] Build Work, project details, Services, Pricing, About, Book a call and legal pages without changing Home.
 - [x] Add static content fallbacks, shared page elements, enquiry validation and honest unavailable-service states.
-- [ ] Enable saved enquiries and private uploads — blocked by deferred leads table, private bucket and public insert/upload policies.
+- [ ] Enable saved enquiries and private uploads — blocked by missing private bucket and a future public-enquiry flow compatible with the staff-only CRM leads schema; this database-only setup does not connect the form.
 - [x] Verify public page navigation, filters, form, mobile layout and tests; enquiry saving remains explicitly unavailable pending the backend step.
 - [x] Apply available full-site metadata, structured data, crawl rules and requested hidden text/links without redesigning pages.
 - [x] Add build-time sitemap and configure explicit public-page prerendering with safe public-data fallbacks.
