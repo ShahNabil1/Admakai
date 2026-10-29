@@ -1,0 +1,15 @@
+.phone-control{display:flex;align-items:center;min-width:0;min-height:52px;border:1px solid var(--page-input-border);border-radius:12px;background:var(--bg);transition:border-color .2s;}
+.phone-control:focus-within{border-color:var(--fg);}
+.phone-control[data-invalid=true]{border-color:var(--destructive);}
+.phone-control .phone-country-trigger{display:flex;gap:8px;flex:none;height:32px;padding:0 12px;border-radius:0;border-right:1px solid var(--line);background:transparent;color:var(--fg);font-size:13px;box-shadow:none;}
+.phone-control .phone-country-trigger>svg{width:12px;height:12px;color:var(--muted);}
+.phone-flag{display:block;flex:none;width:22px;height:15px;object-fit:cover;border-radius:2px;}
+.public-page .booking-field .phone-control input[type=tel]{min-width:0;flex:1;width:0;height:50px;background:transparent;border:0;border-radius:0 12px 12px 0;padding:12px;font-size:15px;box-shadow:none;}
+.phone-country-menu{z-index:1100;width:340px;max-width:calc(100vw - 32px);padding:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);overflow:hidden;}
+.phone-country-menu [cmdk-input-wrapper]{border-color:var(--line);}
+.phone-country-menu [cmdk-input]{font-size:14px;height:48px;}
+.phone-country-menu [cmdk-list]{max-height:min(300px,var(--radix-popover-content-available-height));padding:6px;overscroll-behavior:contain;}
+.phone-country-menu .phone-country-option{gap:10px;min-height:42px;padding:10px;border-radius:6px;cursor:pointer;font-size:13px;}
+.phone-country-name{flex:1;min-width:0;line-height:1.4;}
+.phone-country-code{font-size:12px;font-variant-numeric:tabular-nums;opacity:.75;}
+@media(prefers-reduced-motion:reduce){.phone-control{transition:none;}.phone-country-menu{animation:none!important;}}
