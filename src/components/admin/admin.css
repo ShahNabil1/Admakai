@@ -214,3 +214,9 @@ button.admin-stat:hover{border-color:color-mix(in oklab,var(--foreground) 35%,tr
 .booking-attachments small{font-size:.75rem;color:var(--muted);overflow-wrap:anywhere}
 .booking-management{border-radius:.5rem}
 @media(max-width:600px){.booking-submission-facts{grid-template-columns:minmax(0,1fr);gap:.85rem}.booking-submission-section{padding:1rem 0}}
+
+/* Full-page booking details */
+.booking-page{max-width:60rem;margin:0 auto;min-width:0}
+.booking-page-back{margin-bottom:1.25rem}
+.booking-page .admin-head{align-items:center}
+.booking-page .admin-panel{padding:1.25rem clamp(1rem,3vw,2rem)}

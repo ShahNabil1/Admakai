@@ -1,2 +1,3 @@
 - Admin popups/confirmations use the shared Modal/useConfirm helpers in src/components/admin/ui.tsx with data-lenis-prevent on scroll containers so native wheel/touch scrolling remains independent of page smoothing and every irreversible action gets the same confirmation flow.
 - BookingSubmission renders submitted form fields separately from management controls, preserves extra brief fields, and reads attachments through the authenticated RLS client so complete requests stay private.
+- Booking details render in the authenticated admin main area with a URL booking identifier and browser-history synchronization so refresh and back navigation retain the selected record without a modal.
