@@ -149,7 +149,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
       <main className="admin-main" key={openBooking ? `booking-${openBooking}` : tab}>
         {openBooking ? (
           <section className="booking-page">
-            <button className="admin-btn-ghost booking-page-back" onClick={() => setOpenBooking(null)}><ArrowLeft size={16} />Back to bookings</button>
+            <button className="admin-btn-ghost booking-page-back" onClick={() => { setTab('bookings'); setOpenBooking(null); }}><ArrowLeft size={16} />Back to bookings</button>
             {booking ? <>
               <header className="admin-head"><div><p className="admin-eyebrow">{fmtDate(booking.slot_at)} · Dhaka time</p><h1>{who(booking.clients)}</h1></div><Pill value={booking.status} /></header>
               <div className="admin-panel"><BookingDetail key={booking.id} b={booking} manager={manager} userId={userId} names={names} update={update} confirm={confirm} /></div>
