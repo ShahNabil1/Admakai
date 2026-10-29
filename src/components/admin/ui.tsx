@@ -14,7 +14,7 @@ export function Pill({ value }: { value: string }) {
 export function Modal({ open, onOpenChange, title, description, wide, children }: { open: boolean; onOpenChange: (o: boolean) => void; title: string; description?: string | undefined; wide?: boolean; children: ReactNode }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={`admin-dialog ${wide ? 'is-wide' : ''}`}>
+      <DialogContent data-lenis-prevent className={`admin-dialog ${wide ? 'is-wide' : ''}`}>
         <DialogHeader>
           <DialogTitle className="admin-dialog-title">{title}</DialogTitle>
           {description ? <DialogDescription>{description}</DialogDescription> : <DialogDescription className="sr-only">{title}</DialogDescription>}
@@ -33,7 +33,7 @@ export function useConfirm() {
   const [busy, setBusy] = useState(false);
   const node = (
     <AlertDialog open={!!req} onOpenChange={(o) => { if (!o && !busy) setReq(null); }}>
-      <AlertDialogContent className="admin-dialog">
+      <AlertDialogContent data-lenis-prevent className="admin-dialog">
         <AlertDialogHeader>
           <AlertDialogTitle className="admin-dialog-title">{req?.title}</AlertDialogTitle>
           <AlertDialogDescription>{req?.description}</AlertDialogDescription>
