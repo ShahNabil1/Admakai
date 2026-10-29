@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { resolveSiteSettings } from '@/data/site';
 import { whatsappUrl } from '@/lib/lead-schema';
-import { bookingFormSchema, budgets, groupSlots, captureBookingSource, skipSpam, dayLabel, type BookingFields, type OpenSlot } from '@/lib/booking-form';
+import { bookingFormSchema, budgets, groupSlots, captureBookingSource, skipSpam, dayLabel, normalizePhoneInput, type BookingFields, type OpenSlot } from '@/lib/booking-form';
 import { fetchOpenSlots, createPublicBooking, sendBookingLink } from '@/lib/booking-api';
 
 import './slot-booking.css';
