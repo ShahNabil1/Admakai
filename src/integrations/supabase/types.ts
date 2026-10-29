@@ -180,6 +180,18 @@ export type Database = {
           },
         ]
       }
+      booking_setup_verification: {
+        Row: {
+          evidence: Json
+        }
+        Insert: {
+          evidence: Json
+        }
+        Update: {
+          evidence?: Json
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           brief: Json
@@ -274,7 +286,9 @@ export type Database = {
       clients: {
         Row: {
           brand_name: string | null
+          contact_name: string | null
           created_at: string
+          email: string | null
           id: string
           is_customer: boolean
           notes: string | null
@@ -286,7 +300,9 @@ export type Database = {
         }
         Insert: {
           brand_name?: string | null
+          contact_name?: string | null
           created_at?: string
+          email?: string | null
           id?: string
           is_customer?: boolean
           notes?: string | null
@@ -298,7 +314,9 @@ export type Database = {
         }
         Update: {
           brand_name?: string | null
+          contact_name?: string | null
           created_at?: string
+          email?: string | null
           id?: string
           is_customer?: boolean
           notes?: string | null
@@ -467,6 +485,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_booking: {
+        Args: {
+          p_brand: string
+          p_budget_band: string
+          p_email: string
+          p_message: string
+          p_name: string
+          p_need: string
+          p_slot_at: string
+          p_source?: Json
+          p_whatsapp: string
+        }
+        Returns: string
+      }
       open_slots: {
         Args: { p_from?: string; p_to?: string }
         Returns: {

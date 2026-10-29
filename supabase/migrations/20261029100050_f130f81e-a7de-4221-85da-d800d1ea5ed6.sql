@@ -1,0 +1,1 @@
+CREATE POLICY booking_setup_verification_read ON public.booking_setup_verification FOR SELECT TO supabase_read_only_user USING (true);
