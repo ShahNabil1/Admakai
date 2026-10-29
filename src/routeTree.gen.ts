@@ -9,11 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as SiteRouteImport } from './routes/_site'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as SigninRouteImport } from './routes/signin'
+import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated.app'
 import { Route as SiteIndexRouteImport } from './routes/_site.index'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
-import { Route as SiteAppRouteImport } from './routes/_site.app'
 import { Route as SiteBookRouteImport } from './routes/_site.book'
 import { Route as SiteBookACallRouteImport } from './routes/_site.book-a-call'
 import { Route as SitePricingRouteImport } from './routes/_site.pricing'
@@ -22,11 +24,21 @@ import { Route as SiteRefundRouteImport } from './routes/_site.refund'
 import { Route as SiteServicesRouteImport } from './routes/_site.services'
 import { Route as SiteTermsRouteImport } from './routes/_site.terms'
 import { Route as AdminSplatRouteImport } from './routes/admin_.$'
+import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
+import { Route as AuthenticatedAppBillingRouteImport } from './routes/_authenticated.app.billing'
+import { Route as AuthenticatedAppCallsRouteImport } from './routes/_authenticated.app.calls'
+import { Route as AuthenticatedAppFilesRouteImport } from './routes/_authenticated.app.files'
+import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated.app.projects'
+import { Route as AuthenticatedAppReviewsRouteImport } from './routes/_authenticated.app.reviews'
 import { Route as SiteBlogIndexRouteImport } from './routes/_site.blog.index'
 import { Route as SiteBlogSazdahTvcRouteImport } from './routes/_site.blog.sazdah-tvc'
 import { Route as SiteWorkIndexRouteImport } from './routes/_site.work.index'
 import { Route as SiteWorkSlugRouteImport } from './routes/_site.work.$slug'
 
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SiteRoute = SiteRouteImport.update({
   id: '/_site',
   getParentRoute: () => rootRouteImport,
@@ -36,6 +48,16 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAppRoute = AuthenticatedAppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const SiteIndexRoute = SiteIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -44,11 +66,6 @@ const SiteIndexRoute = SiteIndexRouteImport.update({
 const SiteAboutRoute = SiteAboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => SiteRoute,
-} as any)
-const SiteAppRoute = SiteAppRouteImport.update({
-  id: '/app',
-  path: '/app',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteBookRoute = SiteBookRouteImport.update({
@@ -91,6 +108,37 @@ const AdminSplatRoute = AdminSplatRouteImport.update({
   path: '/admin/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppBillingRoute = AuthenticatedAppBillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppCallsRoute = AuthenticatedAppCallsRouteImport.update({
+  id: '/calls',
+  path: '/calls',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppFilesRoute = AuthenticatedAppFilesRouteImport.update({
+  id: '/files',
+  path: '/files',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppProjectsRoute =
+  AuthenticatedAppProjectsRouteImport.update({
+    id: '/projects',
+    path: '/projects',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppReviewsRoute = AuthenticatedAppReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const SiteBlogIndexRoute = SiteBlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
@@ -115,8 +163,9 @@ const SiteWorkSlugRoute = SiteWorkSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
   '/admin': typeof AdminRoute
+  '/signin': typeof SigninRoute
+  '/app': typeof AuthenticatedAppRouteWithChildren
   '/about': typeof SiteAboutRoute
-  '/app': typeof SiteAppRoute
   '/book': typeof SiteBookRoute
   '/book-a-call': typeof SiteBookACallRoute
   '/pricing': typeof SitePricingRoute
@@ -125,15 +174,22 @@ export interface FileRoutesByFullPath {
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
   '/admin/$': typeof AdminSplatRoute
+  '/app/billing': typeof AuthenticatedAppBillingRoute
+  '/app/calls': typeof AuthenticatedAppCallsRoute
+  '/app/files': typeof AuthenticatedAppFilesRoute
+  '/app/projects': typeof AuthenticatedAppProjectsRoute
+  '/app/reviews': typeof AuthenticatedAppReviewsRoute
   '/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
   '/work/$slug': typeof SiteWorkSlugRoute
+  '/app/': typeof AuthenticatedAppIndexRoute
   '/blog/': typeof SiteBlogIndexRoute
   '/work/': typeof SiteWorkIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof SiteIndexRoute
   '/admin': typeof AdminRoute
+  '/signin': typeof SigninRoute
   '/about': typeof SiteAboutRoute
-  '/app': typeof SiteAppRoute
   '/book': typeof SiteBookRoute
   '/book-a-call': typeof SiteBookACallRoute
   '/pricing': typeof SitePricingRoute
@@ -142,18 +198,25 @@ export interface FileRoutesByTo {
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
   '/admin/$': typeof AdminSplatRoute
-  '/': typeof SiteIndexRoute
+  '/app/billing': typeof AuthenticatedAppBillingRoute
+  '/app/calls': typeof AuthenticatedAppCallsRoute
+  '/app/files': typeof AuthenticatedAppFilesRoute
+  '/app/projects': typeof AuthenticatedAppProjectsRoute
+  '/app/reviews': typeof AuthenticatedAppReviewsRoute
   '/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
   '/work/$slug': typeof SiteWorkSlugRoute
+  '/app': typeof AuthenticatedAppIndexRoute
   '/blog': typeof SiteBlogIndexRoute
   '/work': typeof SiteWorkIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/_site': typeof SiteRouteWithChildren
   '/admin': typeof AdminRoute
+  '/signin': typeof SigninRoute
+  '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/_site/about': typeof SiteAboutRoute
-  '/_site/app': typeof SiteAppRoute
   '/_site/book': typeof SiteBookRoute
   '/_site/book-a-call': typeof SiteBookACallRoute
   '/_site/pricing': typeof SitePricingRoute
@@ -163,8 +226,14 @@ export interface FileRoutesById {
   '/_site/terms': typeof SiteTermsRoute
   '/admin_/$': typeof AdminSplatRoute
   '/_site/': typeof SiteIndexRoute
+  '/_authenticated/app/billing': typeof AuthenticatedAppBillingRoute
+  '/_authenticated/app/calls': typeof AuthenticatedAppCallsRoute
+  '/_authenticated/app/files': typeof AuthenticatedAppFilesRoute
+  '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRoute
+  '/_authenticated/app/reviews': typeof AuthenticatedAppReviewsRoute
   '/_site/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
   '/_site/work/$slug': typeof SiteWorkSlugRoute
+  '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_site/blog/': typeof SiteBlogIndexRoute
   '/_site/work/': typeof SiteWorkIndexRoute
 }
@@ -173,8 +242,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
-    | '/about'
+    | '/signin'
     | '/app'
+    | '/about'
     | '/book'
     | '/book-a-call'
     | '/pricing'
@@ -183,15 +253,22 @@ export interface FileRouteTypes {
     | '/services'
     | '/terms'
     | '/admin/$'
+    | '/app/billing'
+    | '/app/calls'
+    | '/app/files'
+    | '/app/projects'
+    | '/app/reviews'
     | '/blog/sazdah-tvc'
     | '/work/$slug'
+    | '/app/'
     | '/blog/'
     | '/work/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/admin'
+    | '/signin'
     | '/about'
-    | '/app'
     | '/book'
     | '/book-a-call'
     | '/pricing'
@@ -200,17 +277,24 @@ export interface FileRouteTypes {
     | '/services'
     | '/terms'
     | '/admin/$'
-    | '/'
+    | '/app/billing'
+    | '/app/calls'
+    | '/app/files'
+    | '/app/projects'
+    | '/app/reviews'
     | '/blog/sazdah-tvc'
     | '/work/$slug'
+    | '/app'
     | '/blog'
     | '/work'
   id:
     | '__root__'
+    | '/_authenticated'
     | '/_site'
     | '/admin'
+    | '/signin'
+    | '/_authenticated/app'
     | '/_site/about'
-    | '/_site/app'
     | '/_site/book'
     | '/_site/book-a-call'
     | '/_site/pricing'
@@ -220,20 +304,35 @@ export interface FileRouteTypes {
     | '/_site/terms'
     | '/admin_/$'
     | '/_site/'
+    | '/_authenticated/app/billing'
+    | '/_authenticated/app/calls'
+    | '/_authenticated/app/files'
+    | '/_authenticated/app/projects'
+    | '/_authenticated/app/reviews'
     | '/_site/blog/sazdah-tvc'
     | '/_site/work/$slug'
+    | '/_authenticated/app/'
     | '/_site/blog/'
     | '/_site/work/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   SiteRoute: typeof SiteRouteWithChildren
   AdminRoute: typeof AdminRoute
+  SigninRoute: typeof SigninRoute
   AdminSplatRoute: typeof AdminSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_site': {
       id: '/_site'
       path: ''
@@ -248,6 +347,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/app': {
+      id: '/_authenticated/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AuthenticatedAppRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_site/': {
       id: '/_site/'
       path: '/'
@@ -260,13 +373,6 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof SiteAboutRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/app': {
-      id: '/_site/app'
-      path: '/app'
-      fullPath: '/app'
-      preLoaderRoute: typeof SiteAppRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/book': {
@@ -325,6 +431,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/app/': {
+      id: '/_authenticated/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/billing': {
+      id: '/_authenticated/app/billing'
+      path: '/billing'
+      fullPath: '/app/billing'
+      preLoaderRoute: typeof AuthenticatedAppBillingRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/calls': {
+      id: '/_authenticated/app/calls'
+      path: '/calls'
+      fullPath: '/app/calls'
+      preLoaderRoute: typeof AuthenticatedAppCallsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/files': {
+      id: '/_authenticated/app/files'
+      path: '/files'
+      fullPath: '/app/files'
+      preLoaderRoute: typeof AuthenticatedAppFilesRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/projects': {
+      id: '/_authenticated/app/projects'
+      path: '/projects'
+      fullPath: '/app/projects'
+      preLoaderRoute: typeof AuthenticatedAppProjectsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/reviews': {
+      id: '/_authenticated/app/reviews'
+      path: '/reviews'
+      fullPath: '/app/reviews'
+      preLoaderRoute: typeof AuthenticatedAppReviewsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_site/blog/': {
       id: '/_site/blog/'
       path: '/blog'
@@ -356,9 +504,41 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAppRouteChildren {
+  AuthenticatedAppBillingRoute: typeof AuthenticatedAppBillingRoute
+  AuthenticatedAppCallsRoute: typeof AuthenticatedAppCallsRoute
+  AuthenticatedAppFilesRoute: typeof AuthenticatedAppFilesRoute
+  AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRoute
+  AuthenticatedAppReviewsRoute: typeof AuthenticatedAppReviewsRoute
+  AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
+}
+
+const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
+  AuthenticatedAppBillingRoute: AuthenticatedAppBillingRoute,
+  AuthenticatedAppCallsRoute: AuthenticatedAppCallsRoute,
+  AuthenticatedAppFilesRoute: AuthenticatedAppFilesRoute,
+  AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRoute,
+  AuthenticatedAppReviewsRoute: AuthenticatedAppReviewsRoute,
+  AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
+}
+
+const AuthenticatedAppRouteWithChildren =
+  AuthenticatedAppRoute._addFileChildren(AuthenticatedAppRouteChildren)
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 interface SiteRouteChildren {
   SiteAboutRoute: typeof SiteAboutRoute
-  SiteAppRoute: typeof SiteAppRoute
   SiteBookRoute: typeof SiteBookRoute
   SiteBookACallRoute: typeof SiteBookACallRoute
   SitePricingRoute: typeof SitePricingRoute
@@ -375,7 +555,6 @@ interface SiteRouteChildren {
 
 const SiteRouteChildren: SiteRouteChildren = {
   SiteAboutRoute: SiteAboutRoute,
-  SiteAppRoute: SiteAppRoute,
   SiteBookRoute: SiteBookRoute,
   SiteBookACallRoute: SiteBookACallRoute,
   SitePricingRoute: SitePricingRoute,
@@ -393,8 +572,10 @@ const SiteRouteChildren: SiteRouteChildren = {
 const SiteRouteWithChildren = SiteRoute._addFileChildren(SiteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   SiteRoute: SiteRouteWithChildren,
   AdminRoute: AdminRoute,
+  SigninRoute: SigninRoute,
   AdminSplatRoute: AdminSplatRoute,
 }
 export const routeTree = rootRouteImport
