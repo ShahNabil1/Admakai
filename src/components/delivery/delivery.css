@@ -35,3 +35,4 @@
 .delivery-list button.is-active{border-color:var(--primary)}
 .delivery-progress{font-size:.78rem;color:var(--muted-foreground)}
 @media (max-width:860px){.review{grid-template-columns:1fr}}
+@media (max-width:640px){.delivery-tasks{grid-template-columns:1fr}.delivery-row input[type=file]{max-width:100%}}

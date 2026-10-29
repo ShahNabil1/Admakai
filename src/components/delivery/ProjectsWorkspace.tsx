@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { DELIVERABLE_MAX_BYTES, DELIVERABLE_MIME, deliverablePath } from '@/lib/timecode';
 import { ReviewPlayer, type Deliverable } from './ReviewPlayer';
+import { Empty, Modal, Pill, label } from '@/components/admin/ui';
 import './delivery.css';
 
 type Project = { id: string; title: string; stage: string; due_at: string | null; revision_limit: number; client_id: string; clients: { contact_name: string | null; brand_name: string | null } | null };
@@ -49,32 +50,38 @@ export function StaffProjects({ userId }: { userId: string }) {
     void load();
   };
 
-  if (!projects.length) return <><h1>Projects</h1><p className="admin-empty">No projects yet. Moving a lead to “won” opens one automatically.</p></>;
+  const head = <header className="admin-head"><div><p className="admin-eyebrow">Delivery</p><h1>Projects</h1></div></header>;
+  if (!projects.length) return <section>{head}<Empty title="No projects yet" hint="Moving a lead to won opens one automatically." /></section>;
+  const current = projects.find((p) => p.id === open) ?? null;
 
   return (
-    <>
-      <h1>Projects</h1>
+    <section>
+      {head}
       {msg && <p className="admin-alert" role="alert">{msg}</p>}
-      <div className="delivery-projects">
-        {projects.map((p) => (
-          <article key={p.id} className="delivery-card">
-            <header>
-              <div>
-                <h3>{p.title}</h3>
-                <small className="delivery-progress">{p.clients?.brand_name ?? p.clients?.contact_name ?? 'Client'} · {p.revision_limit} revisions included</small>
-              </div>
-              <div className="delivery-row" style={{ marginTop: 0 }}>
-                <select aria-label="Project stage" value={p.stage} onChange={(e) => run(supabase.from('projects').update({ stage: e.target.value }).eq('id', p.id))}>
-                  {STAGES.map((s) => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
-                </select>
-                <button className="admin-link" onClick={() => setOpen(open === p.id ? null : p.id)}>{open === p.id ? 'Close' : 'Open'}</button>
-              </div>
-            </header>
-            {open === p.id && <ProjectDetail project={p} userId={userId} tasks={tasks.filter((t) => t.project_id === p.id)} deliverables={deliverables.filter((d) => d.project_id === p.id)} run={run} reload={load} />}
-          </article>
-        ))}
+      <div className="admin-grid">
+        {projects.map((p) => {
+          const pt = tasks.filter((t) => t.project_id === p.id);
+          const done = pt.filter((t) => t.status === 'done').length;
+          return (
+            <button key={p.id} className="admin-card-item" onClick={() => setOpen(p.id)}>
+              <div className="admin-card-top"><strong className="truncate">{p.title}</strong><Pill value={p.stage} /></div>
+              <p className="truncate">{p.clients?.brand_name ?? p.clients?.contact_name ?? 'Client'}</p>
+              <div className="admin-card-meta"><span>Stage {STAGES.indexOf(p.stage) + 1}/{STAGES.length}</span><span>{done}/{pt.length} tasks</span></div>
+              <div className="admin-progress"><i style={{ width: `${((STAGES.indexOf(p.stage) + 1) / STAGES.length) * 100}%` }} /></div>
+            </button>
+          );
+        })}
       </div>
-    </>
+      <Modal open={!!current} onOpenChange={(o) => !o && setOpen(null)} title={current?.title ?? ''} description={current ? `${current.clients?.brand_name ?? current.clients?.contact_name ?? 'Client'} · ${current.revision_limit} revisions included` : undefined} wide>
+        {current && (<>
+          <p className="admin-label">Stage</p>
+          <div className="admin-stepper">
+            {STAGES.map((s, i) => <button key={s} className={`${current.stage === s ? 'is-active' : ''} ${STAGES.indexOf(current.stage) > i ? 'is-done' : ''}`} onClick={() => s !== current.stage && run(supabase.from('projects').update({ stage: s }).eq('id', current.id))}>{label(s)}</button>)}
+          </div>
+          <ProjectDetail project={current} userId={userId} tasks={tasks.filter((t) => t.project_id === current.id)} deliverables={deliverables.filter((d) => d.project_id === current.id)} run={run} reload={load} />
+        </>)}
+      </Modal>
+    </section>
   );
 }
 
