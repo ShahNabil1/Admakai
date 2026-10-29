@@ -14,7 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          full_name: string | null
+          is_active: boolean
+          timezone: string
+          updated_at: string
+          user_id: string
+          whatsapp: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email: string
+          full_name?: string | null
+          is_active?: boolean
+          timezone?: string
+          updated_at?: string
+          user_id: string
+          whatsapp?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          is_active?: boolean
+          timezone?: string
+          updated_at?: string
+          user_id?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +79,43 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      booking_status:
+        | "requested"
+        | "in_review"
+        | "confirmed"
+        | "completed"
+        | "cancelled"
+        | "no_show"
+        | "rescheduled"
+      deliverable_status:
+        | "submitted"
+        | "changes_requested"
+        | "resubmitted"
+        | "approved"
+      invoice_status:
+        | "draft"
+        | "sent"
+        | "partially_paid"
+        | "paid"
+        | "overdue"
+        | "void"
+      lead_stage:
+        | "new"
+        | "contacted"
+        | "qualified"
+        | "proposal_sent"
+        | "won"
+        | "lost"
+      project_stage:
+        | "brief"
+        | "script"
+        | "assets"
+        | "first_cut"
+        | "revision"
+        | "final"
+        | "delivered"
+      task_status: "todo" | "in_progress" | "in_review" | "done" | "blocked"
+      user_role: "owner" | "manager" | "member" | "client"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +242,49 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      booking_status: [
+        "requested",
+        "in_review",
+        "confirmed",
+        "completed",
+        "cancelled",
+        "no_show",
+        "rescheduled",
+      ],
+      deliverable_status: [
+        "submitted",
+        "changes_requested",
+        "resubmitted",
+        "approved",
+      ],
+      invoice_status: [
+        "draft",
+        "sent",
+        "partially_paid",
+        "paid",
+        "overdue",
+        "void",
+      ],
+      lead_stage: [
+        "new",
+        "contacted",
+        "qualified",
+        "proposal_sent",
+        "won",
+        "lost",
+      ],
+      project_stage: [
+        "brief",
+        "script",
+        "assets",
+        "first_cut",
+        "revision",
+        "final",
+        "delivered",
+      ],
+      task_status: ["todo", "in_progress", "in_review", "done", "blocked"],
+      user_role: ["owner", "manager", "member", "client"],
+    },
   },
 } as const
