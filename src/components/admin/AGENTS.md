@@ -1,0 +1,1 @@
+- Admin popups/confirmations use the shared Modal/useConfirm helpers in src/components/admin/ui.tsx so every irreversible action gets the same confirmation flow.
