@@ -7,7 +7,7 @@ const ease = [0.16, 1, 0.3, 1] as const;
 const fileName = (src: string) => src.split('/').pop() ?? src;
 
 /** Image that swaps to a neutral grey placeholder naming the file when it fails to load. */
-export function SafeImg({ src, alt, ratio = '16 / 9', className }: { src: string; alt: string; ratio?: string; className?: string }) {
+export function SafeImg({ src, alt, ratio = "16 / 9", className }: { src: string; alt: string; ratio?: string | undefined; className?: string | undefined }) {
   const [failed, setFailed] = useState(false);
   const ref = useRef<HTMLImageElement>(null);
   useEffect(() => { const img = ref.current; if (img && img.complete && img.naturalWidth === 0) setFailed(true); }, [src]);
@@ -32,10 +32,10 @@ export function Cover({ src, alt }: { src: string; alt: string }) {
   const reduce = useMotionPreference();
   const { scrollY } = useScroll();
   const scale = useTransform(scrollY, [0, 400], [1.04, 1]);
-  return <div className="blog-wide-cover blog-frame"><motion.div style={reduce ? undefined : { scale }}><SafeImg src={src} alt={alt} ratio="16 / 9" /></motion.div></div>;
+  return <div className="blog-wide-cover blog-frame"><motion.div style={reduce ? {} : { scale }}><SafeImg src={src} alt={alt} ratio="16 / 9" /></motion.div></div>;
 }
 
-export function Figure({ src, caption, ratio }: { src: string; caption: string; ratio?: string }) {
+export function Figure({ src, caption, ratio }: { src: string; caption: string; ratio?: string | undefined }) {
   return <figure className="blog-figure"><div className="blog-frame"><SafeImg src={src} alt={caption} ratio={ratio} /></div><figcaption>{caption}</figcaption></figure>;
 }
 
