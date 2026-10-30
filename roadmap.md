@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Replace admin redirect with popup SSO, strict state/message checks, cancellation and blocked-popup fallback; verify local flows and report real Hub login limitations.
 - [x] Phase 2 delivery: projects, tasks, versioned deliverables, private 15-min links, timecoded review, client approve/request changes within revision limit, won lead opens project; 5 tests pass. Real signed-in review flow unverified (no session here).
 - [ ] Phase 3 billing (milestones, invoices AD-YYYY-NNNN, payments, PDF, overdue reminders) — next.
 - [ ] Phase 4 notifications, analytics, cleanup jobs.

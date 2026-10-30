@@ -34,7 +34,7 @@
 - Inner-page styling is scoped to public-page elements and shared PageElements; reuse Home motion, FAQ and tool-stack without modifying Home content.
 - Booking contacts stay separate from sitewide contacts. Enquiries sync photo previews to FormData and use libphonenumber metadata with bundled country-flag-icons SVGs for international phone selection/validation.
 - Blog posts are hardcoded components (metadata in `src/data/blog.ts`); missing media renders a filename placeholder so layout never breaks.
-- /admin uses sso.ts's fixed Hub origin to avoid stale overrides, with a same-origin state-checked callback; Hub owns staff roles.
+- /admin uses popup SSO with a redirect fallback, expiring shared-storage state and exact-origin/source token-free messages; the fixed Hub owns staff roles and the callback verifies them through Supabase.
 - Invoice totals, numbers and paid status come only from DB triggers; payments are insert-only, so money state cannot drift.
 - Entity changes are logged by the shared log_activity trigger; UIs only read public.activity, keeping audit append-only.
 - src/components/admin and src/components/home have their own AGENTS.md; read it before changing files there.
