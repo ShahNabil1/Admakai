@@ -89,8 +89,8 @@ export function startHubPopupSignIn(): Promise<PopupResult> {
       if (finished) return;
       finished = true;
       window.removeEventListener('message', onMessage);
-      window.clearInterval(poll);
-      window.clearTimeout(timeout);
+      clearInterval(poll);
+      clearTimeout(timeout);
       if (readSsoState()?.state === state) clearSsoState();
       if (cancelPopup === cancel) cancelPopup = undefined;
       resolve(result);
@@ -102,8 +102,8 @@ export function startHubPopupSignIn(): Promise<PopupResult> {
       else if (event.data.ok === false) finish({ error: typeof event.data.error === 'string' ? event.data.error : 'Could not complete sign-in.' });
     };
     const cancel = () => { signInWindow.close(); finish('closed'); };
-    const poll = window.setInterval(() => { if (signInWindow.closed) finish('closed'); }, 500);
-    const timeout = window.setTimeout(() => {
+    const poll = setInterval(() => { if (signInWindow.closed) finish('closed'); }, 500);
+    const timeout = setTimeout(() => {
       signInWindow.close();
       finish({ error: 'Sign-in timed out. Please try again.' });
     }, SSO_TTL);
