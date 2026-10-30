@@ -220,3 +220,26 @@ button.admin-stat:hover{border-color:color-mix(in oklab,var(--foreground) 35%,tr
 .booking-page-back{margin-bottom:1.25rem}
 .booking-page .admin-head{align-items:center}
 .booking-page .admin-panel{padding:1.25rem clamp(1rem,3vw,2rem)}
+/* SSO gateway card — Branta orange (#E56A17 / #FC9A01) is the partner brand accent */
+.sso-gate{--branta:oklch(0.65 0.17 50);--branta-2:oklch(0.77 0.17 70);background:radial-gradient(60rem 30rem at 50% -10%,color-mix(in oklab,var(--branta) 14%,transparent),transparent 60%),var(--background)}
+.sso-card{position:relative;max-width:27rem;padding:2.25rem 2rem 1.75rem;border-radius:1.5rem;background:color-mix(in oklab,var(--card) 85%,transparent);box-shadow:0 30px 80px -30px oklch(0 0 0/.6);animation:admin-in .5s ease both;display:flex;flex-direction:column;align-items:center}
+.sso-badge{display:inline-flex;align-items:center;gap:.45rem;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:.3rem .75rem;margin-bottom:1.5rem}
+.sso-logo{height:40px;width:auto;max-width:100%;object-fit:contain}
+.admin-card h1.sso-title{font-family:var(--font-serif);font-style:italic;font-weight:400;font-size:2.4rem;line-height:1;margin:.6rem 0 .5rem;letter-spacing:-.01em}
+.admin-card p.sso-kicker{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--branta-2);margin-bottom:1.75rem}
+.sso-btn{position:relative;overflow:hidden;width:100%;display:flex;align-items:center;gap:.75rem;padding:.45rem 1.1rem .45rem .45rem;min-height:3.25rem;border-radius:999px;color:var(--accent);font-weight:600;font-size:.92rem;background:linear-gradient(135deg,var(--branta),var(--branta-2));box-shadow:0 12px 30px -10px color-mix(in oklab,var(--branta) 70%,transparent);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
+.sso-btn::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,oklch(1 0 0/.35) 50%,transparent 70%);transform:translateX(-120%);transition:transform .8s ease}
+.sso-btn:hover{transform:translateY(-2px);box-shadow:0 18px 40px -12px color-mix(in oklab,var(--branta) 85%,transparent)}
+.sso-btn:hover::after{transform:translateX(120%)}
+.sso-btn:active{transform:scale(.98)}
+.sso-btn:focus-visible{outline:2px solid var(--branta-2);outline-offset:3px}
+.sso-btn-icon{display:grid;place-items:center;width:2.35rem;height:2.35rem;flex-shrink:0;border-radius:50%;background:var(--accent);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.sso-btn:hover .sso-btn-icon{transform:rotate(-12deg) scale(1.06)}
+.sso-btn-label{flex:1;text-align:left;min-width:0}
+.sso-btn-arrow{transition:transform .25s}
+.sso-btn:hover .sso-btn-arrow{transform:translateX(4px)}
+.sso-spinner{border-top-color:var(--branta)}
+.admin-card p.sso-note{margin-bottom:.9rem}
+.admin-card p.sso-foot{margin-top:1.5rem;font-size:.78rem;line-height:1.55;max-width:21rem}
+@media (max-width:420px){.sso-card{padding:1.75rem 1.25rem 1.5rem}.admin-card h1.sso-title{font-size:2rem}.sso-btn{font-size:.85rem}}
+@media (prefers-reduced-motion:reduce){.sso-card{animation:none}.sso-btn,.sso-btn::after,.sso-btn-icon,.sso-btn-arrow{transition:none;transform:none!important}}
