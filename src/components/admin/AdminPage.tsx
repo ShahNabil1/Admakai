@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useState, type DragEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
 import { Toaster, toast } from 'sonner';
 import { Activity, ArrowLeft, CalendarDays, FolderKanban, LayoutDashboard, LogOut, Receipt, Search, Users } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-import { isStaffRole, startHubSignIn, type StaffRole } from '@/lib/sso';
+import { cancelHubPopupSignIn, isStaffRole, startHubPopupSignIn, startHubSignIn, type StaffRole } from '@/lib/sso';
+import { Button } from '@/components/ui/button';
 import type { ActivityRow } from '@/lib/activity';
 import { StaffProjects } from '@/components/delivery/ProjectsWorkspace';
 import { StaffBilling } from './Billing';
@@ -31,20 +32,68 @@ const errText = (e: { message: string; code?: string }) => (e.code === '42501' ?
 const who = (c: ClientRef) => c?.contact_name || c?.brand_name || 'Unnamed';
 
 export function AdminPage() {
-  const [state, setState] = useState<'loading' | 'denied' | { role: StaffRole; userId: string; email: string }>('loading');
-  useEffect(() => {
-    (async () => {
+  const [state, setState] = useState<'loading' | 'signed-out' | 'denied' | { role: StaffRole; userId: string; email: string }>('loading');
+  const [waiting, setWaiting] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
+  const [blocked, setBlocked] = useState(false);
+  const active = useRef(true);
+  const checkVersion = useRef(0);
+  const checkAccess = useCallback(async () => {
+    const version = ++checkVersion.current;
+    try {
       const { data } = await supabase.auth.getUser();
-      if (!data.user) { startHubSignIn(); return; }
+      if (!active.current || version !== checkVersion.current) return;
+      if (!data.user) { setState('signed-out'); return; }
       const { data: r } = await supabase.from('user_roles').select('role').eq('user_id', data.user.id).maybeSingle();
+      if (!active.current || version !== checkVersion.current) return;
       setState(isStaffRole(r?.role) ? { role: r.role, userId: data.user.id, email: data.user.email ?? '' } : 'denied');
-    })();
+    } catch {
+      if (active.current && version === checkVersion.current) { setState('signed-out'); setNote('Could not check your account. Please try again.'); }
+    }
   }, []);
+  useEffect(() => {
+    active.current = true;
+    void checkAccess();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      // Defer auth calls until Supabase releases its auth-event lock.
+      if (event === 'SIGNED_IN') window.setTimeout(() => { if (active.current) void checkAccess(); }, 0);
+      if (event === 'SIGNED_OUT') { ++checkVersion.current; setState('signed-out'); }
+    });
+    return () => { active.current = false; ++checkVersion.current; subscription.unsubscribe(); cancelHubPopupSignIn(); };
+  }, [checkAccess]);
+  const signIn = () => {
+    setWaiting(true); setNote(null); setBlocked(false);
+    // Open synchronously in the user gesture, before awaiting any auth calls.
+    const result = startHubPopupSignIn();
+    void result.then(async (outcome) => {
+      if (!active.current) return;
+      setWaiting(false);
+      if (outcome === 'success') { await checkAccess(); return; }
+      if (outcome === 'blocked') { setBlocked(true); setNote('Popup was blocked.'); }
+      else if (outcome === 'closed') setNote('Sign-in window was closed.');
+      else setNote(outcome.error);
+    });
+  };
+  const deniedSignIn = async () => {
+    await supabase.auth.signOut();
+    if (active.current) signIn();
+  };
   if (state === 'loading') return <main className="admin-center"><div className="admin-card"><div className="admin-spinner" /><p>Checking your Branta Hub access…</p></div></main>;
   if (state === 'denied') return (
     <main className="admin-center"><div className="admin-card">
       <h1>No admin access</h1><p>This account is not an Admakai staff account in Branta Hub.</p>
-      <button className="admin-btn" onClick={async () => { await supabase.auth.signOut(); startHubSignIn(); }}>Sign in with Branta Hub</button>
+      <Button className="admin-btn" onClick={() => void deniedSignIn()}>Sign in with Branta Hub</Button>
+    </div></main>
+  );
+  if (state === 'signed-out') return (
+    <main className="admin-center"><div className="admin-card">
+      <img src="/brand/logo-white.png" alt="Admakai" className="mx-auto mb-6 h-10 max-w-full object-contain" />
+      <h1>Sign in to Admakai Admin</h1>
+      {waiting ? <div role="status"><div className="admin-spinner" /><p>Waiting for Branta Console…</p><Button variant="link" onClick={cancelHubPopupSignIn}>Cancel</Button></div> : <>
+        {note && <p role="status">{note}</p>}
+        <Button className="admin-btn max-w-full whitespace-normal h-auto" onClick={blocked ? startHubSignIn : signIn}>{blocked ? 'Continue in this tab' : note && note !== 'Sign-in window was closed.' ? 'Try again' : 'Continue with Branta Console'}</Button>
+      </>}
+      <p className="text-muted">Secure sign-in with your Branta employee account.</p>
     </div></main>
   );
   return <AdminShell {...state} />;

@@ -1,4 +1,5 @@
 # Tasks
+- [x] Replace admin redirect with popup SSO, strict state/message checks, cancellation and blocked-popup fallback; 20 tests and local browser card/open/cancel/close/fallback/error/mobile checks pass. Real Hub password/2FA/passkey success flow remains unverified without a Hub session.
 - [x] Phase 2 delivery: projects, tasks, versioned deliverables, private 15-min links, timecoded review, client approve/request changes within revision limit, won lead opens project; 5 tests pass. Real signed-in review flow unverified (no session here).
 - [ ] Phase 3 billing (milestones, invoices AD-YYYY-NNNN, payments, PDF, overdue reminders) — next.
 - [ ] Phase 4 notifications, analytics, cleanup jobs.
