@@ -90,14 +90,20 @@ export function AdminPage() {
     </div></main>
   );
   if (state === 'signed-out') return (
-    <main className="admin-center"><div className="admin-card">
-      <img src="/brand/logo-white.png" alt="Admakai" className="mx-auto mb-6 h-10 max-w-full object-contain" />
-      <h1>Sign in to Admakai Admin</h1>
-      {waiting ? <div role="status"><div className="admin-spinner" /><p>Waiting for Branta Console…</p><Button variant="link" onClick={cancelHubPopupSignIn}>Cancel</Button></div> : <>
-        {note && <p role="status">{note}</p>}
-        <Button className="admin-btn max-w-full whitespace-normal h-auto" onClick={blocked ? startHubSignIn : signIn}>{blocked ? 'Continue in this tab' : note && note !== 'Sign-in window was closed.' ? 'Try again' : 'Continue with Branta Console'}</Button>
+    <main className="admin-center sso-gate"><div className="admin-card sso-card">
+      <span className="sso-badge"><img src="/brand/branta-icon.png" alt="" width="14" height="14" />A Branta Tech sister concern</span>
+      <img src="/brand/logo-white.png" alt="Admakai" className="sso-logo" width="218" height="44" />
+      <h1 className="sso-title">Workspace</h1>
+      <p className="sso-kicker">SSO · Single Sign-On Gateway</p>
+      {waiting ? <div role="status" className="sso-wait"><div className="admin-spinner sso-spinner" /><p>Waiting for Branta Console…</p><Button variant="link" onClick={cancelHubPopupSignIn}>Cancel</Button></div> : <>
+        {note && <p role="status" className="sso-note">{note}</p>}
+        <button type="button" className="sso-btn" onClick={blocked ? startHubSignIn : signIn}>
+          <span className="sso-btn-icon"><img src="/brand/branta-icon.png" alt="" width="20" height="20" /></span>
+          <span className="sso-btn-label">{blocked ? 'Continue in this tab' : note && note !== 'Sign-in window was closed.' ? 'Try again' : 'Continue with Branta Console'}</span>
+          <span className="sso-btn-arrow" aria-hidden="true">→</span>
+        </button>
       </>}
-      <p className="text-muted">Secure sign-in with your Branta employee account.</p>
+      <p className="sso-foot">One secure identity for Branta Tech leadership, partners and team — sign in with your Branta Tech account.</p>
     </div></main>
   );
   return <AdminShell {...state} />;
