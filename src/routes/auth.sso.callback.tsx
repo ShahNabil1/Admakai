@@ -50,7 +50,9 @@ function SsoCallback() {
       <div className="admin-card">
         <h1>{error ? 'Sign-in failed' : completed ? 'You’re signed in' : 'Signing you in…'}</h1>
         <p>{error ?? (completed ? "You're signed in — you can close this window." : 'Verifying your Branta Hub account.')}</p>
-        {error && <Button className="admin-btn" onClick={startHubSignIn}>Try again</Button>}
+        {error && (window.opener
+          ? <Button className="admin-btn" onClick={() => window.close()}>Close window</Button>
+          : <Button className="admin-btn" onClick={startHubSignIn}>Try again</Button>)}
       </div>
     </main>
   );

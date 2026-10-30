@@ -62,6 +62,10 @@ export function AdminPage() {
     return () => { active.current = false; ++checkVersion.current; subscription.unsubscribe(); cancelHubPopupSignIn(); };
   }, [checkAccess]);
   const signIn = () => {
+    // Embedded previews partition storage from popups, so use the same-tab flow there.
+    let embedded = true;
+    try { embedded = window.self !== window.top; } catch { /* cross-origin parent */ }
+    if (embedded) { startHubSignIn(); return; }
     setWaiting(true); setNote(null); setBlocked(false);
     // Open synchronously in the user gesture, before awaiting any auth calls.
     const result = startHubPopupSignIn();
