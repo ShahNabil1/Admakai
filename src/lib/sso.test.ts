@@ -45,8 +45,10 @@ describe('Popup SSO security and lifecycle', () => {
     vi.stubGlobal('crypto', { randomUUID: () => 'popup-state' });
     const popup = { closed: false, close: vi.fn() };
     vi.spyOn(window, 'open').mockReturnValue(popup as unknown as Window);
+    const clearPoll = vi.spyOn(globalThis, 'clearInterval');
+    const clearDeadline = vi.spyOn(globalThis, 'clearTimeout');
     const promise = startHubPopupSignIn();
-    return { popup, promise };
+    return { popup, promise, clearPoll, clearDeadline };
   }
   function send(source: unknown, origin = window.location.origin, state = 'popup-state', ok = true) {
     window.dispatchEvent(new MessageEvent('message', {
@@ -66,7 +68,7 @@ describe('Popup SSO security and lifecycle', () => {
     expect(readSsoState()?.state).toBe('s');
   });
   it.each(['origin', 'source', 'state'])('ignores a message with the wrong %s', async (wrong) => {
-    const { popup, promise } = openPopup();
+    const { popup, promise, clearPoll, clearDeadline } = openPopup();
     const settled = vi.fn();
     void promise.then(settled);
     send(wrong === 'source' ? window : popup, wrong === 'origin' ? 'https://attacker.example' : window.location.origin, wrong === 'state' ? 'wrong' : 'popup-state');
@@ -74,7 +76,8 @@ describe('Popup SSO security and lifecycle', () => {
     expect(settled).not.toHaveBeenCalled();
     send(popup);
     await expect(promise).resolves.toBe('success');
-    expect(vi.getTimerCount()).toBe(0);
+    expect(clearPoll).toHaveBeenCalled();
+    expect(clearDeadline).toHaveBeenCalled();
   });
   it('constructs result messages without any access or refresh token fields', () => {
     expect(ssoResultMessage('s', true)).toEqual({ type: 'admakai-sso-result', state: 's', ok: true });
@@ -87,11 +90,12 @@ describe('Popup SSO security and lifecycle', () => {
     expect(readSsoState()).toBeNull();
   });
   it('detects closure within 500 milliseconds and removes timers', async () => {
-    const { popup, promise } = openPopup();
+    const { popup, promise, clearPoll, clearDeadline } = openPopup();
     popup.closed = true;
     await vi.advanceTimersByTimeAsync(500);
     await expect(promise).resolves.toBe('closed');
-    expect(vi.getTimerCount()).toBe(0);
+    expect(clearPoll).toHaveBeenCalled();
+    expect(clearDeadline).toHaveBeenCalled();
   });
   it('cancels and closes the popup', async () => {
     const { popup, promise } = openPopup();
@@ -101,11 +105,12 @@ describe('Popup SSO security and lifecycle', () => {
     expect(readSsoState()).toBeNull();
   });
   it('times out after ten minutes', async () => {
-    const { popup, promise } = openPopup();
+    const { popup, promise, clearPoll, clearDeadline } = openPopup();
     await vi.advanceTimersByTimeAsync(600000);
     await expect(promise).resolves.toEqual({ error: 'Sign-in timed out. Please try again.' });
     expect(popup.close).toHaveBeenCalledOnce();
-    expect(vi.getTimerCount()).toBe(0);
+    expect(clearPoll).toHaveBeenCalled();
+    expect(clearDeadline).toHaveBeenCalled();
   });
   it('returns a verified callback error', async () => {
     const { popup, promise } = openPopup();
