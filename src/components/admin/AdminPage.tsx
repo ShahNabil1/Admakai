@@ -76,8 +76,7 @@ export function AdminPage() {
   };
   const deniedSignIn = async () => {
     await supabase.auth.signOut();
-    // Keep a fresh user gesture for window.open after asynchronous sign-out.
-    setNote('Continue to sign in with your Branta employee account.');
+    if (active.current) signIn();
   };
   if (state === 'loading') return <main className="admin-center"><div className="admin-card"><div className="admin-spinner" /><p>Checking your Branta Hub access…</p></div></main>;
   if (state === 'denied') return (
