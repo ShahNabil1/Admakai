@@ -243,3 +243,10 @@ button.admin-stat:hover{border-color:color-mix(in oklab,var(--foreground) 35%,tr
 .admin-card p.sso-foot{margin-top:1.5rem;font-size:.78rem;line-height:1.55;max-width:21rem}
 @media (max-width:420px){.sso-card{padding:1.75rem 1.25rem 1.5rem}.admin-card h1.sso-title{font-size:2rem}.sso-btn{font-size:.85rem}}
 @media (prefers-reduced-motion:reduce){.sso-card{animation:none}.sso-btn,.sso-btn::after,.sso-btn-icon,.sso-btn-arrow{transition:none;transform:none!important}}
+/* refined SSO typography */
+.admin-card h1.sso-title{font-family:var(--font-sans);font-style:normal;font-weight:500;font-size:1.05rem;letter-spacing:.32em;text-transform:uppercase;margin:1rem 0 .35rem;padding-left:.32em;color:var(--fg)}
+.admin-card p.sso-kicker{font-size:.8rem;letter-spacing:0;text-transform:none;color:var(--muted);margin-bottom:1.75rem}
+.sso-btn-label{text-align:center;padding-right:2.35rem}
+.sso-glow{font-weight:600;color:var(--branta-2);text-shadow:0 0 10px color-mix(in oklab,var(--branta) 80%,transparent);animation:sso-glow 2.8s ease-in-out infinite}
+@keyframes sso-glow{50%{text-shadow:0 0 16px var(--branta),0 0 4px var(--branta-2)}}
+@media (prefers-reduced-motion:reduce){.sso-glow{animation:none}}
