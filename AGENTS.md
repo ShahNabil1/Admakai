@@ -38,3 +38,4 @@
 - Invoice totals, numbers and paid status come only from DB triggers; payments are insert-only, so money state cannot drift.
 - Entity changes are logged by the shared log_activity trigger; UIs only read public.activity, keeping audit append-only.
 - src/components/admin and src/components/home have their own AGENTS.md; read it before changing files there.
+- Clickable controls get the hand cursor from a global base rule in src/styles.css; never set cursor:default on interactive elements, so new buttons/links inherit it automatically.
