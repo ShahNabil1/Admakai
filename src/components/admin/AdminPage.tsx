@@ -101,7 +101,7 @@ export function AdminPage() {
           <span className="sso-btn-icon"><img src="/brand/branta-icon.png" alt="" width="20" height="20" /></span>
           <span className="sso-btn-label">{blocked ? 'Continue in this tab' : note && note !== 'Sign-in window was closed.' ? 'Try again' : 'Continue with Branta Console'}</span>
         </button>
-      </>
+      </>}
     </div></main>
   );
   return <AdminShell {...state} />;
