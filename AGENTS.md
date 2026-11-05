@@ -39,3 +39,4 @@
 - Entity changes are logged by the shared log_activity trigger; UIs only read public.activity, keeping audit append-only.
 - src/components/admin and src/components/home have their own AGENTS.md; read it before changing files there.
 - Clickable controls get the hand cursor from a global base rule in src/styles.css; never set cursor:default on interactive elements, so new buttons/links inherit it automatically.
+- Service foundations stay additive in src/components/services and src/content, use existing tokens with isolated selectors, and future leaf pages call serviceHead; VimeoPlayer alone embeds service video with lazy client-only SDK loading and accessible dialogs so existing pages remain unaffected.
