@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { appendFinderExchange, createFinderExchange, FINDER_HISTORY_LIMIT, FINDER_REDIRECT_DELAY, FINDER_REPLY_DELAY } from './service-finder-state';
+import { appendFinderExchange, createFinderExchange, finderGreeting, FINDER_HISTORY_LIMIT, FINDER_REDIRECT_DELAY, FINDER_REPLY_DELAY } from './service-finder-state';
 import { matchService } from '@/lib/serviceMatcher';
 import { services } from '@/data/services';
 import { SERVICE_KEYWORDS } from '@/data/serviceKeywords';
 
 describe('Service finder rules', () => {
+  it.each([[5, 'Good morning,'], [11, 'Good morning,'], [12, 'Good afternoon,'], [16, 'Good afternoon,'], [17, 'Good evening,'], [4, 'Good evening,'], [23, 'Good evening,']])('greets at device hour %s', (hour, greeting) => expect(finderGreeting(Number(hour))).toBe(greeting));
   it.each([
     ['amar kapor er online business, model chara chobi lagbe', 'virtual-try-on'],
     ['ঈদের অফারের জন্য অ্যাড বানাতে চাই', 'festival-campaign-pack'],

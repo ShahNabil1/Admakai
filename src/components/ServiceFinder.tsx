@@ -1,30 +1,41 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowUpRight, AudioLines, Mic, Send, Square } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight, ArrowUpRight, CalendarDays, ChevronDown, ChevronRight, Clock3, Code2, ListChecks, Mic, Plus, Rocket, Send, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { findPublishedService, servicePriceLine, visibleCategories, type Service } from '@/data/services';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { findPublishedService, publishedServices, servicePriceLine, visibleCategories, type Service } from '@/data/services';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
-import { appendFinderExchange, createFinderExchange, FINDER_REDIRECT_DELAY, FINDER_REPLY_DELAY, type BrowserSpeechRecognition, type FinderExchange, type SpeechConstructor } from './service-finder-state';
+import { appendFinderExchange, createFinderExchange, FINDER_REDIRECT_DELAY, FINDER_REPLY_DELAY, finderGreeting, type FinderLanguage, type BrowserSpeechRecognition, type FinderExchange, type SpeechConstructor } from './service-finder-state';
 import './service-finder.css';
 
 const AUTO_REDIRECT = false;
 const PLACEHOLDERS = [
+  'Ask anything...',
   'e.g. I sell sarees online and need photos on a model',
   'ঈদের অফারের জন্য একটা অ্যাড লাগবে',
-  'We need a demo video for our software',
   'amar restaurant er jonno reels lagbe',
 ];
 const SUGGESTIONS = [
-  { title: 'Sell more online', text: 'I run an online clothing shop and need photos of my products on a model.' },
-  { title: 'Launch a product', text: 'We are launching a new drink and need a TV-style ad.' },
-  { title: 'Explain my software', text: 'We need a video that shows how our app works.' },
+  { title: 'Sell More Online', subtitle: 'Product photos on a model', icon: ListChecks, tone: 'blue', text: 'I run an online clothing shop and need photos of my products on a model.' },
+  { title: 'Launch a Product', subtitle: 'A TV-style ad', icon: Rocket, tone: 'violet', text: 'We are launching a new drink and need a TV-style ad.' },
+  { title: 'Explain My Software', subtitle: 'An app demo video', icon: Code2, tone: 'red', text: 'We need a video that shows how our app works.' },
+];
+const POPULAR_REQUESTS = [
+  ['I need photos of my sarees on a model', 'Virtual Try-On'],
+  ['Eid offer ad for my Facebook shop', 'Festival Campaign Pack'],
+  ['Demo video for our software', 'SaaS Explainer'],
+  ['Logo animation for my YouTube intro', 'Motion Ad'],
+  ['TV commercial for my juice brand', 'AI Commercial, 30s'],
+  ['White background photos for Daraz', 'E-commerce Catalogue'],
+  ['Cut my podcast into short clips', 'Long to Short'],
+  ['Monthly reels and posts for my page', 'Monthly Subscription'],
 ];
 
 function ResultCard({ service, primary, index }: { service: Service; primary: boolean; index: number }) {
   const reduce = useMotionPreference();
   return <motion.article className="service-finder-result" initial={reduce ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : .35, delay: reduce ? 0 : index * .07 }}>
-    <h3>{service.name}{service.isNew && <span className="page-pill">New</span>}</h3>
+    <h3>{service.name}{service.isNew && <span className="service-finder-new">New</span>}</h3>
     <p>{service.shortDescription}</p>
     <div className="service-finder-result-meta"><span>{service.delivery}</span><strong>{servicePriceLine(service)}</strong></div>
     <Button asChild variant={primary ? 'default' : 'outline'} className="service-finder-open"><Link to="/services/$slug" params={{ slug: service.slug }}>Open {service.name}<ArrowUpRight aria-hidden="true"/></Link></Button>
@@ -34,6 +45,9 @@ function ResultCard({ service, primary, index }: { service: Service; primary: bo
 export function ServiceFinder({ onBrowse }: { onBrowse: (category?: string) => void }) {
   const reduce = useMotionPreference();
   const navigate = useNavigate();
+  const [greeting, setGreeting] = useState('');
+  const [language, setLanguage] = useState<FinderLanguage>('bn-BD');
+  const [expanded, setExpanded] = useState(false);
   const [input, setInput] = useState('');
   const [focused, setFocused] = useState(false);
   const [placeholder, setPlaceholder] = useState(0);
@@ -51,11 +65,19 @@ export function ServiceFinder({ onBrowse }: { onBrowse: (category?: string) => v
   const nextId = useRef(0);
 
   useEffect(() => {
+    // Warm all script subsets at page load, not when a user sends Bengali text.
+    for (const weight of [400, 500, 600, 700]) {
+      void document.fonts.load(`${weight} 12px "Noto Sans Bengali"`, 'বাংলা English').catch(() => undefined);
+    }
+    const updateGreeting = () => setGreeting(finderGreeting(new Date().getHours()));
+    updateGreeting();
+    const greetingTimer = setInterval(updateGreeting, 60000);
     const browser = window as Window & { SpeechRecognition?: SpeechConstructor; webkitSpeechRecognition?: SpeechConstructor };
     speechConstructor.current = browser.SpeechRecognition ?? browser.webkitSpeechRecognition ?? null;
     setSpeechSupported(Boolean(speechConstructor.current));
     return () => {
-      recognition.current?.abort();
+      clearInterval(greetingTimer);
+      if (recognition.current) { recognition.current.onresult = null; recognition.current.abort(); }
       timers.current.forEach(timer => clearTimeout(timer));
     };
   }, []);
@@ -104,7 +126,7 @@ export function ServiceFinder({ onBrowse }: { onBrowse: (category?: string) => v
     timers.current.forEach(timer => clearTimeout(timer));
     timers.current.clear();
     if (recognition.current) { recognition.current.onresult = null; recognition.current.abort(); }
-    setHistory([]); setInput(''); setNotice(''); setListening(false); setStayId(null); setRedirectId(null);
+    setExpanded(false); setHistory([]); setInput(''); setNotice(''); setListening(false); setStayId(null); setRedirectId(null);
   };
   const toggleMic = () => {
     if (listening) { recognition.current?.stop(); return; }
@@ -112,7 +134,7 @@ export function ServiceFinder({ onBrowse }: { onBrowse: (category?: string) => v
     if (!Constructor) return;
     const speech = new Constructor();
     recognition.current = speech;
-    speech.lang = 'bn-BD'; speech.interimResults = true; speech.continuous = false;
+    speech.lang = language; speech.interimResults = true; speech.continuous = false;
     const prefix = input.trim();
     speech.onresult = event => {
       const transcript = Array.from(event.results).map(result => result[0]?.transcript ?? '').join(' ');
@@ -123,54 +145,73 @@ export function ServiceFinder({ onBrowse }: { onBrowse: (category?: string) => v
     try { speech.start(); setListening(true); setFocused(true); setNotice(''); }
     catch { setListening(false); setNotice('Voice input is unavailable. You can type your message instead.'); }
   };
-  const bookButton = <Button asChild className="filter-pill" variant="ghost"><Link to="/book-a-call">Book a call<ArrowUpRight aria-hidden="true"/></Link></Button>;
+  const bookButton = <Button asChild variant="ghost" className="service-finder-chip"><Link to="/book-a-call"><CalendarDays aria-hidden="true"/>Book a call</Link></Button>;
+  const transition = { duration: reduce ? 0 : .22 };
 
-  return <section className="service-finder container-site" aria-label="Service finder">
+  return <section className="service-finder" aria-label="Service finder">
     <div className="service-finder-inner">
-      <header className="service-finder-greeting">
-        <div className="service-finder-orb" aria-hidden="true"/>
-        <p className="service-finder-eyebrow">Not sure which service you need?</p>
-        <h1>Tell us what you want to make.</h1>
-        <p className="service-finder-subtext">Describe your product or goal in Bangla or English. We will point you to the right service in seconds.</p>
-      </header>
-      <div className="service-finder-panel">
-        <div className="service-finder-strip"><AudioLines aria-hidden="true"/><span>Instant answer. No sign-up. Bangla or English.</span></div>
-        {history.length > 0 && <div className="service-finder-chat" ref={chat} data-lenis-prevent tabIndex={0} aria-label="Service finder conversation">
-          {history.map(exchange => {
-            const { result } = exchange;
-            const matches = [result.best, ...result.alternatives].flatMap(slug => { const service = slug ? findPublishedService(slug) : undefined; return service ? [service] : []; });
-            const best = matches[0];
-            return <div className="service-finder-exchange" key={exchange.id}>
-              <p className="service-finder-user">{exchange.text}</p>
-              <div className="service-finder-reply" aria-live="polite" aria-relevant="additions text">
-                {!exchange.ready ? <div className="service-finder-typing" role="status" aria-label="Finding a service"><span/><span/><span/></div> : result.confidence === 'none' || !best ? <>
-                  <p>I could not match that to a service yet. Try telling me your product and what you want to make, for example: photos of my skincare products, or a video ad for Eid.</p>
-                  {bookButton}<div className="service-finder-categories">{visibleCategories().map(category => <Button key={category.id} variant="ghost" className="filter-pill" onClick={() => onBrowse(category.id)}>{category.name}</Button>)}</div>
-                </> : result.confidence === 'strong' ? <>
-                  <p>This looks like the right fit for you:</p><ResultCard service={best} primary index={0}/>
-                  {matches.length > 1 && <div className="service-finder-alternatives"><p>Also worth a look:</p>{matches.slice(1, 3).map(service => <Link className="service-finder-compact" key={service.slug} to="/services/$slug" params={{ slug: service.slug }}>{service.name}<ArrowUpRight aria-hidden="true"/></Link>)}</div>}
-                  {redirectId === exchange.id && <p className="service-finder-notice">Taking you there in 3 seconds <Button variant="link" onClick={() => setStayId(exchange.id)}>Stay here</Button></p>}
-                </> : <>
-                  <p>Here are the closest matches. Pick the one that fits best:</p>{matches.slice(0, 3).map((service, index) => <ResultCard key={service.slug} service={service} primary={false} index={index}/>)}
-                  <div className="service-finder-help"><p>Still not sure? Book a call and we will help you choose.</p>{bookButton}</div>
-                </>}
-              </div>
-            </div>;
-          })}
-        </div>}
+      <div className="service-finder-topbar">
+        <nav aria-label="Breadcrumb" className="service-finder-breadcrumb"><Link to="/">Home</Link><ChevronRight aria-hidden="true"/><span aria-current="page">Services</span></nav>
+        <div className="service-finder-top-actions"><span className="service-finder-availability"><i aria-hidden="true"/>{publishedServices().length} services available</span>{bookButton}</div>
+      </div>
+      <div className="service-finder-tabs" role="group" aria-label="Finder views">
+        <Button variant="ghost" className="service-finder-tab active" aria-pressed="true" onClick={() => textarea.current?.focus()}>Find a service</Button>
+        <Button variant="ghost" className="service-finder-tab" onClick={() => onBrowse()}>Browse all</Button>
+        {history.length > 0 && <Button variant="ghost" className="service-finder-start" onClick={startOver}>Start over</Button>}
+      </div>
+      <div className="service-finder-workspace">
+        <AnimatePresence initial={false} mode="wait">
+          {history.length === 0 ? <motion.header key="greeting" className="service-finder-greeting" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
+            <div className="service-finder-orb" aria-hidden="true"/>
+            <p className="service-finder-eyebrow">{greeting || '\u00a0'}</p>
+            <h1>WHAT DO YOU WANT TO MAKE?</h1>
+            <p className="service-finder-subtext">Tell us in Bangla or English. We will match you to the right service in seconds.</p>
+          </motion.header> : <motion.div key="chat" className="service-finder-chat" ref={chat} data-lenis-prevent tabIndex={0} aria-label="Service finder conversation" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
+            {history.map(exchange => {
+              const { result } = exchange;
+              const matches = [result.best, ...result.alternatives].flatMap(slug => { const service = slug ? findPublishedService(slug) : undefined; return service ? [service] : []; });
+              const best = matches[0];
+              return <div className="service-finder-exchange" key={exchange.id}>
+                <p className="service-finder-user">{exchange.text}</p>
+                <div className="service-finder-answer"><div className="service-finder-orb service-finder-orb-small" aria-hidden="true"/><div className="service-finder-reply" aria-live="polite" aria-relevant="additions text">
+                  {!exchange.ready ? <div className="service-finder-typing" role="status" aria-label="Finding a service"><span/><span/><span/></div> : result.confidence === 'none' || !best ? <>
+                    <p>I could not match that yet. Tell me your product and what you want to make, for example: photos of my skincare products, or a video ad for Eid.</p>
+                    {bookButton}<div className="service-finder-categories">{visibleCategories().map(category => <Button key={category.id} variant="ghost" className="service-finder-chip" onClick={() => onBrowse(category.id)}>{category.name}</Button>)}</div>
+                  </> : result.confidence === 'strong' ? <>
+                    <p>This looks like the right fit for you:</p><ResultCard service={best} primary index={0}/>
+                    {matches.length > 1 && <div className="service-finder-alternatives"><p>Also worth a look:</p>{matches.slice(1, 3).map(service => <Link className="service-finder-compact" key={service.slug} to="/services/$slug" params={{ slug: service.slug }}>{service.name}<ArrowUpRight aria-hidden="true"/></Link>)}</div>}
+                    {redirectId === exchange.id && <p className="service-finder-notice">Taking you there in 3 seconds <Button variant="link" onClick={() => setStayId(exchange.id)}>Stay here</Button></p>}
+                  </> : <>
+                    <p>Here are the closest matches. Pick the one that fits best:</p>{matches.slice(0, 3).map((service, index) => <ResultCard key={service.slug} service={service} primary={false} index={index}/>)}
+                    <div className="service-finder-help"><p>Still not sure? Book a call and we will help you choose.</p>{bookButton}</div>
+                  </>}
+                </div></div>
+              </div>;
+            })}
+          </motion.div>}
+        </AnimatePresence>
         <form className="service-finder-composer" onSubmit={event => { event.preventDefault(); send(input); }}>
           <textarea className="service-finder-input" ref={textarea} rows={2} aria-label="Describe your product or goal" placeholder={PLACEHOLDERS[placeholder]} value={input} onChange={event => setInput(event.target.value)} onFocus={() => setFocused(true)} onKeyDown={event => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); send(input); } }}/>
           <div className="service-finder-actions">
-            <div className="service-finder-links"><Button type="button" variant="ghost" className="filter-pill" onClick={() => onBrowse()}>Browse all services</Button>{bookButton}</div>
+            <div className="service-finder-links">
+              <Button type="button" variant="ghost" size="icon" className="service-finder-plus" aria-label="Browse all services" title="Browse all services" onClick={() => onBrowse()}><Plus aria-hidden="true"/></Button>
+              <DropdownMenu><DropdownMenuTrigger asChild><Button type="button" variant="ghost" className="service-finder-chip" aria-label="Voice input language">Language<ChevronDown aria-hidden="true"/></Button></DropdownMenuTrigger><DropdownMenuContent className="service-finder-language-menu" align="start"><DropdownMenuRadioGroup value={language} onValueChange={value => { if (value !== 'bn-BD' && value !== 'en-US') return; if (recognition.current) { recognition.current.onresult = null; recognition.current.abort(); } setListening(false); setLanguage(value); }}><DropdownMenuRadioItem value="bn-BD">বাংলা</DropdownMenuRadioItem><DropdownMenuRadioItem value="en-US">English</DropdownMenuRadioItem></DropdownMenuRadioGroup></DropdownMenuContent></DropdownMenu>
+              {bookButton}
+            </div>
             <div className="service-finder-tools">
-              {speechSupported && <Button type="button" variant="ghost" size="icon" className="service-finder-round service-finder-mic" aria-label={listening ? 'Stop voice input' : 'Start voice input'} aria-pressed={listening} title={listening ? 'Stop voice input' : 'Start voice input. Your browser may send audio to its speech recognition provider.'} onClick={toggleMic}>{listening ? <Square/> : <Mic/>}</Button>}
-              <Button type="submit" size="icon" className="service-finder-round" aria-label="Send message" title="Send message" disabled={!input.trim()}><Send/></Button>
+              {speechSupported && <Button type="button" variant="ghost" className="service-finder-chip service-finder-mic" aria-label={listening ? 'Stop voice input' : 'Start voice input'} aria-pressed={listening} title={listening ? 'Stop voice input' : 'Start voice input. Your browser may send audio to its speech recognition provider.'} onClick={toggleMic}>{listening ? <Square aria-hidden="true"/> : <Mic aria-hidden="true"/>}<span>Voice</span></Button>}
+              <Button type="submit" size="icon" className="service-finder-send" aria-label="Send message" title="Send message" disabled={!input.trim()}><Send aria-hidden="true"/></Button>
             </div>
           </div>
           {notice && <p className="service-finder-notice" role="status">{notice}</p>}
         </form>
+        <AnimatePresence initial={false}>
+          {history.length === 0 && <motion.div className="service-finder-discovery" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
+            <div className="service-finder-suggestions">{SUGGESTIONS.map(suggestion => <Button key={suggestion.title} variant="ghost" className="service-finder-suggestion" onClick={() => send(suggestion.text)}><span className="service-finder-suggestion-heading"><span className={`service-finder-icon service-finder-icon-${suggestion.tone}`}><suggestion.icon aria-hidden="true"/></span><strong>{suggestion.title}</strong></span><span className="service-finder-suggestion-bottom">{suggestion.subtitle}<ArrowRight aria-hidden="true"/></span></Button>)}</div>
+            <div className="service-finder-popular"><h2><Clock3 aria-hidden="true"/>Popular requests</h2><div>{POPULAR_REQUESTS.slice(0, expanded ? 8 : 4).map(([question, service], index) => <Button key={question} variant="ghost" className={`service-finder-request ${!expanded && index === 3 ? 'service-finder-request-faded' : ''}`} onClick={() => { if (question) send(question); }}><span>{question}</span><span>{service}</span></Button>)}</div><Button variant="ghost" className="service-finder-see-more" aria-expanded={expanded} onClick={() => setExpanded(current => !current)}>{expanded ? 'See less' : 'See more'}<ArrowRight aria-hidden="true"/></Button></div>
+          </motion.div>}
+        </AnimatePresence>
       </div>
-      {history.length === 0 ? <div className="service-finder-suggestions">{SUGGESTIONS.map(suggestion => <Button key={suggestion.title} variant="ghost" className="service-finder-suggestion" onClick={() => send(suggestion.text)}><strong>{suggestion.title}</strong><span>{suggestion.text}</span></Button>)}</div> : <div className="service-finder-reset"><Button variant="link" onClick={startOver}>Start over</Button></div>}
     </div>
   </section>;
 }

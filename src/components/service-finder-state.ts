@@ -4,6 +4,12 @@ import { matchService, type MatchResult } from '@/lib/serviceMatcher';
 export const FINDER_REPLY_DELAY = 600;
 export const FINDER_REDIRECT_DELAY = 3000;
 export const FINDER_HISTORY_LIMIT = 4;
+export function finderGreeting(hour: number) {
+  if (hour >= 5 && hour < 12) return 'Good morning,';
+  if (hour >= 12 && hour < 17) return 'Good afternoon,';
+  return 'Good evening,';
+}
+export type FinderLanguage = 'bn-BD' | 'en-US';
 export type FinderExchange = { id: number; text: string; result: MatchResult; ready: boolean };
 export function createFinderExchange(id: number, text: string): FinderExchange {
   return { id, text: text.trim(), result: matchService(text.trim(), publishedServices().map(service => service.slug)), ready: false };
