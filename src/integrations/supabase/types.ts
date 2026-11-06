@@ -867,6 +867,136 @@ export type Database = {
         }
         Relationships: []
       }
+      work_categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      work_services: {
+        Row: {
+          position: number
+          service_slug: string
+          work_id: string
+        }
+        Insert: {
+          position?: number
+          service_slug: string
+          work_id: string
+        }
+        Update: {
+          position?: number
+          service_slug?: string
+          work_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_services_work_id_fkey"
+            columns: ["work_id"]
+            isOneToOne: false
+            referencedRelation: "works"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      works: {
+        Row: {
+          aspect: string
+          case_study: Json
+          category_id: string | null
+          client_name: string | null
+          created_at: string
+          duration_sec: number | null
+          featured: boolean
+          id: string
+          industry: string | null
+          published: boolean
+          seo_description: string | null
+          seo_title: string | null
+          short_description: string | null
+          slug: string
+          sort_order: number
+          tags: string[]
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          vimeo_id: string
+          year: number | null
+        }
+        Insert: {
+          aspect?: string
+          case_study?: Json
+          category_id?: string | null
+          client_name?: string | null
+          created_at?: string
+          duration_sec?: number | null
+          featured?: boolean
+          id?: string
+          industry?: string | null
+          published?: boolean
+          seo_description?: string | null
+          seo_title?: string | null
+          short_description?: string | null
+          slug: string
+          sort_order?: number
+          tags?: string[]
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          vimeo_id: string
+          year?: number | null
+        }
+        Update: {
+          aspect?: string
+          case_study?: Json
+          category_id?: string | null
+          client_name?: string | null
+          created_at?: string
+          duration_sec?: number | null
+          featured?: boolean
+          id?: string
+          industry?: string | null
+          published?: boolean
+          seo_description?: string | null
+          seo_title?: string | null
+          short_description?: string | null
+          slug?: string
+          sort_order?: number
+          tags?: string[]
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          vimeo_id?: string
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "works_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "work_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
