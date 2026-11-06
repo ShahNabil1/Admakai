@@ -9,6 +9,7 @@ import { publishedServices, visibleCategories, serviceAliases } from '@/data/ser
 import { ServiceCatalogueCard } from '@/components/services/ServiceCatalogueCard';
 import { Faq } from '@/components/home/Faq';
 import { CtaStrip, Inclusions, PageHero } from './PageElements';
+import { ServiceFinder } from '@/components/ServiceFinder';
 export function ServicesPage() {
   const [goal, setGoal] = useState<ServiceGoal>('all');
   const reduce = useMotionPreference();
@@ -33,8 +34,12 @@ export function ServicesPage() {
   }, [hash]);
   const transition = { duration: reduce ? 0 : .28, ease: [.22, 1, .36, 1] as const };
   return <div className="public-page">
+    <ServiceFinder onBrowse={category => {
+      setGoal('all');
+      window.setTimeout(() => document.getElementById(category ?? 'service-catalogue')?.scrollIntoView({ block: 'start', behavior: reduce ? 'instant' : 'smooth' }), reduce ? 0 : 320);
+    }}/>
     <PageHero eyebrow="Services" title={`${publishedServices().length} ways to make an ad without a shoot.`} intro="Pick a service, or tell us the job and we will pick for you."/>
-    <section className="container-site services-layout">
+    <section className="container-site services-layout" id="service-catalogue">
       <nav className="service-index" aria-label="Service families">{categories.map(category => <Link to="/services" hash={category.id} key={category.id}>{category.name}</Link>)}</nav>
       <div className="service-catalogue-content">
         <div className="service-goal-filter" role="group" aria-labelledby="service-goal-label">

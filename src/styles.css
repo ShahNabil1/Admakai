@@ -85,6 +85,9 @@
   --seo-intro: #A8A8A8;
   --faq-answer: oklch(0.853 0 0);
   --footer-hills-mask: linear-gradient(to bottom, transparent 0%, transparent 65%, oklch(0 0 0) 66%, oklch(0 0 0) 100%);
+  --finder-orb-glow: radial-gradient(circle, color-mix(in oklab,var(--fg) 25%,transparent), transparent 70%);
+  --finder-orb-fill: radial-gradient(circle at 30% 25%,var(--accent),transparent 55%), radial-gradient(circle at 72% 75%,var(--ink),transparent 65%), conic-gradient(from 40deg,var(--fg),var(--muted),var(--surface),var(--fg));
+  --finder-orb-shadow: inset -8px -12px 24px color-mix(in oklab,var(--ink) 65%,transparent), inset 5px 5px 18px color-mix(in oklab,var(--accent) 60%,transparent);
 
   --background: var(--bg);
   --foreground: var(--fg);
