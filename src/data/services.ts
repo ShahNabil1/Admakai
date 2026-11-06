@@ -1289,6 +1289,327 @@ export const services: Service[] = [
       "ai-brand-ambassador"
     ],
     "compareNote": "Reels Pack of 6 is a one-time order. Monthly Content Subscription gives you a set amount every month with a dedicated manager."
+  },
+  {
+    "slug": "ai-voiceover",
+    "category": "voice",
+    "published": true,
+    "priceFrom": null,
+    "name": "AI Voiceover",
+    "isNew": false,
+    "shortDescription": "Clean Bangla or English voice for ads, documentaries and training, original or cloned.",
+    "description": "Script polish, two voice options, mixed and mastered. Priced per minute.",
+    "bestFor": [
+      "Agencies",
+      "YouTubers",
+      "Corporates",
+      "Anyone whose video needs a voice"
+    ],
+    "signsYouNeedIt": [
+      "Good voice artists are hard to find",
+      "You need many versions fast"
+    ],
+    "whatYouGet": [
+      "Script polish",
+      "2 voice options",
+      "Mixed and mastered"
+    ],
+    "whatWeNeed": [
+      "Your script",
+      "The tone you want"
+    ],
+    "formats": "Audio",
+    "delivery": "2 days",
+    "pricing": "per-minute",
+    "goals": [
+      "corp",
+      "edu",
+      "creator"
+    ],
+    "related": [
+      "dubbing-lip-sync",
+      "audio-ad-ivr"
+    ]
+  },
+  {
+    "slug": "dubbing-lip-sync",
+    "category": "voice",
+    "published": true,
+    "priceFrom": null,
+    "name": "Dubbing and Lip Sync",
+    "isNew": false,
+    "shortDescription": "Your video in another language, with matched lip movement.",
+    "description": "Translation, a dubbed voice and lip sync, so your video speaks to a new audience naturally. Priced per minute.",
+    "bestFor": [
+      "Exporters",
+      "Tourism",
+      "Edtech",
+      "Creators targeting international or expatriate audiences"
+    ],
+    "signsYouNeedIt": [
+      "You want a Bangla video in English, Arabic or Hindi",
+      "You want to bring a foreign ad into Bangla"
+    ],
+    "whatYouGet": [
+      "Translation",
+      "Dub in the same voice",
+      "Lip sync"
+    ],
+    "whatWeNeed": [
+      "The original video",
+      "The target language"
+    ],
+    "formats": "16:9, 9:16",
+    "delivery": "3 days",
+    "pricing": "per-minute",
+    "goals": [
+      "corp",
+      "creator",
+      "edu"
+    ],
+    "related": [
+      "ai-voiceover"
+    ]
+  },
+  {
+    "slug": "jingle-sonic-logo",
+    "category": "voice",
+    "published": true,
+    "priceFrom": null,
+    "name": "Jingle and Sonic Logo",
+    "isNew": true,
+    "shortDescription": "A 3 to 10 second sound people recognise as your brand, plus a 30 second Bangla jingle.",
+    "description": "Your brand's audio signature for the end of every ad, plus a full jingle for reels and radio.",
+    "bestFor": [
+      "FMCG",
+      "Telecom",
+      "Restaurant chains",
+      "Real estate and apps"
+    ],
+    "signsYouNeedIt": [
+      "You want the same sound at the end of every ad",
+      "You want a song for reels or radio"
+    ],
+    "whatYouGet": [
+      "3 sonic logo options, one finalised",
+      "30s jingle with lyrics",
+      "Instrumental version",
+      "Copyright clear"
+    ],
+    "whatWeNeed": [
+      "Your brand mood",
+      "Your slogan, if you have one"
+    ],
+    "formats": "Audio",
+    "delivery": "4 days",
+    "pricing": "quote",
+    "goals": [
+      "brand",
+      "launch"
+    ],
+    "related": [
+      "custom-ad-music",
+      "audio-ad-ivr"
+    ]
+  },
+  {
+    "slug": "custom-ad-music",
+    "category": "voice",
+    "published": true,
+    "priceFrom": null,
+    "name": "Custom Ad Music",
+    "isNew": true,
+    "shortDescription": "Original background music for each ad, with no copyright claims.",
+    "description": "A track composed for your ad's mood and cut to every length you need. It sounds like your brand, not like everyone else's stock music.",
+    "bestFor": [
+      "Agencies",
+      "YouTubers",
+      "Brands"
+    ],
+    "signsYouNeedIt": [
+      "Stock music sounds like everyone else",
+      "You have had copyright claims"
+    ],
+    "whatYouGet": [
+      "1 original track",
+      "15s, 30s and 60s cuts",
+      "Stems on request"
+    ],
+    "whatWeNeed": [
+      "Your video or mood references"
+    ],
+    "formats": "Audio",
+    "delivery": "2 days",
+    "pricing": "quote",
+    "goals": [
+      "brand",
+      "creator"
+    ],
+    "related": [
+      "jingle-sonic-logo"
+    ]
+  },
+  {
+    "slug": "audio-ad-ivr",
+    "category": "voice",
+    "published": true,
+    "priceFrom": null,
+    "name": "Audio Ad and IVR Voice",
+    "isNew": true,
+    "shortDescription": "Radio, Spotify and YouTube audio ads, plus your hotline voice prompts.",
+    "description": "One consistent brand voice across your audio ads and your phone system.",
+    "bestFor": [
+      "Banks and telecom",
+      "Hospitals",
+      "E-commerce call centres",
+      "Brands advertising on radio"
+    ],
+    "signsYouNeedIt": [
+      "Your hotline sounds robotic or outdated",
+      "You need a radio spot"
+    ],
+    "whatYouGet": [
+      "30s audio ad with music and sound effects",
+      "IVR menu script with every prompt recorded",
+      "One brand voice everywhere"
+    ],
+    "whatWeNeed": [
+      "Your hotline menu or the ad message"
+    ],
+    "formats": "Audio",
+    "delivery": "2 days",
+    "pricing": "quote",
+    "goals": [
+      "corp",
+      "brand"
+    ],
+    "related": [
+      "ai-voiceover",
+      "jingle-sonic-logo"
+    ]
+  },
+  {
+    "slug": "creative-strategy-hook-research",
+    "category": "strategy",
+    "published": true,
+    "priceFrom": null,
+    "name": "Creative Strategy and Hook Research",
+    "isNew": true,
+    "shortDescription": "Research before production: what competitors run, which angles work, and 10 hooks for you.",
+    "description": "We study your market and your customers so your ad budget goes into ideas that have a reason to work.",
+    "bestFor": [
+      "New brands",
+      "Brands whose ads are not working",
+      "Businesses that want certainty before a big spend"
+    ],
+    "signsYouNeedIt": [
+      "You are spending on ads but not selling",
+      "You do not know what to say",
+      "You are entering a new market"
+    ],
+    "whatYouGet": [
+      "Analysis of 10 to 15 competitors' ads from Meta Ad Library",
+      "Customer language and objections from comments and reviews",
+      "Angle map",
+      "10 hooks and 3 scripts",
+      "PDF report"
+    ],
+    "whatWeNeed": [
+      "Your product and price",
+      "Competitor names, if you know them"
+    ],
+    "formats": "PDF",
+    "delivery": "3 days",
+    "pricing": "quote",
+    "goals": [
+      "sales",
+      "launch"
+    ],
+    "related": [
+      "ad-variant-pack",
+      "ad-performance-review"
+    ]
+  },
+  {
+    "slug": "ad-performance-review",
+    "category": "strategy",
+    "published": true,
+    "priceFrom": null,
+    "name": "Ad Performance Review and Refresh",
+    "isNew": true,
+    "shortDescription": "A monthly review of your ad results with clear stop, scale and refresh decisions.",
+    "description": "We read your ad results and tell you what to stop, what to scale and what needs a new version. We do not run your ads. We make the creative work harder.",
+    "bestFor": [
+      "Brands running ads in-house or through another agency",
+      "Facebook commerce and e-commerce"
+    ],
+    "signsYouNeedIt": [
+      "Results are good one day and bad the next",
+      "You cannot tell why an ad is working or not"
+    ],
+    "whatYouGet": [
+      "Monthly review call",
+      "Creative report: hook rate, hold rate, CTR and cost per order",
+      "A list of what to stop and what to scale",
+      "4 new variants"
+    ],
+    "whatWeNeed": [
+      "View-only access to your ad account"
+    ],
+    "formats": "Report and ads",
+    "delivery": "Monthly",
+    "pricing": "monthly",
+    "goals": [
+      "sales",
+      "ecom"
+    ],
+    "related": [
+      "ad-variant-pack",
+      "creative-strategy-hook-research"
+    ]
+  },
+  {
+    "slug": "ai-mascot-brand-character",
+    "category": "strategy",
+    "published": true,
+    "priceFrom": null,
+    "name": "AI Mascot and Brand Character",
+    "isNew": true,
+    "shortDescription": "Your brand's own cartoon or 3D character, consistent across ads, packs and posts.",
+    "description": "A memorable character that makes your brand easy to recognise, delivered with a full character sheet and a usage guide.",
+    "bestFor": [
+      "Kids' products",
+      "Snacks",
+      "Apps and delivery services",
+      "Schools"
+    ],
+    "signsYouNeedIt": [
+      "You want to stand out from competitors",
+      "You do not want to show human faces",
+      "Your audience is children or young people"
+    ],
+    "whatYouGet": [
+      "3 concepts and 1 final",
+      "Character sheet: front, side and back",
+      "8 poses and expressions",
+      "Short animation test",
+      "Usage guide"
+    ],
+    "whatWeNeed": [
+      "Your brand mood and audience",
+      "Logo and colours"
+    ],
+    "formats": "PNG and character sheet",
+    "delivery": "5 days",
+    "pricing": "quote",
+    "goals": [
+      "brand",
+      "launch"
+    ],
+    "related": [
+      "ai-brand-ambassador",
+      "motion-ad-logo-animation"
+    ]
   }
 ];
 
