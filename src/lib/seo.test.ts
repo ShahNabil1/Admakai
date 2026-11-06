@@ -6,6 +6,6 @@ describe('SEO business rules', () => {
   it('records Branta Tech as parent organization', () => { expect(organizationSchema()['parentOrganization']).toEqual({ '@type': 'Organization', name: 'Branta Tech' }); });
   it('records 2026 as founding date', () => { expect(organizationSchema()['foundingDate']).toBe('2026'); });
   it('records Dhaka Bangladesh as the studio address', () => { expect(organizationSchema()['address']).toEqual({ '@type': 'PostalAddress', addressLocality: 'Dhaka', addressCountry: 'BD' }); });
-  it('does not publish an offer for the unconfigured monthly price', () => { expect(monthlyPlanSchema()).not.toHaveProperty('offers'); });
+  it('uses the approved Growth range in its offer', () => { expect(monthlyPlanSchema()['offers']).toMatchObject({lowPrice:550,highPrice:950,priceCurrency:'USD'}); });
   it('does not expose admin destinations in the sitemap', () => { expect(publicSeoPaths.some(path => path.startsWith('/admin'))).toBe(false); });
 });

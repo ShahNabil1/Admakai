@@ -41,3 +41,6 @@
 - Clickable controls get the hand cursor from a global base rule in src/styles.css; never set cursor:default on interactive elements, so new buttons/links inherit it automatically.
 - Service catalogue, published visibility and SEO paths derive from src/data/services.ts; useServices adapts legacy consumers without database reads. Preserve shared design, isolated service CSS, serviceHead and VimeoPlayer-only embeds.
 - CurrencyProvider owns cached rates; ServicePrice syncs prices, not Finder requests.
+
+- Monthly plan terms and ranges live only in src/data/plans.ts; legacy pricing adapters return that static source rather than database pricing rows, so Home and Pricing cannot drift.
+- Home featured works and exact published count use src/lib/works.ts Query reads; failed counts remain null rather than invented totals.

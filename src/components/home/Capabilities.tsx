@@ -4,6 +4,7 @@ import { useEffect, useRef, type PointerEvent } from 'react';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
 import { Reveal } from '@/components/motion/Reveal';
 import { capabilities, type Capability } from '@/data/capabilities';
+import { useCurrency } from '@/lib/currency';
 import './capabilities.css';
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -16,6 +17,7 @@ function track(e: PointerEvent<HTMLElement>) {
 
 function CapCard({ c, i, reduce }: { c: Capability; i: number; reduce: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
+  const { formatRange } = useCurrency();
   useEffect(() => {
     const v = ref.current;
     if (!v) return;
@@ -33,13 +35,14 @@ function CapCard({ c, i, reduce }: { c: Capability; i: number; reduce: boolean }
       viewport={{ once: true, margin: '-60px' }}
       transition={{ delay: reduce ? 0 : (i % 4) * 0.08, duration: reduce ? 0 : 0.8, ease }}
     >
-      <Link to="/services" hash={c.slug} className="cap-card" onPointerMove={track}>
+      <Link to="/services/$slug" params={{ slug: c.slug }} className="cap-card" onPointerMove={track}>
         <div className="cap-card__media">
           <video ref={ref} data-src={c.video} poster={c.poster} muted loop playsInline preload="none" aria-label={c.label} />
         </div>
         <div className="cap-card__body">
           <h3 className="cap-card__title">{c.title}</h3>
           <p className="cap-card__copy">{c.copy}</p>
+          <small className="cap-card__copy">Estimated {formatRange(c.priceMinUsd, c.priceMaxUsd)} per {c.priceUnit}</small>
         </div>
         <span className="cap-card__cursor" aria-hidden="true">View</span>
       </Link>

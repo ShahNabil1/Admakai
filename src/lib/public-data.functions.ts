@@ -16,6 +16,7 @@ const projections = {
 };
 export const getPublicRows = createServerFn({method:'GET'}).inputValidator((input:unknown)=>tableSchema.parse(input)).handler(async ({data:table})=>{
  const fallback = fallbacks[table];
+ if (table === 'services' || table === 'pricing_tiers') return fallback;
  const url = process.env['SUPABASE_URL'];
  const key = process.env['SUPABASE_PUBLISHABLE_KEY'] || process.env['SUPABASE_ANON_KEY'];
  if (!url || !key) return fallback;

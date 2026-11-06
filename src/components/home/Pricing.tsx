@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { animate, motion, useInView } from "framer-motion";
 import { ShieldCheck } from "lucide-react";
@@ -6,21 +6,24 @@ import { Button } from "@/components/ui/button";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { Reveal } from "@/components/motion/Reveal";
 import { useMotionPreference } from "@/hooks/use-motion-preference";
-import { CURRENCY, PRICE_MONTHLY, contentPartner, numericMonthlyPrice, pricingInclusions } from "@/data/pricing";
+import { contentPartner, pricingInclusions } from "@/data/pricing";
+import { useCurrency } from "@/lib/currency";
 import "./pricing.css";
 
 function MonthlyPrice() {
   const ref = useRef<HTMLSpanElement>(null);
   const visible = useInView(ref, { once: true });
   const reduce = useMotionPreference();
-  const amount = numericMonthlyPrice(PRICE_MONTHLY);
-  const [count, setCount] = useState(0);
+  const { formatRange } = useCurrency();
+  const [progress, setProgress] = useState(0);
   useEffect(() => {
-    if (!visible || reduce || amount === null) return;
-    const control = animate(0, amount, { duration: 1.2, onUpdate: value => setCount(Math.round(value)) });
+    if (!visible || reduce) return;
+    const control = animate(0, 1, { duration: 1.2, onUpdate: setProgress });
     return () => control.stop();
-  }, [visible, reduce, amount]);
-  return <span ref={ref} itemProp="price" content={String(PRICE_MONTHLY)}>{amount === null ? PRICE_MONTHLY : (reduce ? amount : count).toLocaleString("en-US")}</span>;
+  }, [visible, reduce]);
+  const fraction = reduce ? 1 : progress;
+  const range = formatRange(contentPartner.priceMinUsd * fraction, contentPartner.priceMaxUsd * fraction);
+  return <span ref={ref}>{range.split(' to ').map((amount, i) => <Fragment key={i}>{i > 0 ? ' to ' : null}<span className="inline-block">{amount}</span></Fragment>)}</span>;
 }
 
 export function Pricing() {
@@ -32,10 +35,10 @@ export function Pricing() {
         <motion.article className="home-pricing-card" initial={reduce ? false : "hidden"} animate={reduce ? "visible" : false} whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={{ hidden: { opacity: 0, y: 32 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: reduce ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }}>
           <div>
             <h3 className="home-pricing-name">{contentPartner.name}</h3>
-            <p className="home-pricing-price"><strong><span itemProp="priceCurrency">{CURRENCY}</span><MonthlyPrice /></strong><small>/month</small></p>
+            <p className="home-pricing-price"><strong><MonthlyPrice /></strong><small>/month</small></p>
             <p className="home-pricing-copy">{contentPartner.videos} videos and {contentPartner.statics} statics every month, any mix of the services below. Pause or cancel any month.</p>
             <div className="home-pricing-actions">
-              <Magnetic><Button asChild className="home-pricing-start"><Link to="/book">Get started</Link></Button></Magnetic>
+              <Magnetic><Button asChild className="home-pricing-start"><Link to="/book" search={{plan: contentPartner.id}}>Get started</Link></Button></Magnetic>
               <Button asChild variant="link" className="home-pricing-all"><Link to="/pricing">See all plans</Link></Button>
             </div>
             <p className="home-pricing-guarantee"><ShieldCheck aria-hidden="true" />First cut in {contentPartner.firstCutDays} days or the month is free</p>

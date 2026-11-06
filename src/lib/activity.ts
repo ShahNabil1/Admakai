@@ -1,7 +1,7 @@
 export type ActivityRow = { id?: string; entity_type: string; entity_id?: string; verb: string; from_value: string | null; to_value: string | null; meta: Record<string, unknown> | null; created_at?: string; actor_id?: string | null };
 
 const NOUN: Record<string, string> = { leads: 'Lead', lead: 'Lead', bookings: 'Booking', booking: 'Booking', projects: 'Project', tasks: 'Task', deliverables: 'Deliverable', invoices: 'Invoice', payments: 'Payment', clients: 'Client' };
-const human = (v: string | null) => (v ?? '—').replace(/_/g, ' ');
+const human = (v: string | null) => (v ?? 'Not supplied').replace(/_/g, ' ');
 
 export function describeActivity(a: ActivityRow): string {
   const noun = NOUN[a.entity_type] ?? a.entity_type;

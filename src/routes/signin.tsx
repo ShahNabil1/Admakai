@@ -134,7 +134,7 @@ function SignIn() {
 
   const title = { signin: 'Sign in to Admakai', signup: 'Create your account', verify: 'Confirm your email', forgot: 'Forgot password', reset: resetVerified ? 'Set a new password' : 'Enter your code' }[mode];
   const Icon = mode === 'signup' ? UserRound : mode === 'verify' ? Mail : mode === 'signin' ? LockKeyhole : ShieldCheck;
-  const lengthHint = <p className="client-small auth-hint">{PASSWORD_MIN}–{PASSWORD_MAX} characters.</p>;
+  const lengthHint = <p className="client-small auth-hint">{PASSWORD_MIN} to {PASSWORD_MAX} characters.</p>;
   const codeField = <><label htmlFor="auth-code">6-digit code</label><input id="auth-code" className="auth-otp" inputMode="numeric" autoComplete="one-time-code" placeholder="••••••" value={code} onChange={e => setCode(normalizeOtp(e.target.value))} /></>;
   const resendButton = <Button type="button" variant="link" className="client-text-button auth-resend" disabled={!!seconds || busy} onClick={resend}>{seconds ? `Resend code in ${seconds}s` : 'Resend code'}</Button>;
 

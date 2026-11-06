@@ -28,6 +28,20 @@ export async function listPublishedWorks(): Promise<WorkWithLinks[]> {
   return (data ?? []) as WorkWithLinks[];
 }
 
+export async function getPublishedWorkCount(): Promise<number | null> {
+  try {
+    const { count, error } = await supabase.from('works').select('id', { count: 'exact', head: true }).eq('published', true);
+    return error ? null : count;
+  } catch { return null; }
+}
+export const publishedWorkCountQueryOptions = queryOptions({
+  queryKey: ['works', 'published-count'], queryFn: getPublishedWorkCount, staleTime: 60000,
+});
+export function recentFeaturedWorks(works: WorkWithLinks[]) {
+  return works.filter(work => work.published && work.featured)
+    .sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 6);
+}
+
 export async function getWorkBySlug(slug: string): Promise<WorkWithLinks | null> {
   const { data, error } = await supabase
     .from('works')

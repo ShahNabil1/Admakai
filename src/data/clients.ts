@@ -9,9 +9,6 @@ import skinfo from '@/assets/clients/skinfo-170x80.png.asset.json';
 import beautyScience from '@/assets/clients/TBS-logo.png.asset.json';
 import gentlePark from '@/assets/clients/Asset_1.png.asset.json';
 
-export const BRAND_COUNT = 40;
-export const AD_COUNT = 300;
-
 export const clients = [
   { name: 'Akboria', src: akboria.url },
   { name: 'Towbah Islamic Corner', src: towbah.url },

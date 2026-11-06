@@ -180,7 +180,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
     if (!(manager || lead.owner_id === userId)) { toast.error('Assign this lead to yourself first.'); return; }
     if (stage === 'lost') { setOpenLead(lead.id); toast.message('Choose a reason to mark this lead lost.'); return; }
     if (stage === 'won') {
-      confirm({ title: 'Mark this lead won?', description: `A project for ${who(lead.clients)} opens automatically and the client becomes a customer.`, confirmLabel: 'Mark won', run: () => update('leads', lead.id, { stage }, 'Lead won — project created') });
+      confirm({ title: 'Mark this lead won?', description: `A project for ${who(lead.clients)} opens automatically and the client becomes a customer.`, confirmLabel: 'Mark won', run: () => update('leads', lead.id, { stage }, 'Lead won: project created') });
       return;
     }
     void update('leads', lead.id, { stage }, `Moved to ${label(stage)}`);
@@ -274,7 +274,7 @@ function BookingCard({ b, names, userId, onOpen }: { b: Booking; names: Record<s
   return (
     <button className="admin-card-item" onClick={onOpen}>
       <div className="admin-card-top"><strong className="truncate">{who(b.clients)}</strong><Pill value={b.status} /></div>
-      <p className="truncate">{b.clients?.email ?? '—'}</p>
+      <p className="truncate">{b.clients?.email ?? 'Not supplied'}</p>
       <div className="admin-card-meta"><span>{fmtDate(b.slot_at)}</span><span className="truncate">{b.owner_id ? b.owner_id === userId ? 'You' : names[b.owner_id] ?? 'Assigned' : 'Unassigned'}</span></div>
     </button>
   );
@@ -350,7 +350,7 @@ function LeadCard({ l, names, userId, onOpen, draggable }: { l: Lead; names: Rec
   return (
     <button className="admin-card-item is-lead" onClick={onOpen} draggable={draggable} onDragStart={(e: DragEvent) => e.dataTransfer.setData('text/lead', l.id)}>
       <div className="admin-card-top"><strong className="truncate">{who(l.clients)}</strong>{l.value_estimate ? <small>{l.currency ?? 'BDT'} {l.value_estimate.toLocaleString()}</small> : null}</div>
-      <p className="truncate">{l.clients?.email ?? '—'}</p>
+      <p className="truncate">{l.clients?.email ?? 'Not supplied'}</p>
       <div className="admin-card-meta"><span>{days === 0 ? 'Today' : `${days}d in stage`}</span><span className="truncate">{l.owner_id ? l.owner_id === userId ? 'You' : names[l.owner_id] ?? 'Assigned' : 'Unassigned'}</span></div>
     </button>
   );
@@ -396,8 +396,8 @@ function LeadDetail({ l, manager, userId, names, update, onStage }: { l: Lead; m
       </div>
       <div className="admin-detail-grid">
         <dl className="admin-facts">
-          <div><dt>WhatsApp</dt><dd>{l.clients?.whatsapp ?? '—'}</dd></div>
-          <div><dt>Brand</dt><dd>{l.clients?.brand_name ?? '—'}</dd></div>
+          <div><dt>WhatsApp</dt><dd>{l.clients?.whatsapp ?? 'Not supplied'}</dd></div>
+          <div><dt>Brand</dt><dd>{l.clients?.brand_name ?? 'Not supplied'}</dd></div>
           <div><dt>Owner</dt><dd>{l.owner_id ? l.owner_id === userId ? 'You' : names[l.owner_id] ?? 'Assigned' : 'Unassigned'}</dd></div>
           <div><dt>In stage since</dt><dd>{fmtDate(l.stage_changed_at)}</dd></div>
         </dl>
@@ -419,7 +419,7 @@ function LeadDetail({ l, manager, userId, names, update, onStage }: { l: Lead; m
           <button className="admin-btn-ghost is-danger" disabled={!reason.cat} onClick={() => update('leads', l.id, { stage: 'lost', lost_reason_category: reason.cat, lost_reason: reason.text.trim() || null }, 'Lead marked lost')}>Mark lost</button>
         </div>
       )}
-      {l.stage === 'lost' && <p className="admin-note">Lost — {label(l.lost_reason_category ?? 'no reason')}{l.lost_reason ? `: ${l.lost_reason}` : ''}</p>}
+      {l.stage === 'lost' && <p className="admin-note">Lost: {label(l.lost_reason_category ?? 'no reason')}{l.lost_reason ? `: ${l.lost_reason}` : ''}</p>}
       <h3 className="admin-sub">Activity</h3>
       <Timeline rows={activity} names={names} />
     </div>

@@ -5,12 +5,14 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
 import { useMotionPreference } from "@/hooks/use-motion-preference";
-import { faqItems, toggleFaq } from "@/data/faq";
+import { faqCostAnswer, faqItems, toggleFaq } from "@/data/faq";
+import { useCurrency } from "@/lib/currency";
 import "./faq.css";
 
 export function Faq() {
   const [open, setOpen] = useState<string | null>(faqItems[0].id);
   const reduce = useMotionPreference();
+  const { formatRange } = useCurrency();
   return <section className="home-faq" aria-labelledby="home-faq-title">
     <div className="container-site home-faq-grid">
       <div className="home-faq-intro"><Reveal>
@@ -25,7 +27,7 @@ export function Faq() {
           <h3><Button variant="ghost" className="home-faq-question" id={`faq-question-${item.id}`} aria-expanded={expanded} aria-controls={`faq-answer-${item.id}`} onClick={() => setOpen(current => toggleFaq(current, item.id))}>
             <span className="home-faq-question-text">{item.question}</span><span className="home-faq-plus" aria-hidden="true"><Plus /></span>
           </Button></h3>
-          <AnimatePresence initial={false}>{expanded && <motion.div key="answer" className="home-faq-answer" id={`faq-answer-${item.id}`} role="region" aria-labelledby={`faq-question-${item.id}`} initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: reduce ? 0 : 0.35 }}><p>{item.answer}</p></motion.div>}</AnimatePresence>
+          <AnimatePresence initial={false}>{expanded && <motion.div key="answer" className="home-faq-answer" id={`faq-answer-${item.id}`} role="region" aria-labelledby={`faq-question-${item.id}`} initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: reduce ? 0 : 0.35 }}><p>{item.id === "cost" ? <>{faqCostAnswer(formatRange)} <Link to="/pricing">See pricing</Link></> : item.answer}</p></motion.div>}</AnimatePresence>
         </motion.div>;
       })}</div>
     </div>

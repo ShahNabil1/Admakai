@@ -105,7 +105,7 @@ function NewInvoice({ onClose, onCreated }: { onClose: () => void; onCreated: (i
       <div className="admin-form">
         <label>Client<select value={form.client_id} onChange={(e) => setForm({ ...form, client_id: e.target.value, project_id: '' })}>
           <option value="">Choose a client</option>
-          {clients.map((c) => <option key={c.id} value={c.id}>{clientName(c)}{c.email ? ` — ${c.email}` : ''}</option>)}
+          {clients.map((c) => <option key={c.id} value={c.id}>{clientName(c)}{c.email ? `: ${c.email}` : ''}</option>)}
         </select></label>
         <label>Project (optional)<select value={form.project_id} onChange={(e) => setForm({ ...form, project_id: e.target.value })}>
           <option value="">No project</option>

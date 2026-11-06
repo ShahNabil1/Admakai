@@ -25,7 +25,7 @@ function useWorkThumbnail(work: WorkWithLinks): string {
   return thumb;
 }
 
-function WorkCard({ work, vertical, previewing, onPreview }: {
+export function WorkCard({ work, vertical, previewing, onPreview }: {
   work: WorkWithLinks; vertical?: boolean; previewing: boolean; onPreview: (id: string | null) => void;
 }) {
   const thumb = useWorkThumbnail(work);

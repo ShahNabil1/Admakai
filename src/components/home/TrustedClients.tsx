@@ -1,10 +1,12 @@
 import { animate, motion, useInView, type MotionStyle } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import { AD_COUNT, BRAND_COUNT, clients, marqueeClients } from '@/data/clients';
+import { clients, marqueeClients } from '@/data/clients';
 import { Reveal } from '@/components/motion/Reveal';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
 import { useTimedLogo } from '@/hooks/use-timed-logo';
 import { Button } from '@/components/ui/button';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { publishedWorkCountQueryOptions } from '@/lib/works';
 import './trusted-clients.css';
 
 function Counter({ value, started }: { value: number; started: boolean }) {
@@ -51,6 +53,7 @@ function LogoRow({ reverse = false, started }: { reverse?: boolean; started: boo
 }
 
 export function TrustedClients() {
+  const { data: count } = useSuspenseQuery(publishedWorkCountQueryOptions);
   const section = useRef<HTMLElement>(null);
   const started = useInView(section, { once: true, amount: 0.2 });
   return (
@@ -58,7 +61,7 @@ export function TrustedClients() {
       <div className="trusted-clients__heading container-site">
         <Reveal><p className="trusted-clients__eyebrow">Brands that stopped booking shoots</p></Reveal>
         <Reveal delay={0.1}>
-          <p className="trusted-clients__summary"><Counter value={BRAND_COUNT} started={started} /> brands. <Counter value={AD_COUNT} started={started} /> ads. Zero shoots.</p>
+          <p className="trusted-clients__summary">{count === null ? "Ads made without a single shoot." : <><Counter value={count} started={started} /> ads. Zero shoots.</>}</p>
         </Reveal>
       </div>
       <div className="trusted-clients__rows">

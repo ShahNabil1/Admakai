@@ -1,4 +1,3 @@
-import { useSupabaseTable } from './useSupabaseTable';
-import type { PricingTier } from '@/data/pricing';
-export type { PricingTier } from '@/data/pricing';
-export const usePricingTiers = () => useSupabaseTable<PricingTier>('pricing_tiers');
+import { plans } from '@/data/plans';
+export type { MonthlyPlan as PricingTier } from '@/data/plans';
+export const usePricingTiers = () => ({ data: plans, loading: false, error: null });
