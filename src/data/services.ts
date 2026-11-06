@@ -5,7 +5,10 @@ export type Service = {
   whatYouGet: string[]; whatWeNeed: string[]; formats: string; delivery: string;
   pricing: 'quote' | 'per-minute' | 'monthly'; priceFrom: number | null;
   goals: string[]; related: string[]; compareNote?: string; featured?: boolean;
+  heroTitle: { lead: string; accent: string; rest: string };
+  heroMedia?: { reels: HeroMedia[]; sides: HeroMedia[] };
 };
+export type HeroMedia = { src: string; poster?: string; aspect: '9:16' | '16:9' | '1:1'; label?: string };
 export const serviceCategories: ServiceCategory[] = [
   {
     "id": "video-ads",
@@ -42,6 +45,7 @@ export const serviceCategories: ServiceCategory[] = [
 export const services: Service[] = [
   {
     "slug": "ai-commercial-30s",
+    "heroTitle": {"lead": "Your next TV ad,", "accent": "shoot-free", "rest": "in 7 days."},
     "featured": true,
     "category": "video-ads",
     "published": true,
@@ -90,6 +94,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-commercial-60s",
+    "heroTitle": {"lead": "Tell your brand story", "accent": "without", "rest": "a film crew."},
     "category": "video-ads",
     "published": true,
     "priceFrom": null,
@@ -134,6 +139,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-ugc-ads",
+    "heroTitle": {"lead": "Creator-style ads", "accent": "without", "rest": "hiring creators."},
     "featured": true,
     "category": "video-ads",
     "published": true,
@@ -180,6 +186,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ad-variant-pack",
+    "heroTitle": {"lead": "Turn one ad into", "accent": "ten", "rest": "winning versions."},
     "category": "video-ads",
     "published": true,
     "priceFrom": null,
@@ -220,6 +227,7 @@ export const services: Service[] = [
   },
   {
     "slug": "product-film",
+    "heroTitle": {"lead": "Launch your product", "accent": "like a keynote", "rest": "."},
     "category": "video-ads",
     "published": true,
     "priceFrom": null,
@@ -262,6 +270,7 @@ export const services: Service[] = [
   },
   {
     "slug": "saas-explainer",
+    "heroTitle": {"lead": "Show what your software does", "accent": "in 90 seconds", "rest": "."},
     "category": "video-ads",
     "published": true,
     "priceFrom": null,
@@ -308,6 +317,7 @@ export const services: Service[] = [
   },
   {
     "slug": "cgi-product-commercial",
+    "heroTitle": {"lead": "Make your product", "accent": "the hero", "rest": "of every frame."},
     "category": "video-ads",
     "published": true,
     "priceFrom": null,
@@ -352,6 +362,7 @@ export const services: Service[] = [
   },
   {
     "slug": "festival-campaign-pack",
+    "heroTitle": {"lead": "Your Eid and Puja campaign,", "accent": "ready", "rest": "before the rush."},
     "category": "video-ads",
     "published": true,
     "priceFrom": null,
@@ -396,6 +407,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-storyboard-animatic",
+    "heroTitle": {"lead": "See the whole ad", "accent": "before", "rest": "you spend on it."},
     "category": "video-ads",
     "published": true,
     "priceFrom": null,
@@ -437,6 +449,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-product-photoshoot",
+    "heroTitle": {"lead": "Studio product photos", "accent": "without", "rest": "the studio."},
     "category": "imagery",
     "published": true,
     "priceFrom": null,
@@ -481,6 +494,7 @@ export const services: Service[] = [
   },
   {
     "slug": "fashion-film-lookbook",
+    "heroTitle": {"lead": "Launch your collection", "accent": "on the runway", "rest": "with no model shoot."},
     "category": "imagery",
     "published": true,
     "priceFrom": null,
@@ -523,6 +537,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-brand-model",
+    "heroTitle": {"lead": "A face that belongs", "accent": "only", "rest": "to your brand."},
     "category": "imagery",
     "published": true,
     "priceFrom": null,
@@ -565,6 +580,7 @@ export const services: Service[] = [
   },
   {
     "slug": "virtual-try-on",
+    "heroTitle": {"lead": "Put your clothes", "accent": "on a model", "rest": "without a shoot."},
     "featured": true,
     "category": "imagery",
     "published": true,
@@ -608,6 +624,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ecommerce-catalogue-pack",
+    "heroTitle": {"lead": "Clean catalogue photos", "accent": "for every", "rest": "product you sell."},
     "category": "imagery",
     "published": true,
     "priceFrom": null,
@@ -651,6 +668,7 @@ export const services: Service[] = [
   },
   {
     "slug": "static-ad-creative-pack",
+    "heroTitle": {"lead": "Ten image ads", "accent": "that say it clearly", "rest": "."},
     "category": "imagery",
     "published": true,
     "priceFrom": null,
@@ -694,6 +712,7 @@ export const services: Service[] = [
   },
   {
     "slug": "3d-product-360",
+    "heroTitle": {"lead": "Let customers", "accent": "spin", "rest": "your product before they buy."},
     "category": "imagery",
     "published": true,
     "priceFrom": null,
@@ -736,6 +755,7 @@ export const services: Service[] = [
   },
   {
     "slug": "digital-clone",
+    "heroTitle": {"lead": "Post every week", "accent": "without", "rest": "filming every week."},
     "category": "people",
     "published": true,
     "priceFrom": null,
@@ -781,6 +801,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-presenter-video",
+    "heroTitle": {"lead": "A presenter who explains", "accent": "your product", "rest": "on camera."},
     "category": "people",
     "published": true,
     "priceFrom": null,
@@ -826,6 +847,7 @@ export const services: Service[] = [
   },
   {
     "slug": "training-video",
+    "heroTitle": {"lead": "Train every branch", "accent": "the same way", "rest": ", anytime."},
     "category": "people",
     "published": true,
     "priceFrom": null,
@@ -868,6 +890,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-brand-ambassador",
+    "heroTitle": {"lead": "A brand ambassador", "accent": "who never", "rest": "misses a post."},
     "category": "people",
     "published": true,
     "priceFrom": null,
@@ -912,6 +935,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-corporate-headshots",
+    "heroTitle": {"lead": "Matching team photos", "accent": "from", "rest": "simple selfies."},
     "category": "people",
     "published": true,
     "priceFrom": null,
@@ -952,6 +976,7 @@ export const services: Service[] = [
   },
   {
     "slug": "reels-pack-of-6",
+    "heroTitle": {"lead": "A month of reels", "accent": "from", "rest": "one brief."},
     "featured": true,
     "category": "social",
     "published": true,
@@ -998,6 +1023,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-video-editing",
+    "heroTitle": {"lead": "Your raw footage,", "accent": "finished", "rest": "like a pro edit."},
     "category": "social",
     "published": true,
     "priceFrom": null,
@@ -1041,6 +1067,7 @@ export const services: Service[] = [
   },
   {
     "slug": "motion-ad-logo-animation",
+    "heroTitle": {"lead": "Bring your logo", "accent": "to life", "rest": "in 15 seconds."},
     "category": "social",
     "published": true,
     "priceFrom": null,
@@ -1083,6 +1110,7 @@ export const services: Service[] = [
   },
   {
     "slug": "explainer-motion-graphics",
+    "heroTitle": {"lead": "Make your numbers", "accent": "easy", "rest": "to understand."},
     "category": "social",
     "published": true,
     "priceFrom": null,
@@ -1128,6 +1156,7 @@ export const services: Service[] = [
   },
   {
     "slug": "long-to-short-repurposing",
+    "heroTitle": {"lead": "Turn one long video", "accent": "into weeks", "rest": "of shorts."},
     "category": "social",
     "published": true,
     "priceFrom": null,
@@ -1169,6 +1198,7 @@ export const services: Service[] = [
   },
   {
     "slug": "corporate-avc-event-video",
+    "heroTitle": {"lead": "Your company story", "accent": "on the big screen", "rest": "."},
     "category": "social",
     "published": true,
     "priceFrom": null,
@@ -1211,6 +1241,7 @@ export const services: Service[] = [
   },
   {
     "slug": "youtube-channel-pack",
+    "heroTitle": {"lead": "Thumbnails people", "accent": "actually click", "rest": "."},
     "category": "social",
     "published": true,
     "priceFrom": null,
@@ -1252,6 +1283,7 @@ export const services: Service[] = [
   },
   {
     "slug": "monthly-content-subscription",
+    "heroTitle": {"lead": "Your content team,", "accent": "every month", "rest": ", one price."},
     "category": "social",
     "published": true,
     "priceFrom": null,
@@ -1296,6 +1328,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-voiceover",
+    "heroTitle": {"lead": "A clear Bangla or English voice", "accent": "in two days", "rest": "."},
     "category": "voice",
     "published": true,
     "priceFrom": null,
@@ -1337,6 +1370,7 @@ export const services: Service[] = [
   },
   {
     "slug": "dubbing-lip-sync",
+    "heroTitle": {"lead": "Your video", "accent": "in any language", "rest": ", lips in sync."},
     "category": "voice",
     "published": true,
     "priceFrom": null,
@@ -1377,6 +1411,7 @@ export const services: Service[] = [
   },
   {
     "slug": "jingle-sonic-logo",
+    "heroTitle": {"lead": "A sound people", "accent": "remember", "rest": "as your brand."},
     "category": "voice",
     "published": true,
     "priceFrom": null,
@@ -1418,6 +1453,7 @@ export const services: Service[] = [
   },
   {
     "slug": "custom-ad-music",
+    "heroTitle": {"lead": "Music made", "accent": "for your ad", "rest": ", no copyright claims."},
     "category": "voice",
     "published": true,
     "priceFrom": null,
@@ -1455,6 +1491,7 @@ export const services: Service[] = [
   },
   {
     "slug": "audio-ad-ivr",
+    "heroTitle": {"lead": "One brand voice", "accent": "from radio", "rest": "to your hotline."},
     "category": "voice",
     "published": true,
     "priceFrom": null,
@@ -1494,6 +1531,7 @@ export const services: Service[] = [
   },
   {
     "slug": "creative-strategy-hook-research",
+    "heroTitle": {"lead": "Know what to say", "accent": "before", "rest": "you spend on ads."},
     "category": "strategy",
     "published": true,
     "priceFrom": null,
@@ -1536,6 +1574,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ad-performance-review",
+    "heroTitle": {"lead": "Know which ads", "accent": "to stop", "rest": "and which to scale."},
     "category": "strategy",
     "published": true,
     "priceFrom": null,
@@ -1574,6 +1613,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-mascot-brand-character",
+    "heroTitle": {"lead": "A character people", "accent": "remember", "rest": "your brand by."},
     "category": "strategy",
     "published": true,
     "priceFrom": null,

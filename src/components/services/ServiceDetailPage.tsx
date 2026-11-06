@@ -8,6 +8,7 @@ import { SplitText } from '@/components/motion/SplitText';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
 import { detailInclusions, relatedServices, serviceCategories, servicePriceLine, type Service } from '@/data/services';
 import { ServiceCatalogueCard } from './ServiceCatalogueCard';
+import { ServiceHero } from './ServiceHero';
 import './service-detail.css';
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -26,31 +27,7 @@ export function ServiceDetailPage({ service }: { service: Service }) {
     transition: { delay: reduce ? 0 : delay, duration: reduce ? 0 : 0.7, ease },
   });
   return <div className="service-sd-page">
-    <header className="service-sd-hero" aria-labelledby="service-sd-title">
-      <video className="service-sd-hero-video" autoPlay={!reduce} muted loop playsInline preload="metadata" poster="/hero/hero-poster.jpg" aria-hidden="true"><source src="/hero/hero.mp4" type="video/mp4"/></video>
-      <div className="service-sd-hero-shade" aria-hidden="true"/>
-      <div className="service-sd-hero-content">
-        <motion.nav {...rise(.1)} className="service-sd-crumbs" aria-label="Breadcrumb">
-          <Link to="/services" className="service-sd-back"><ArrowLeft size={14}/>All services</Link>
-          <span aria-hidden="true">/</span><span>{category?.name}</span>
-        </motion.nav>
-        <div className="service-sd-tagline">
-          <motion.span className="service-sd-tagline-line" initial={reduce ? false : { width: 0 }} animate={{ width: 56 }} transition={{ delay: reduce ? 0 : .3, duration: reduce ? 0 : .6, ease }}/>
-          <span>{category?.intro}</span>
-          {service.isNew && <span className="service-sd-new">New</span>}
-        </div>
-        <h1 id="service-sd-title" className="service-sd-title"><SplitText text={service.name} delay={.4} stagger={.05}/></h1>
-        <motion.p {...rise(.8)} className="service-sd-sub">{service.description}</motion.p>
-      </div>
-      <motion.div {...rise(1)} className="service-sd-hero-bottom">
-        <Magnetic><Button asChild className="service-sd-call"><Link to="/book" search={{ service: service.slug, plan: '' }}>Book a call <ArrowUpRight size={18}/></Link></Button></Magnetic>
-        <dl className="service-sd-facts">
-          <div><dt>Price</dt><dd>{servicePriceLine(service)}</dd></div>
-          <div><dt>Delivery</dt><dd>{service.delivery}</dd></div>
-          <div><dt>Formats</dt><dd>{service.formats}</dd></div>
-        </dl>
-      </motion.div>
-    </header>
+    <ServiceHero service={service}/>
 
     <section className="service-sd-dark">
       <div className="service-sd-inner service-sd-split">
