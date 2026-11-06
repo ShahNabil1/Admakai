@@ -4,24 +4,14 @@ import { ArrowLeft, ArrowRight, Play, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from '@tanstack/react-router';
 import type { WorkWithLinks } from '@/lib/works';
-import { playingPreviews, portfolioTags } from './portfolio-rules';
+import { portfolioTags } from './portfolio-rules';
+import { VideoPreviewCard } from '@/components/VideoPreviewCard';
 import { VimeoPlayer } from './VimeoPlayer';
 import { ServiceLandingReveal } from './ServiceLandingMotion';
 
 const aspects = ['9:16', '16:9', '1:1', '9:16', '16:9', '1:1'] as const;
-function PortfolioVideo({ item, active, onVisible, onPlay }: { item: WorkWithLinks; active: boolean; onVisible: (visible: boolean) => void; onPlay: () => void }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const node = ref.current; if (!node) return;
-    const observer = new IntersectionObserver(([entry]) => onVisible(Boolean(entry?.isIntersecting)), { threshold: .2 });
-    observer.observe(node); return () => observer.disconnect();
-  }, [onVisible]);
-  return <div ref={ref}><VimeoPlayer videoKey={item.vimeo_id} videoData={{ id: item.vimeo_id, title: item.title, poster: item.thumbnail_url ?? '' }} mode="background" fetchThumbnail previewActive={active} aspect={item.aspect.replace(':', '/') as '9/16' | '16/9' | '1/1' | '4/5'} className="service-sd-portfolio-video" onPlay={onPlay}/></div>;
-}
-
 export function ServicePortfolio({ items }: { items: WorkWithLinks[] }) {
   const [tag, setTag] = useState('All');
-  const [visible, setVisible] = useState<number[]>([]);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const [edges, setEdges] = useState({ start: true, end: false });
@@ -29,7 +19,6 @@ export function ServicePortfolio({ items }: { items: WorkWithLinks[] }) {
   const drag = useRef<{ x: number; scroll: number; moved: boolean } | null>(null);
   const tags = portfolioTags(items.map(item => item.work_categories?.name));
   const filtered = tag === 'All' ? items : items.filter(item => item.work_categories?.name === tag);
-  const playing = playingPreviews(visible);
   const current = openIndex === null ? undefined : filtered[openIndex];
   const updateScroll = () => {
     const node = row.current; if (!node) return;
@@ -49,7 +38,7 @@ export function ServicePortfolio({ items }: { items: WorkWithLinks[] }) {
   const next = (direction: number) => setOpenIndex(index => index === null ? null : (index + direction + filtered.length) % filtered.length);
   return <>
     <div className="service-sd-work-tools">
-      {tags.length > 1 && <div className="service-sd-tabs" role="group" aria-label="Filter projects">{['All', ...tags].map(value => <Button key={value} variant="ghost" aria-pressed={tag === value} onClick={() => { setTag(value); setVisible([]); row.current?.scrollTo({ left: 0 }); }}>{value}</Button>)}</div>}
+      {tags.length > 1 && <div className="service-sd-tabs" role="group" aria-label="Filter projects">{['All', ...tags].map(value => <Button key={value} variant="ghost" aria-pressed={tag === value} onClick={() => { setTag(value); row.current?.scrollTo({ left: 0 }); }}>{value}</Button>)}</div>}
       <div className="service-sd-arrows"><Button variant="ghost" size="icon" disabled={edges.start} aria-label="Previous projects" title="Previous projects" onClick={() => scroll(-1)}><ArrowLeft/></Button><Button variant="ghost" size="icon" disabled={edges.end} aria-label="Next projects" title="Next projects" onClick={() => scroll(1)}><ArrowRight/></Button></div>
     </div>
     <div ref={row} className="service-sd-portfolio-row" data-lenis-prevent onScroll={updateScroll}
@@ -58,7 +47,7 @@ export function ServicePortfolio({ items }: { items: WorkWithLinks[] }) {
       onPointerUp={() => { requestAnimationFrame(() => { drag.current = null; }); }} onPointerCancel={() => { drag.current = null; }} onPointerLeave={() => { if (!drag.current?.moved) drag.current = null; }}
       onClickCapture={event => { if (drag.current?.moved) { event.preventDefault(); event.stopPropagation(); } }}>
       {filtered.length ? filtered.map((item, index) => <ServiceLandingReveal key={`${tag}-${item.id}`} delay={index * .06} className={`service-sd-portfolio-card service-sd-aspect-${item.aspect.replace(':', '-')}`}><figure>
-        <PortfolioVideo item={item} active={playing.includes(index) && openIndex === null} onVisible={isVisible => setVisible(previous => isVisible ? previous.includes(index) ? previous : [...previous, index] : previous.filter(value => value !== index))} onPlay={() => setOpenIndex(index)}/>
+        <VideoPreviewCard work={item} vertical className="service-sd-portfolio-video" disabled={openIndex !== null} onOpen={() => setOpenIndex(index)}/>
         <figcaption><h3>{item.title}</h3>{item.client_name && <p>{item.client_name}</p>}<Link to="/work/$slug" params={{ slug: item.slug }} className="service-sd-case-link">View case study<ArrowRight size={14} aria-hidden="true"/></Link></figcaption>
       </figure></ServiceLandingReveal>) : aspects.map((aspect, index) => <ServiceLandingReveal key={index} delay={index * .06} className={`service-sd-portfolio-card service-sd-aspect-${aspect.replace(':', '-')}`}><div className="service-sd-portfolio-placeholder"><span className="service-sd-placeholder-play"><Play size={28} aria-hidden="true"/></span><span className="service-sd-coming">Coming soon</span></div></ServiceLandingReveal>)}
     </div>

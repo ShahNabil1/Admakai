@@ -6,8 +6,8 @@ describe("Navbar scroll rules", () => {
     expect(getNavbarScrollState(80, 79, false).scrolled).toBe(false);
     expect(getNavbarScrollState(81, 80, false).scrolled).toBe(true);
   });
-  it("hides on scrolling down past 80px", () => {
-    expect(getNavbarScrollState(150, 100, false).hidden).toBe(true);
+  it("stays visible on scrolling down past 80px", () => {
+    expect(getNavbarScrollState(150, 100, false).hidden).toBe(false);
   });
   it("shows on scrolling up", () => {
     expect(getNavbarScrollState(120, 150, true).hidden).toBe(false);
@@ -16,7 +16,7 @@ describe("Navbar scroll rules", () => {
     expect(getNavbarScrollState(80, 20, true).hidden).toBe(false);
   });
   it("retains visibility when the scroll position does not change", () => {
-    expect(getNavbarScrollState(150, 150, true).hidden).toBe(true);
+    expect(getNavbarScrollState(150, 150, true).hidden).toBe(false);
     expect(getNavbarScrollState(150, 150, false).hidden).toBe(false);
   });
 });

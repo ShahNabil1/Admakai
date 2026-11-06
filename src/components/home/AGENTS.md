@@ -3,4 +3,4 @@
 - Home and Pricing use src/data/plans.ts for monthly terms and USD ranges, formatted by useCurrency; Growth powers Content Partner and its numeric ranges retain entry animation.
 - Home FAQ and its route-head FAQPage structured data share one browser-safe data module; use the TanStack head scripts API rather than react-helmet, and keep accordion state single-valued with accessible button headings.
 
-- Home cards derive service text and links from the catalogue; live published-work count and recent featured cards share works Query helpers and the public WorkCard presentation.
+- Home cards derive service text and links from the catalogue; live published-work count and recent featured cards share works Query helpers and the WorkCard presentation with VideoPreviewCard media.

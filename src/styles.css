@@ -19,7 +19,7 @@
  */
 
 @theme inline {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Instrument Serif", Georgia, serif;
   --radius-sm: 6px;
   --radius-md: 8px;
@@ -89,8 +89,14 @@
   --ethics-number: oklch(0.888 0 0);
   --ethics-number-line: oklch(0.348 0 0);
   --ethics-overlay: oklch(0 0 0 / 0.55);
-  --navbar-scrolled-bg: oklch(0.145 0 0 / 0.92);
-  --navbar-border: oklch(0.235 0 0);
+  --navbar-scrolled-bg: oklch(.15 .002 286 / .92);
+  --navbar-border: oklch(1 0 0 / .1);
+  --navbar-pill-height: 60px;
+  --video-preview-dark: var(--service-landing-dark);
+  --video-preview-white: var(--service-landing-bg);
+  --video-preview-yellow: var(--service-landing-yellow);
+  --video-preview-badge: oklch(.15 .002 286 / .85);
+  --video-preview-shimmer: linear-gradient(100deg, transparent 35%, oklch(1 0 0 / .08) 50%, transparent 65%);
   --pricing-copy: oklch(0.387 0 0);
   --pricing-price-suffix: oklch(0.51 0 0);
   --pricing-guarantee: oklch(0.888 0.058 89);

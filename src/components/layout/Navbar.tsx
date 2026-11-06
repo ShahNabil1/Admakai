@@ -38,7 +38,7 @@ export function Navbar({ hero = false }: { hero?: boolean }) {
   if (!hero) return <nav>Navbar</nav>;
 
   return (
-    <header className={`hero-navbar-wrapper${scroll.scrolled ? ' is-scrolled' : ''}${scroll.hidden && !open ? ' is-hidden' : ''}`}>
+    <header className={`hero-navbar-wrapper${scroll.scrolled ? ' is-scrolled' : ''}`}>
       <motion.nav className="hero-navbar" aria-label="Main navigation" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : .2, duration: reduce ? 0 : .6 }}>
         <Link to="/" aria-label="Admakai home"><img className="hero-logo" src="/brand/logo-white.png" alt="Admakai" width="218" height="44" /></Link>
         <div className="hero-nav-links">

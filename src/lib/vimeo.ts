@@ -71,7 +71,7 @@ export async function getVimeoMeta(id: string): Promise<VimeoMeta | null> {
   const cached = cache[id];
   if (cached && Date.now() - cached.at < META_CACHE_MS) return cached.meta;
   try {
-    const response = await fetch(`https://vimeo.com/api/oembed.json?url=https%3A//vimeo.com/${id}&width=1280`);
+    const response = await fetch(`https://vimeo.com/api/oembed.json?url=https%3A//vimeo.com/${id}&width=1280`, { signal: AbortSignal.timeout(10000) });
     if (!response.ok) return null;
     const data = await response.json() as { title?: string; thumbnail_url?: string; duration?: number; width?: number; height?: number };
     const width = Number(data.width) || 0;

@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { ArrowDown, ArrowUp, ExternalLink, Pencil, Plus, Search, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, ExternalLink, ImageDown, Pencil, Plus, Search, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { fetchMissingThumbnails } from '@/lib/work-thumbnails';
 import type { WorkCategory } from '@/types/work';
 import { deleteWork, updateWork, type WorkWithLinks } from '@/lib/works';
 import { swapWorkOrder } from '@/lib/work-admin';
@@ -29,6 +31,18 @@ export function WorksList({ works, categories, onReload, onNew, onEdit }: Props)
   const [state, setState] = useState<'all' | 'published' | 'draft'>('all');
   const [study, setStudy] = useState<'all' | 'sample' | 'real'>('all');
   const { confirm, node: confirmNode } = useConfirm();
+  const [fetching, setFetching] = useState(false);
+  const [thumbnailProgress, setThumbnailProgress] = useState('');
+  const fetchThumbnails = async () => {
+    setFetching(true);
+    try {
+      const result = await fetchMissingThumbnails(works, (done, total) => setThumbnailProgress(`${done}/${total}`));
+      if (result.failed) toast.warning(`${result.saved} thumbnails saved, ${result.failed} unavailable or not saved.`);
+      else toast.success(`${result.saved} thumbnails saved.`);
+      await onReload();
+    } catch { toast.error('Could not fetch thumbnails. Please retry.'); }
+    finally { setFetching(false); setThumbnailProgress(''); }
+  };
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -103,6 +117,7 @@ export function WorksList({ works, categories, onReload, onNew, onEdit }: Props)
           <option value="sample">Sample case study</option>
           <option value="real">Real case study</option>
         </select>
+        <Button variant="ghost" className="admin-btn-ghost" disabled={fetching} onClick={() => void fetchThumbnails()}><ImageDown size={15}/>{fetching ? `Fetching ${thumbnailProgress}` : 'Fetch missing thumbnails'}</Button>
         <button className="admin-btn" onClick={onNew}><Plus size={15} /> Add video</button>
       </div>
       {!reordering && <p className="admin-hint">Clear the search and filters to reorder works.</p>}

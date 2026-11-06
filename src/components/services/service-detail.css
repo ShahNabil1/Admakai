@@ -109,3 +109,5 @@
 .service-sd-modal-case { margin-top: .75rem; }
 .service-sd-see-all { margin-top: 1.5rem; text-align: center; }
 .service-sd-see-all a { display: inline-flex; align-items: center; gap: .4rem; font-weight: 600; color: inherit; text-decoration: underline; text-underline-offset: 4px; }
+
+.service-sd-portfolio-video.video-preview{padding:0;display:block;aspect-ratio:auto;white-space:normal;}

@@ -1,7 +1,3 @@
-export function getNavbarScrollState(currentY: number, previousY: number, wasHidden: boolean) {
-  const y = Math.max(0, currentY);
-  return {
-    scrolled: y > 80,
-    hidden: y <= 80 ? false : y === previousY ? wasHidden : y > previousY,
-  };
+export function getNavbarScrollState(currentY: number, _previousY: number, _wasHidden: boolean) {
+  return { scrolled: Math.max(0, currentY) > 80, hidden: false };
 }

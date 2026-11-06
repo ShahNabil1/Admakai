@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, Check, Pencil, Play, Share2 } from 'lucide-react';
+import { ArrowRight, Check, Pencil, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
-import { formatDuration, getThumbnail } from '@/lib/vimeo';
+import { formatDuration } from '@/lib/vimeo';
 import { rankUpNext } from '@/lib/work-search';
 import { publishedWorksQueryOptions, type WorkWithLinks } from '@/lib/works';
 import { findPublishedService, type Service } from '@/data/services';
 import { useCurrency } from '@/lib/currency';
+import { VideoPreviewCard } from '@/components/VideoPreviewCard';
 import { Reveal } from '@/components/motion/Reveal';
 
 /** Public work detail: a YouTube-style watch page with the case study below. */
@@ -49,6 +50,7 @@ export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
       const instance = new Player(stageRef.current, {
         id: Number(work.vimeo_id),
         autoplay: true,
+        muted: true,
         dnt: true,
         title: false,
         byline: false,
@@ -57,6 +59,7 @@ export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
       });
       player = instance;
       playerRef.current = instance;
+      setNeedsUnmute(true);
       instance.play().catch(() => {
         void instance.setMuted(true).then(() => instance.play());
         if (!disposed) setNeedsUnmute(true);
@@ -333,50 +336,18 @@ export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
   );
 }
 
-function useWorkThumbnail(work: WorkWithLinks): string {
-  const [thumb, setThumb] = useState(work.thumbnail_url ?? '');
-  useEffect(() => {
-    let alive = true;
-    if (work.thumbnail_url) { setThumb(work.thumbnail_url); return; }
-    void getThumbnail(work).then((url) => { if (alive) setThumb(url); });
-    return () => { alive = false; };
-  }, [work]);
-  return thumb;
-}
-
 function UpNextRow({ work }: { work: WorkWithLinks }) {
-  const vertical = work.aspect === '9:16' || work.aspect === '4:5';
-  const thumb = useWorkThumbnail(work);
-  return (
-    <Link to="/work/$slug" params={{ slug: work.slug }} className="workpage-rail-row">
-      <span className={`workpage-rail-thumb${vertical ? ' vertical' : ''}`}>
-        {vertical && thumb ? <img className="workpage-rail-blur" src={thumb} alt="" aria-hidden="true" loading="lazy" /> : null}
-        {thumb ? <img className="workpage-rail-img" src={thumb} alt="" loading="lazy" /> : null}
-        {work.duration_sec ? <span className="workpage-rail-duration">{formatDuration(work.duration_sec)}</span> : null}
-      </span>
-      <span className="workpage-rail-info">
-        <strong>{work.title}</strong>
-        <small>{work.client_name ?? 'Admakai'}{work.work_categories?.name ? ` · ${work.work_categories.name}` : ''}</small>
-      </span>
-    </Link>
-  );
+  return <div className="workpage-rail-row">
+    <VideoPreviewCard work={work} className="workpage-rail-thumb" />
+    <Link to="/work/$slug" params={{ slug: work.slug }} className="workpage-rail-info"><strong>{work.title}</strong><small>{work.client_name ?? 'Admakai'}{work.work_categories?.name ? ` · ${work.work_categories.name}` : ''}</small></Link>
+  </div>;
 }
 
 function MoreCard({ work }: { work: WorkWithLinks }) {
-  const thumb = useWorkThumbnail(work);
-  return (
-    <Link to="/work/$slug" params={{ slug: work.slug }} className="workpage-more-card">
-      <span className="workpage-more-thumb">
-        {thumb ? <img src={thumb} alt="" loading="lazy" /> : null}
-        <span className="workpage-more-play"><Play size={18} fill="currentColor" /></span>
-      </span>
-      <span className="workpage-more-info">
-        <img src="/brand/icon-512.png" alt="" width={32} height={32} />
-        <span>
-          <strong>{work.title}</strong>
-          <small>{[work.client_name ?? 'Admakai', work.work_categories?.name, work.year].filter(Boolean).join(' · ')}</small>
-        </span>
-      </span>
+  return <article className="workpage-more-card">
+    <VideoPreviewCard work={work} className="workpage-more-thumb" />
+    <Link to="/work/$slug" params={{ slug: work.slug }} className="workpage-more-info">
+      <img src="/brand/icon-512.png" alt="" width={32} height={32}/><span><strong>{work.title}</strong><small>{[work.client_name ?? 'Admakai', work.work_categories?.name, work.year].filter(Boolean).join(' · ')}</small></span>
     </Link>
-  );
+  </article>;
 }

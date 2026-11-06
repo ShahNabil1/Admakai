@@ -21,7 +21,7 @@
 - Public pages live under the pathless `_site` layout (Navbar/Footer/page transition); `/admin` sits outside it so the admin area gets its own shell.
 - Lenis + GSAP ScrollTrigger are initialised once from `__root.tsx` via `src/lib/smooth-scroll.ts`; motion helpers in `src/components/motion/` must honour prefers-reduced-motion.
 - The public Layout renders the Home fixed Navbar directly before main, outside hero isolation and page-transition containers, and the shared Footer after main on every public route.
-- Navbar scroll direction is resolved by a tested browser-safe helper; the Navbar owns its listener and keeps the mobile menu above the fixed wrapper.
+- Navbar owns its scroll listener and uses the tested 80px threshold helper for an always-visible floating pill; its mobile menu stays above the fixed wrapper.
 - Motion components use the hydration-safe motion preference hook to keep server and initial browser markup identical before applying reduced motion.
 - The Home client section owns its scoped styles and reads logo pointers and counts from `src/data/clients.ts`; CSS translates duplicated marquee tracks so continuous motion needs no JavaScript loop.
 - Footer settings use a public publishable-key server read of allowlisted key/value site_settings rows and a route-primed Query cache; missing tables or settings resolve to safe local fallbacks, never admin reads.
@@ -47,3 +47,5 @@
 
 - Booking interest helpers resolve published services and shared plans; exact interest prefixes the existing message while legacy need codes preserve SQL compatibility without schema changes.
 - About uses the approved browser-safe team list rather than database fallback identities, ensuring supplied order and initials-only presentation.
+- All public work thumbnails use VideoPreviewCard and a page-wide lazy preview controller to enforce one muted active player and three paused players; reduced motion and data saving prevent mounting. Service cards retain their lightbox action and dimensions.
+- Missing-thumbnail admin recovery uses cached oEmbed and RLS-scoped conditional writes matching the original empty field, so concurrent frame edits are not overwritten.

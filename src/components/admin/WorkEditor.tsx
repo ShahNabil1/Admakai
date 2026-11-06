@@ -7,6 +7,7 @@ import { isWorkSlugTaken } from '@/lib/work-admin';
 import { getVimeoMeta, parseVimeoId } from '@/lib/vimeo';
 import { fieldErrors, slugify, workFormSchema, WORK_ASPECTS } from '@/lib/work-schemas';
 import { serviceCategories, services } from '@/data/services';
+import { VideoPreviewCard } from '@/components/VideoPreviewCard';
 
 type Props = {
   work: WorkWithLinks | null;
@@ -88,7 +89,8 @@ function ListEditor({ items, onChange, addLabel, placeholder }: { items: string[
   const move = (i: number, dir: -1 | 1) => {
     const next = [...items];
     const [item] = next.splice(i, 1);
-    next.splice(i + dir, 0, item!);
+    if (item === undefined) return;
+    next.splice(i + dir, 0, item);
     onChange(next);
   };
   return (
@@ -267,6 +269,7 @@ export function WorkEditor({ work, categories, onDirtyChange, onSaved, onCancel 
             <label>Duration (seconds)<input inputMode="numeric" value={form.duration} onChange={(e) => patch({ duration: e.target.value.replace(/\D/g, '') })} />{err('duration_sec')}</label>
           </div>
           <label>Thumbnail URL<input type="url" placeholder="https://…" value={form.thumbnail} onChange={(e) => patch({ thumbnail: e.target.value })} />{err('thumbnail_url')}</label>
+          {form.thumbnail && <VideoPreviewCard key={form.thumbnail} disabled onOpen={() => {}} className="work-preview" work={{ ...work, id: work?.id ?? 'thumbnail-preview', title: form.title || 'Thumbnail preview', slug: form.slug || 'thumbnail-preview', vimeo_id: vimeoId ?? '', thumbnail_url: form.thumbnail, aspect: form.aspect } as WorkWithLinks}/>}
           <label>Short description
             <textarea rows={3} maxLength={300} value={form.short_description} onChange={(e) => patch({ short_description: e.target.value })} />
             <small className="work-counter">{form.short_description.length}/300</small>

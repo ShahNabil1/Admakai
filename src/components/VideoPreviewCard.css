@@ -1,0 +1,19 @@
+.video-preview{position:relative;display:block;overflow:hidden;isolation:isolate;background:var(--video-preview-dark);color:var(--video-preview-white);aspect-ratio:16/9;border-radius:inherit;transition:transform .2s ease;font-family:var(--service-landing-font)}
+.video-preview[data-playing=true]{transform:scale(1.02)}
+.video-preview>iframe{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;z-index:1}
+.video-preview-poster{position:absolute;inset:0;z-index:2;opacity:1;transition:opacity .2s ease;background:var(--video-preview-dark)}
+.video-preview[data-playing=true] .video-preview-poster{opacity:0;pointer-events:none}
+.video-preview-image,.video-preview-blur{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.video-preview.is-contained .video-preview-image{object-fit:contain}
+.video-preview-blur{filter:blur(18px);transform:scale(1.15);opacity:.65}
+.video-preview-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;padding:16px;text-align:center;background:var(--video-preview-dark)}
+.video-preview-fallback span{font-size:12px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.video-preview[data-loaded=false] .video-preview-poster:after{content:'';position:absolute;inset:0;background:var(--video-preview-shimmer);background-size:200% 100%;animation:video-preview-shimmer 1.6s infinite}
+.video-preview-duration,.video-preview-playing{position:absolute;z-index:3;bottom:8px;padding:2px 7px;border-radius:4px;background:var(--video-preview-badge);color:var(--video-preview-white);font-size:11px;line-height:1.6;font-weight:600}
+.video-preview-duration{right:8px}
+.video-preview-playing{left:8px;display:flex;align-items:center;gap:5px}
+.video-preview-playing i{width:5px;height:5px;border-radius:50%;background:var(--video-preview-yellow)}
+.video-preview-progress{position:absolute;bottom:0;left:0;right:0;height:2px;z-index:4;background:var(--video-preview-yellow);transform-origin:left;pointer-events:none}
+.video-preview:focus-visible{outline:2px solid var(--video-preview-yellow);outline-offset:3px}
+@keyframes video-preview-shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){.video-preview,.video-preview-poster{transition:none}.video-preview[data-loaded=false] .video-preview-poster:after{animation:none}.video-preview[data-playing=true]{transform:none}}
