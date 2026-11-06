@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
 import { Toaster, toast } from 'sonner';
-import { Activity, ArrowLeft, CalendarDays, FolderKanban, LayoutDashboard, LogOut, Receipt, Search, Users } from 'lucide-react';
+import { Activity, ArrowLeft, CalendarDays, Clapperboard, FolderKanban, LayoutDashboard, LogOut, Receipt, Search, Users } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { cancelHubPopupSignIn, isStaffRole, startHubPopupSignIn, startHubSignIn, type StaffRole } from '@/lib/sso';
 import { Button } from '@/components/ui/button';
 import type { ActivityRow } from '@/lib/activity';
 import { StaffProjects } from '@/components/delivery/ProjectsWorkspace';
 import { StaffBilling } from './Billing';
+import { WorkAdmin } from './WorkAdmin';
 import { ActivityLog, fetchActivity } from './ActivityLog';
 import { BookingSubmission, type BookingSubmissionData } from './BookingSubmission';
 import { Empty, Modal, Pill, Timeline, fmtDate, label, useConfirm } from './ui';
@@ -15,7 +16,7 @@ import './admin.css';
 type ClientRef = { contact_name: string | null; email: string | null; brand_name?: string | null; whatsapp?: string | null } | null;
 type Booking = BookingSubmissionData & { status: string; owner_id: string | null; meet_link: string | null; notes_shared: string | null };
 type Lead = { id: string; stage: string; owner_id: string | null; value_estimate: number | null; currency: string | null; lost_reason_category: string | null; lost_reason: string | null; stage_changed_at: string; clients: ClientRef };
-type Tab = 'today' | 'bookings' | 'leads' | 'projects' | 'billing' | 'activity';
+type Tab = 'today' | 'bookings' | 'leads' | 'projects' | 'work' | 'billing' | 'activity';
 
 const BOOKING_STATUSES = ['requested', 'in_review', 'confirmed', 'completed', 'cancelled', 'no_show'];
 const LEAD_STAGES = ['new', 'contacted', 'qualified', 'proposal_sent', 'won', 'lost'];
@@ -25,6 +26,7 @@ const NAV: { id: Tab; label: string; icon: typeof Activity }[] = [
   { id: 'bookings', label: 'Bookings', icon: CalendarDays },
   { id: 'leads', label: 'Pipeline', icon: Users },
   { id: 'projects', label: 'Projects', icon: FolderKanban },
+  { id: 'work', label: 'Work', icon: Clapperboard },
   { id: 'billing', label: 'Billing', icon: Receipt },
   { id: 'activity', label: 'Activity', icon: Activity },
 ];
@@ -107,8 +109,20 @@ export function AdminPage() {
   return <AdminShell {...state} />;
 }
 
+function readTab(): Tab {
+  const t = new URLSearchParams(window.location.search).get('tab');
+  return NAV.some((n) => n.id === t) ? (t as Tab) : 'today';
+}
+
 function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; email: string }) {
-  const [tab, setTab] = useState<Tab>('today');
+  const [tab, setTabState] = useState<Tab>(readTab);
+  const setTab = useCallback((t: Tab) => {
+    const url = new URL(window.location.href);
+    if (t === 'today') url.searchParams.delete('tab'); else url.searchParams.set('tab', t);
+    if (t !== 'work') { url.searchParams.delete('work'); url.searchParams.delete('work_id'); }
+    window.history.pushState(null, '', url);
+    setTabState(t);
+  }, []);
   const [bookings, setBookings] = useState<Booking[] | null>(null);
   const [leads, setLeads] = useState<Lead[] | null>(null);
   const [names, setNames] = useState<Record<string, string>>({});
@@ -120,7 +134,10 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
     setOpenBookingState(id); window.scrollTo(0, 0);
   }, []);
   useEffect(() => {
-    const sync = () => setOpenBookingState(new URLSearchParams(window.location.search).get('booking'));
+    const sync = () => {
+      setOpenBookingState(new URLSearchParams(window.location.search).get('booking'));
+      setTabState(readTab());
+    };
     window.addEventListener('popstate', sync);
     return () => window.removeEventListener('popstate', sync);
   }, []);
@@ -230,6 +247,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
         {tab === 'bookings' && <BookingsView rows={bookings} names={names} userId={userId} onOpen={setOpenBooking} />}
         {tab === 'leads' && <Pipeline rows={leads} names={names} userId={userId} onOpen={setOpenLead} onMove={changeLeadStage} />}
         {tab === 'projects' && <StaffProjects userId={userId} />}
+        {tab === 'work' && <WorkAdmin />}
         {tab === 'billing' && <StaffBilling manager={manager} names={names} />}
         {tab === 'activity' && <ActivityLog names={names} />}
         </>}
