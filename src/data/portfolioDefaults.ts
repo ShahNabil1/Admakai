@@ -47,11 +47,11 @@ export const portfolioDefaults: Record<string, ServicePortfolioItem[]> = {
       "client": ""
     },
     {
-      "vimeoId": "1232801813",
+      "vimeoId": "1244181427",
       "aspect": "9:16",
-      "title": "Menswear look 3",
+      "title": "Polo look in the park",
       "tag": "Fashion",
-      "client": ""
+      "client": "Gentle Park"
     },
     {
       "vimeoId": "1205218742",
@@ -69,6 +69,13 @@ export const portfolioDefaults: Record<string, ServicePortfolioItem[]> = {
     }
   ],
   "people": [
+    {
+      "vimeoId": "1227685387",
+      "aspect": "16:9",
+      "title": "Branta intro by an AI twin",
+      "tag": "AI twin",
+      "client": ""
+    },
     {
       "vimeoId": "1211608608",
       "aspect": "16:9",

@@ -11,7 +11,7 @@ export type Service = {
   heroMedia?: { reels: HeroMedia[]; sides: HeroMedia[] };
   portfolio?: ServicePortfolioItem[];
 };
-export type ServicePortfolioItem = { vimeoId: string; aspect: '9:16' | '16:9' | '1:1'; title: string; client?: string; tag?: string };
+export type ServicePortfolioItem = { vimeoId: string; aspect: '9:16' | '16:9' | '1:1' | '4:5'; title: string; client?: string; tag?: string };
 export type HeroMedia = { src: string; poster?: string; aspect: '9:16' | '16:9' | '1:1'; label?: string };
 export const serviceCategories: ServiceCategory[] = [
   {
@@ -846,6 +846,48 @@ export const services: Service[] = [
     "slug": "fashion-film-lookbook",
     "portfolio": [
       {
+        "vimeoId": "1244181427",
+        "aspect": "9:16",
+        "title": "Polo look in the park",
+        "tag": "Fashion",
+        "client": "Gentle Park"
+      },
+      {
+        "vimeoId": "1244181424",
+        "aspect": "9:16",
+        "title": "Autumn Winter 2026 film",
+        "tag": "Fashion",
+        "client": "Gentle Park"
+      },
+      {
+        "vimeoId": "1244181242",
+        "aspect": "9:16",
+        "title": "Seaside polo look",
+        "tag": "Fashion",
+        "client": "Gentle Park"
+      },
+      {
+        "vimeoId": "1244181238",
+        "aspect": "9:16",
+        "title": "Panjabi by the sea",
+        "tag": "Fashion",
+        "client": "Gentle Park"
+      },
+      {
+        "vimeoId": "1244181241",
+        "aspect": "9:16",
+        "title": "Coffee table polo close up",
+        "tag": "Fashion",
+        "client": "Gentle Park"
+      },
+      {
+        "vimeoId": "1244181239",
+        "aspect": "9:16",
+        "title": "Polo fabric detail",
+        "tag": "Fashion",
+        "client": "Gentle Park"
+      },
+      {
         "vimeoId": "1232801694",
         "aspect": "9:16",
         "title": "Menswear look 1",
@@ -1281,6 +1323,20 @@ export const services: Service[] = [
     "slug": "digital-clone",
     "portfolio": [
       {
+        "vimeoId": "1227685387",
+        "aspect": "16:9",
+        "title": "Branta intro by an AI twin",
+        "tag": "AI twin",
+        "client": ""
+      },
+      {
+        "vimeoId": "1244180887",
+        "aspect": "4:5",
+        "title": "AI twin, the Operator",
+        "tag": "AI twin",
+        "client": ""
+      },
+      {
         "vimeoId": "1244171290",
         "aspect": "16:9",
         "title": "AI host on a seaside balcony",
@@ -1344,6 +1400,13 @@ export const services: Service[] = [
   {
     "slug": "ai-presenter-video",
     "portfolio": [
+      {
+        "vimeoId": "1227685387",
+        "aspect": "16:9",
+        "title": "Branta intro by an AI twin",
+        "tag": "AI twin",
+        "client": ""
+      },
       {
         "vimeoId": "1211608608",
         "aspect": "16:9",
@@ -1461,6 +1524,13 @@ export const services: Service[] = [
     "slug": "ai-brand-ambassador",
     "portfolio": [
       {
+        "vimeoId": "1244180887",
+        "aspect": "4:5",
+        "title": "AI twin, the Operator",
+        "tag": "AI twin",
+        "client": ""
+      },
+      {
         "vimeoId": "1211608609",
         "aspect": "16:9",
         "title": "AI presenter with a product",
@@ -1574,6 +1644,13 @@ export const services: Service[] = [
     "slug": "reels-pack-of-6",
     "portfolio": [
       {
+        "vimeoId": "1244181427",
+        "aspect": "9:16",
+        "title": "Polo look in the park",
+        "tag": "Fashion",
+        "client": "Gentle Park"
+      },
+      {
         "vimeoId": "1211608606",
         "aspect": "9:16",
         "title": "Hair serum billboard",
@@ -1581,11 +1658,11 @@ export const services: Service[] = [
         "client": ""
       },
       {
-        "vimeoId": "1205219023",
+        "vimeoId": "1244181242",
         "aspect": "9:16",
-        "title": "Sunscreen on court",
-        "tag": "CGI",
-        "client": ""
+        "title": "Seaside polo look",
+        "tag": "Fashion",
+        "client": "Gentle Park"
       },
       {
         "vimeoId": "1205218184",
@@ -1599,13 +1676,6 @@ export const services: Service[] = [
         "aspect": "9:16",
         "title": "Niacinamide serum in 3D",
         "tag": "CGI",
-        "client": ""
-      },
-      {
-        "vimeoId": "1232801813",
-        "aspect": "9:16",
-        "title": "Menswear look 3",
-        "tag": "Fashion",
         "client": ""
       },
       {
@@ -1926,6 +1996,13 @@ export const services: Service[] = [
     "slug": "corporate-avc-event-video",
     "portfolio": [
       {
+        "vimeoId": "1227685387",
+        "aspect": "16:9",
+        "title": "Branta intro by an AI twin",
+        "tag": "AI twin",
+        "client": ""
+      },
+      {
         "vimeoId": "1244169944",
         "aspect": "16:9",
         "title": "A day inside Admakai",
@@ -2061,11 +2138,11 @@ export const services: Service[] = [
         "client": ""
       },
       {
-        "vimeoId": "1232801813",
+        "vimeoId": "1244181427",
         "aspect": "9:16",
-        "title": "Menswear look 3",
+        "title": "Polo look in the park",
         "tag": "Fashion",
-        "client": ""
+        "client": "Gentle Park"
       },
       {
         "vimeoId": "1205218002",

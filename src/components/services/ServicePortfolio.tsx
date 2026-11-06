@@ -15,7 +15,7 @@ function PortfolioVideo({ item, active, onVisible, onPlay }: { item: ServicePort
     const observer = new IntersectionObserver(([entry]) => onVisible(Boolean(entry?.isIntersecting)), { threshold: .2 });
     observer.observe(node); return () => observer.disconnect();
   }, [onVisible]);
-  return <div ref={ref}><VimeoPlayer videoKey={item.vimeoId} videoData={{ id: item.vimeoId, title: item.title, poster: '' }} mode="background" fetchThumbnail previewActive={active} aspect={item.aspect.replace(':', '/') as '9/16' | '16/9' | '1/1'} className="service-sd-portfolio-video" onPlay={onPlay}/></div>;
+  return <div ref={ref}><VimeoPlayer videoKey={item.vimeoId} videoData={{ id: item.vimeoId, title: item.title, poster: '' }} mode="background" fetchThumbnail previewActive={active} aspect={item.aspect.replace(':', '/') as '9/16' | '16/9' | '1/1' | '4/5'} className="service-sd-portfolio-video" onPlay={onPlay}/></div>;
 }
 
 export function ServicePortfolio({ items }: { items: ServicePortfolioItem[] }) {
@@ -64,7 +64,7 @@ export function ServicePortfolio({ items }: { items: ServicePortfolioItem[] }) {
     <div className="service-sd-progress" role="progressbar" aria-label="Portfolio scroll position" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress * 100)}><span style={{ transform: `scaleX(${progress})` }}/></div>
     <Dialog.Root open={Boolean(current)} onOpenChange={open => { if (!open) setOpenIndex(null); }}><Dialog.Portal><Dialog.Overlay className="service-sd-modal-overlay"/><Dialog.Content className="service-sd-modal" aria-describedby={undefined} data-lenis-prevent onKeyDown={event => { if (event.key === 'ArrowLeft') next(-1); if (event.key === 'ArrowRight') next(1); }}>
       <div className="service-sd-modal-top"><Dialog.Title>{current?.title}</Dialog.Title><Dialog.Close asChild><Button variant="ghost" size="icon" aria-label="Close video" title="Close video"><X/></Button></Dialog.Close></div>
-      {current && <VimeoPlayer key={current.vimeoId} videoKey={current.vimeoId} videoData={{ id: current.vimeoId, title: current.title, poster: '' }} mode="inline" aspect={current.aspect.replace(':', '/') as '9/16' | '16/9' | '1/1'} className="service-sd-modal-video"/>}
+      {current && <VimeoPlayer key={current.vimeoId} videoKey={current.vimeoId} videoData={{ id: current.vimeoId, title: current.title, poster: '' }} mode="inline" aspect={current.aspect.replace(':', '/') as '9/16' | '16/9' | '1/1' | '4/5'} className="service-sd-modal-video"/>}
       {filtered.length > 1 && <div className="service-sd-modal-nav"><Button variant="ghost" onClick={() => next(-1)}><ArrowLeft/>Previous video</Button><Button variant="ghost" onClick={() => next(1)}>Next video<ArrowRight/></Button></div>}
     </Dialog.Content></Dialog.Portal></Dialog.Root>
   </>;
