@@ -53,29 +53,36 @@ export const services: Service[] = [
       {
         "vimeoId": "1183677915",
         "aspect": "16:9",
-        "title": "OVC: The pink bus",
+        "title": "The pink bus",
+        "tag": "OVC",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205217563",
+        "aspect": "16:9",
+        "title": "Tillamook ice cream in the jungle",
         "tag": "OVC",
         "client": ""
       },
       {
         "vimeoId": "1183677848",
         "aspect": "16:9",
-        "title": "OVC: A family moment",
+        "title": "A family moment",
+        "tag": "OVC",
+        "client": ""
+      },
+      {
+        "vimeoId": "1232728534",
+        "aspect": "16:9",
+        "title": "Kid snack at the beach",
         "tag": "OVC",
         "client": ""
       },
       {
         "vimeoId": "1183677731",
         "aspect": "16:9",
-        "title": "Pure Radiance body oil",
+        "title": "Body oil commercial",
         "tag": "Skincare",
-        "client": ""
-      },
-      {
-        "vimeoId": "1232728534",
-        "aspect": "16:9",
-        "title": "A day at the beach",
-        "tag": "Story",
         "client": ""
       }
     ],
@@ -132,6 +139,34 @@ export const services: Service[] = [
     "slug": "ai-commercial-60s",
     "portfolio": [
       {
+        "vimeoId": "1244169947",
+        "aspect": "16:9",
+        "title": "Admakai brand film",
+        "tag": "Brand film",
+        "client": ""
+      },
+      {
+        "vimeoId": "1232739772",
+        "aspect": "16:9",
+        "title": "Regal Furniture commercial",
+        "tag": "OVC",
+        "client": ""
+      },
+      {
+        "vimeoId": "1244169945",
+        "aspect": "16:9",
+        "title": "Award night story ad",
+        "tag": "Story ad",
+        "client": ""
+      },
+      {
+        "vimeoId": "1211611248",
+        "aspect": "16:9",
+        "title": "Teddy bear and the honey jar",
+        "tag": "Cinematic",
+        "client": ""
+      },
+      {
         "vimeoId": "1211608926",
         "aspect": "16:9",
         "title": "Riders in the mountains",
@@ -141,15 +176,8 @@ export const services: Service[] = [
       {
         "vimeoId": "1211608973",
         "aspect": "16:9",
-        "title": "TVC promo",
+        "title": "Behind the scenes promo",
         "tag": "TVC",
-        "client": ""
-      },
-      {
-        "vimeoId": "1211611227",
-        "aspect": "16:9",
-        "title": "The hidden kingdom",
-        "tag": "Cinematic",
         "client": ""
       }
     ],
@@ -214,13 +242,6 @@ export const services: Service[] = [
         "title": "Hair oil hook",
         "tag": "UGC",
         "client": ""
-      },
-      {
-        "vimeoId": "1211611161",
-        "aspect": "1:1",
-        "title": "Family playtime",
-        "tag": "UGC",
-        "client": ""
       }
     ],
     "heroTitle": {"lead": "Creator-style ads", "accent": "without", "rest": "hiring creators."},
@@ -274,24 +295,31 @@ export const services: Service[] = [
     "slug": "ad-variant-pack",
     "portfolio": [
       {
-        "vimeoId": "1205218659",
-        "aspect": "1:1",
-        "title": "Body care, version A",
-        "tag": "Variants",
-        "client": ""
-      },
-      {
         "vimeoId": "1205218646",
         "aspect": "1:1",
-        "title": "Body care, version B",
-        "tag": "Variants",
+        "title": "Hair care set, version A",
+        "tag": "Variant",
         "client": ""
       },
       {
-        "vimeoId": "1205218672",
+        "vimeoId": "1205218659",
         "aspect": "1:1",
-        "title": "Body mist, version C",
-        "tag": "Variants",
+        "title": "Hair care set, version B",
+        "tag": "Variant",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205218265",
+        "aspect": "1:1",
+        "title": "Body lotion, version A",
+        "tag": "Variant",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205216888",
+        "aspect": "1:1",
+        "title": "Body lotion, winter version",
+        "tag": "Variant",
         "client": ""
       }
     ],
@@ -340,17 +368,38 @@ export const services: Service[] = [
     "slug": "product-film",
     "portfolio": [
       {
-        "vimeoId": "1167294176",
+        "vimeoId": "1183677731",
         "aspect": "16:9",
-        "title": "Branta SaaS service film",
-        "tag": "Launch",
+        "title": "Body oil commercial",
+        "tag": "Skincare",
         "client": ""
       },
       {
-        "vimeoId": "1211611191",
+        "vimeoId": "1232739772",
         "aspect": "16:9",
-        "title": "App screen reveal",
-        "tag": "Launch",
+        "title": "Regal Furniture commercial",
+        "tag": "OVC",
+        "client": ""
+      },
+      {
+        "vimeoId": "1211611248",
+        "aspect": "16:9",
+        "title": "Teddy bear and the honey jar",
+        "tag": "Cinematic",
+        "client": ""
+      },
+      {
+        "vimeoId": "1211608803",
+        "aspect": "9:16",
+        "title": "Niacinamide serum in 3D",
+        "tag": "CGI",
+        "client": ""
+      },
+      {
+        "vimeoId": "1167294176",
+        "aspect": "16:9",
+        "title": "SaaS service film",
+        "tag": "SaaS",
         "client": ""
       }
     ],
@@ -403,29 +452,29 @@ export const services: Service[] = [
       {
         "vimeoId": "1167294176",
         "aspect": "16:9",
-        "title": "Branta SaaS service film",
+        "title": "SaaS service film",
         "tag": "SaaS",
         "client": ""
       },
       {
-        "vimeoId": "1211610013",
+        "vimeoId": "1211611158",
         "aspect": "16:9",
-        "title": "Store website walkthrough",
-        "tag": "SaaS",
+        "title": "Travel agency website walkthrough",
+        "tag": "Website UI",
         "client": ""
       },
       {
-        "vimeoId": "1211610012",
+        "vimeoId": "1232958393",
         "aspect": "16:9",
-        "title": "Service dashboard walkthrough",
-        "tag": "SaaS",
+        "title": "Product photoshoot without a studio",
+        "tag": "Explainer",
         "client": ""
       },
       {
-        "vimeoId": "1211610011",
+        "vimeoId": "1232979935",
         "aspect": "16:9",
-        "title": "Product UI tour",
-        "tag": "SaaS",
+        "title": "Book a call animation",
+        "tag": "Motion",
         "client": ""
       }
     ],
@@ -480,52 +529,59 @@ export const services: Service[] = [
     "slug": "cgi-product-commercial",
     "portfolio": [
       {
-        "vimeoId": "1211610010",
-        "aspect": "16:9",
-        "title": "Ice-cold can",
-        "tag": "Beverage",
+        "vimeoId": "1211608803",
+        "aspect": "9:16",
+        "title": "Niacinamide serum in 3D",
+        "tag": "CGI",
         "client": ""
       },
       {
-        "vimeoId": "1211610107",
+        "vimeoId": "1205217563",
         "aspect": "16:9",
-        "title": "Potato snack",
-        "tag": "Snacks",
+        "title": "Tillamook ice cream in the jungle",
+        "tag": "OVC",
         "client": ""
       },
       {
         "vimeoId": "1205218184",
         "aspect": "9:16",
         "title": "Perfume in cherry blossom",
-        "tag": "Beauty",
+        "tag": "CGI",
         "client": ""
       },
       {
         "vimeoId": "1205217546",
         "aspect": "9:16",
         "title": "Serum with strawberries",
-        "tag": "Beauty",
+        "tag": "CGI",
         "client": ""
       },
       {
         "vimeoId": "1211608606",
         "aspect": "9:16",
         "title": "Hair serum billboard",
-        "tag": "Beauty",
+        "tag": "CGI",
         "client": ""
       },
       {
         "vimeoId": "1205219023",
         "aspect": "9:16",
         "title": "Sunscreen on court",
-        "tag": "Beauty",
+        "tag": "CGI",
         "client": ""
       },
       {
-        "vimeoId": "1211611247",
+        "vimeoId": "1205217544",
         "aspect": "9:16",
-        "title": "Spice range",
-        "tag": "Food",
+        "title": "Product box on a podium",
+        "tag": "CGI",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205218268",
+        "aspect": "1:1",
+        "title": "Hair care in motion",
+        "tag": "CGI",
         "client": ""
       }
     ],
@@ -580,29 +636,22 @@ export const services: Service[] = [
       {
         "vimeoId": "1205218002",
         "aspect": "1:1",
-        "title": "Eid: Mishtimela lachcha semai",
-        "tag": "Eid",
-        "client": ""
-      },
-      {
-        "vimeoId": "1205217998",
-        "aspect": "1:1",
-        "title": "Eid: Dalda lachcha semai",
+        "title": "Eid lachcha semai post",
         "tag": "Eid",
         "client": ""
       },
       {
         "vimeoId": "1205217996",
         "aspect": "1:1",
-        "title": "Eid: Premium semai",
+        "title": "Eid premium semai post",
         "tag": "Eid",
         "client": ""
       },
       {
-        "vimeoId": "1205218795",
+        "vimeoId": "1205216888",
         "aspect": "1:1",
-        "title": "Winter care campaign",
-        "tag": "Seasonal",
+        "title": "Body lotion, winter version",
+        "tag": "Variant",
         "client": ""
       }
     ],
@@ -701,50 +750,50 @@ export const services: Service[] = [
       {
         "vimeoId": "1232958393",
         "aspect": "16:9",
-        "title": "What if a product photoshoot needed no studio?",
-        "tag": "Showreel",
-        "client": ""
-      },
-      {
-        "vimeoId": "1205218979",
-        "aspect": "1:1",
-        "title": "Salicylic cleanser",
-        "tag": "Skincare",
-        "client": ""
-      },
-      {
-        "vimeoId": "1205218971",
-        "aspect": "1:1",
-        "title": "Rose water",
-        "tag": "Skincare",
-        "client": ""
-      },
-      {
-        "vimeoId": "1205218964",
-        "aspect": "1:1",
-        "title": "Low pH cleanser",
-        "tag": "Skincare",
+        "title": "Product photoshoot without a studio",
+        "tag": "Explainer",
         "client": ""
       },
       {
         "vimeoId": "1205218926",
         "aspect": "1:1",
-        "title": "Gel moisturiser",
-        "tag": "Skincare",
+        "title": "Gel moisturiser jar",
+        "tag": "Product shot",
         "client": ""
       },
       {
-        "vimeoId": "1205218924",
+        "vimeoId": "1205218742",
         "aspect": "1:1",
-        "title": "Hydrating lotion",
-        "tag": "Skincare",
+        "title": "Olive oil bottle",
+        "tag": "Product shot",
         "client": ""
       },
       {
         "vimeoId": "1205218794",
         "aspect": "1:1",
         "title": "Vitamin E lotion",
-        "tag": "Skincare",
+        "tag": "Product shot",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205218784",
+        "aspect": "1:1",
+        "title": "Body radiance serum",
+        "tag": "Product shot",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205218394",
+        "aspect": "1:1",
+        "title": "Niacinamide body lotion",
+        "tag": "Product shot",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205218583",
+        "aspect": "1:1",
+        "title": "Daily refresh gel",
+        "tag": "Product shot",
         "client": ""
       }
     ],
@@ -797,45 +846,59 @@ export const services: Service[] = [
     "slug": "fashion-film-lookbook",
     "portfolio": [
       {
-        "vimeoId": "1232801813",
+        "vimeoId": "1232801694",
         "aspect": "9:16",
         "title": "Menswear look 1",
-        "tag": "Menswear",
+        "tag": "Fashion",
         "client": ""
       },
       {
         "vimeoId": "1232801730",
         "aspect": "9:16",
         "title": "Menswear look 2",
-        "tag": "Menswear",
+        "tag": "Fashion",
         "client": ""
       },
       {
-        "vimeoId": "1232801694",
+        "vimeoId": "1232801813",
         "aspect": "9:16",
         "title": "Menswear look 3",
-        "tag": "Menswear",
-        "client": ""
-      },
-      {
-        "vimeoId": "1232801679",
-        "aspect": "9:16",
-        "title": "Street walk 1",
-        "tag": "Menswear",
-        "client": ""
-      },
-      {
-        "vimeoId": "1232801648",
-        "aspect": "9:16",
-        "title": "Seaside look",
-        "tag": "Menswear",
+        "tag": "Fashion",
         "client": ""
       },
       {
         "vimeoId": "1232801512",
         "aspect": "9:16",
-        "title": "Street walk 2",
-        "tag": "Menswear",
+        "title": "Street look",
+        "tag": "Fashion",
+        "client": ""
+      },
+      {
+        "vimeoId": "1232801679",
+        "aspect": "9:16",
+        "title": "Studio walk",
+        "tag": "Fashion",
+        "client": ""
+      },
+      {
+        "vimeoId": "1232801675",
+        "aspect": "9:16",
+        "title": "Womenswear studio look",
+        "tag": "Fashion",
+        "client": ""
+      },
+      {
+        "vimeoId": "1232801612",
+        "aspect": "9:16",
+        "title": "Seated look",
+        "tag": "Fashion",
+        "client": ""
+      },
+      {
+        "vimeoId": "1232801572",
+        "aspect": "9:16",
+        "title": "Street walk",
+        "tag": "Fashion",
         "client": ""
       }
     ],
@@ -889,21 +952,28 @@ export const services: Service[] = [
         "vimeoId": "1232801830",
         "aspect": "9:16",
         "title": "Same model, linen shirt",
-        "tag": "Brand model",
+        "tag": "Fashion",
         "client": ""
       },
       {
         "vimeoId": "1232801709",
         "aspect": "9:16",
-        "title": "Same model, polo",
-        "tag": "Brand model",
+        "title": "Same model, striped polo",
+        "tag": "Fashion",
         "client": ""
       },
       {
         "vimeoId": "1232801622",
         "aspect": "9:16",
         "title": "Same model, seaside",
-        "tag": "Brand model",
+        "tag": "Fashion",
+        "client": ""
+      },
+      {
+        "vimeoId": "1232801648",
+        "aspect": "9:16",
+        "title": "Same model, balcony",
+        "tag": "Fashion",
         "client": ""
       }
     ],
@@ -952,6 +1022,36 @@ export const services: Service[] = [
   },
   {
     "slug": "virtual-try-on",
+    "portfolio": [
+      {
+        "vimeoId": "1232801853",
+        "aspect": "9:16",
+        "title": "Same model at the door, outfit 1",
+        "tag": "Fashion",
+        "client": ""
+      },
+      {
+        "vimeoId": "1232801511",
+        "aspect": "9:16",
+        "title": "Same model at the door, outfit 2",
+        "tag": "Fashion",
+        "client": ""
+      },
+      {
+        "vimeoId": "1232801694",
+        "aspect": "9:16",
+        "title": "Menswear look 1",
+        "tag": "Fashion",
+        "client": ""
+      },
+      {
+        "vimeoId": "1232801709",
+        "aspect": "9:16",
+        "title": "Same model, striped polo",
+        "tag": "Fashion",
+        "client": ""
+      }
+    ],
     "heroTitle": {"lead": "Put your clothes", "accent": "on a model", "rest": "without a shoot."},
     "featured": true,
     "category": "imagery",
@@ -1048,7 +1148,7 @@ export const services: Service[] = [
       {
         "vimeoId": "1205217157",
         "aspect": "1:1",
-        "title": "Skincare ad, Bangla copy",
+        "title": "Skin problem hook, Bangla copy",
         "tag": "Static",
         "client": ""
       },
@@ -1060,16 +1160,30 @@ export const services: Service[] = [
         "client": ""
       },
       {
-        "vimeoId": "1205218784",
+        "vimeoId": "1205218727",
         "aspect": "1:1",
-        "title": "Body radiance serum",
+        "title": "Niacinamide launch",
         "tag": "Static",
         "client": ""
       },
       {
-        "vimeoId": "1205218727",
+        "vimeoId": "1205218711",
         "aspect": "1:1",
-        "title": "Niacinamide launch",
+        "title": "Anti cleanse launch",
+        "tag": "Static",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205218677",
+        "aspect": "1:1",
+        "title": "Mother and baby care",
+        "tag": "Static",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205218923",
+        "aspect": "1:1",
+        "title": "Fastest delivery",
         "tag": "Static",
         "client": ""
       }
@@ -1165,6 +1279,22 @@ export const services: Service[] = [
   },
   {
     "slug": "digital-clone",
+    "portfolio": [
+      {
+        "vimeoId": "1244171290",
+        "aspect": "16:9",
+        "title": "AI host on a seaside balcony",
+        "tag": "AI host",
+        "client": ""
+      },
+      {
+        "vimeoId": "1244171284",
+        "aspect": "16:9",
+        "title": "AI host in an edit studio",
+        "tag": "AI host",
+        "client": ""
+      }
+    ],
     "heroTitle": {"lead": "Post every week", "accent": "without", "rest": "filming every week."},
     "category": "people",
     "published": true,
@@ -1222,10 +1352,17 @@ export const services: Service[] = [
         "client": ""
       },
       {
-        "vimeoId": "1211608607",
+        "vimeoId": "1211608609",
         "aspect": "16:9",
-        "title": "AI host on a podcast set",
+        "title": "AI presenter with a product",
         "tag": "Presenter",
+        "client": ""
+      },
+      {
+        "vimeoId": "1244171284",
+        "aspect": "16:9",
+        "title": "AI host in an edit studio",
+        "tag": "AI host",
         "client": ""
       }
     ],
@@ -1322,6 +1459,29 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-brand-ambassador",
+    "portfolio": [
+      {
+        "vimeoId": "1211608609",
+        "aspect": "16:9",
+        "title": "AI presenter with a product",
+        "tag": "Presenter",
+        "client": ""
+      },
+      {
+        "vimeoId": "1211608608",
+        "aspect": "16:9",
+        "title": "AI presenter on the sofa",
+        "tag": "Presenter",
+        "client": ""
+      },
+      {
+        "vimeoId": "1244171290",
+        "aspect": "16:9",
+        "title": "AI host on a seaside balcony",
+        "tag": "AI host",
+        "client": ""
+      }
+    ],
     "heroTitle": {"lead": "A brand ambassador", "accent": "who never", "rest": "misses a post."},
     "category": "people",
     "published": true,
@@ -1414,45 +1574,45 @@ export const services: Service[] = [
     "slug": "reels-pack-of-6",
     "portfolio": [
       {
-        "vimeoId": "1211611228",
-        "aspect": "1:1",
-        "title": "Ghee reel 1",
-        "tag": "Food",
-        "client": ""
-      },
-      {
-        "vimeoId": "1211611194",
-        "aspect": "1:1",
-        "title": "Ghee reel 2",
-        "tag": "Food",
-        "client": ""
-      },
-      {
-        "vimeoId": "1211611192",
-        "aspect": "1:1",
-        "title": "Ghee reel 3",
-        "tag": "Food",
-        "client": ""
-      },
-      {
-        "vimeoId": "1211611160",
-        "aspect": "1:1",
-        "title": "Ghee reel 4",
-        "tag": "Food",
-        "client": ""
-      },
-      {
-        "vimeoId": "1211611159",
-        "aspect": "1:1",
-        "title": "Chocolate cake reel",
-        "tag": "Food",
-        "client": ""
-      },
-      {
-        "vimeoId": "1211609191",
+        "vimeoId": "1211608606",
         "aspect": "9:16",
-        "title": "Oraningo Ghee",
-        "tag": "Food",
+        "title": "Hair serum billboard",
+        "tag": "CGI",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205219023",
+        "aspect": "9:16",
+        "title": "Sunscreen on court",
+        "tag": "CGI",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205218184",
+        "aspect": "9:16",
+        "title": "Perfume in cherry blossom",
+        "tag": "CGI",
+        "client": ""
+      },
+      {
+        "vimeoId": "1211608803",
+        "aspect": "9:16",
+        "title": "Niacinamide serum in 3D",
+        "tag": "CGI",
+        "client": ""
+      },
+      {
+        "vimeoId": "1232801813",
+        "aspect": "9:16",
+        "title": "Menswear look 3",
+        "tag": "Fashion",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205218183",
+        "aspect": "9:16",
+        "title": "Hair oil hook",
+        "tag": "UGC",
         "client": ""
       }
     ],
@@ -1505,6 +1665,22 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-video-editing",
+    "portfolio": [
+      {
+        "vimeoId": "1244169944",
+        "aspect": "16:9",
+        "title": "A day inside Admakai",
+        "tag": "Company film",
+        "client": ""
+      },
+      {
+        "vimeoId": "1211608973",
+        "aspect": "16:9",
+        "title": "Behind the scenes promo",
+        "tag": "TVC",
+        "client": ""
+      }
+    ],
     "heroTitle": {"lead": "Your raw footage,", "accent": "finished", "rest": "like a pro edit."},
     "category": "social",
     "published": true,
@@ -1560,9 +1736,9 @@ export const services: Service[] = [
         "client": ""
       },
       {
-        "vimeoId": "1211611236",
-        "aspect": "16:9",
-        "title": "Branta logo sting",
+        "vimeoId": "1205218743",
+        "aspect": "1:1",
+        "title": "Skincare logo reveal",
         "tag": "Logo",
         "client": ""
       },
@@ -1570,7 +1746,14 @@ export const services: Service[] = [
         "vimeoId": "1232979935",
         "aspect": "16:9",
         "title": "Book a call animation",
-        "tag": "Motion ad",
+        "tag": "Motion",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205218267",
+        "aspect": "1:1",
+        "title": "Kinetic type intro",
+        "tag": "Motion",
         "client": ""
       }
     ],
@@ -1621,9 +1804,16 @@ export const services: Service[] = [
     "slug": "explainer-motion-graphics",
     "portfolio": [
       {
+        "vimeoId": "1211609079",
+        "aspect": "16:9",
+        "title": "2D animated scooter ride",
+        "tag": "2D animation",
+        "client": ""
+      },
+      {
         "vimeoId": "1232958393",
         "aspect": "16:9",
-        "title": "What if a product photoshoot needed no studio?",
+        "title": "Product photoshoot without a studio",
         "tag": "Explainer",
         "client": ""
       },
@@ -1635,24 +1825,10 @@ export const services: Service[] = [
         "client": ""
       },
       {
-        "vimeoId": "1205218586",
-        "aspect": "1:1",
-        "title": "Authentic products, delivered",
-        "tag": "Delivery",
-        "client": ""
-      },
-      {
-        "vimeoId": "1205218584",
-        "aspect": "1:1",
-        "title": "Day to day delivery",
-        "tag": "Delivery",
-        "client": ""
-      },
-      {
-        "vimeoId": "1205218923",
-        "aspect": "1:1",
-        "title": "Fastest delivery",
-        "tag": "Delivery",
+        "vimeoId": "1211611158",
+        "aspect": "16:9",
+        "title": "Travel agency website walkthrough",
+        "tag": "Website UI",
         "client": ""
       }
     ],
@@ -1748,6 +1924,22 @@ export const services: Service[] = [
   },
   {
     "slug": "corporate-avc-event-video",
+    "portfolio": [
+      {
+        "vimeoId": "1244169944",
+        "aspect": "16:9",
+        "title": "A day inside Admakai",
+        "tag": "Company film",
+        "client": ""
+      },
+      {
+        "vimeoId": "1244169945",
+        "aspect": "16:9",
+        "title": "Award night story ad",
+        "tag": "Story ad",
+        "client": ""
+      }
+    ],
     "heroTitle": {"lead": "Your company story", "accent": "on the big screen", "rest": "."},
     "category": "social",
     "published": true,
@@ -1793,6 +1985,22 @@ export const services: Service[] = [
   },
   {
     "slug": "youtube-channel-pack",
+    "portfolio": [
+      {
+        "vimeoId": "1244171290",
+        "aspect": "16:9",
+        "title": "AI host on a seaside balcony",
+        "tag": "AI host",
+        "client": ""
+      },
+      {
+        "vimeoId": "1244171284",
+        "aspect": "16:9",
+        "title": "AI host in an edit studio",
+        "tag": "AI host",
+        "client": ""
+      }
+    ],
     "heroTitle": {"lead": "Thumbnails people", "accent": "actually click", "rest": "."},
     "category": "social",
     "published": true,
@@ -1837,6 +2045,50 @@ export const services: Service[] = [
   },
   {
     "slug": "monthly-content-subscription",
+    "portfolio": [
+      {
+        "vimeoId": "1205218727",
+        "aspect": "1:1",
+        "title": "Niacinamide launch",
+        "tag": "Static",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205218185",
+        "aspect": "9:16",
+        "title": "Skincare product review",
+        "tag": "UGC",
+        "client": ""
+      },
+      {
+        "vimeoId": "1232801813",
+        "aspect": "9:16",
+        "title": "Menswear look 3",
+        "tag": "Fashion",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205218002",
+        "aspect": "1:1",
+        "title": "Eid lachcha semai post",
+        "tag": "Eid",
+        "client": ""
+      },
+      {
+        "vimeoId": "1211608606",
+        "aspect": "9:16",
+        "title": "Hair serum billboard",
+        "tag": "CGI",
+        "client": ""
+      },
+      {
+        "vimeoId": "1205218784",
+        "aspect": "1:1",
+        "title": "Body radiance serum",
+        "tag": "Product shot",
+        "client": ""
+      }
+    ],
     "heroTitle": {"lead": "Your content team,", "accent": "every month", "rest": ", one price."},
     "category": "social",
     "published": true,
@@ -2183,6 +2435,29 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-mascot-brand-character",
+    "portfolio": [
+      {
+        "vimeoId": "1211611161",
+        "aspect": "1:1",
+        "title": "Kids cartoon duo",
+        "tag": "Characters",
+        "client": ""
+      },
+      {
+        "vimeoId": "1211611248",
+        "aspect": "16:9",
+        "title": "Teddy bear and the honey jar",
+        "tag": "Cinematic",
+        "client": ""
+      },
+      {
+        "vimeoId": "1211609079",
+        "aspect": "16:9",
+        "title": "2D animated scooter ride",
+        "tag": "2D animation",
+        "client": ""
+      }
+    ],
     "heroTitle": {"lead": "A character people", "accent": "remember", "rest": "your brand by."},
     "category": "strategy",
     "published": true,

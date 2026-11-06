@@ -3,23 +3,30 @@ import type { Service, ServicePortfolioItem } from './services';
 export const portfolioDefaults: Record<string, ServicePortfolioItem[]> = {
   "video-ads": [
     {
+      "vimeoId": "1244169947",
+      "aspect": "16:9",
+      "title": "Admakai brand film",
+      "tag": "Brand film",
+      "client": ""
+    },
+    {
       "vimeoId": "1183677915",
       "aspect": "16:9",
-      "title": "OVC: The pink bus",
+      "title": "The pink bus",
       "tag": "OVC",
       "client": ""
     },
     {
-      "vimeoId": "1183677848",
+      "vimeoId": "1232739772",
       "aspect": "16:9",
-      "title": "OVC: A family moment",
+      "title": "Regal Furniture commercial",
       "tag": "OVC",
       "client": ""
     },
     {
-      "vimeoId": "1211608926",
+      "vimeoId": "1211611248",
       "aspect": "16:9",
-      "title": "Riders in the mountains",
+      "title": "Teddy bear and the honey jar",
       "tag": "Cinematic",
       "client": ""
     },
@@ -33,31 +40,31 @@ export const portfolioDefaults: Record<string, ServicePortfolioItem[]> = {
   ],
   "imagery": [
     {
-      "vimeoId": "1205218979",
+      "vimeoId": "1205218926",
       "aspect": "1:1",
-      "title": "Salicylic cleanser",
-      "tag": "Skincare",
-      "client": ""
-    },
-    {
-      "vimeoId": "1205218971",
-      "aspect": "1:1",
-      "title": "Rose water",
-      "tag": "Skincare",
+      "title": "Gel moisturiser jar",
+      "tag": "Product shot",
       "client": ""
     },
     {
       "vimeoId": "1232801813",
       "aspect": "9:16",
-      "title": "Menswear look 1",
+      "title": "Menswear look 3",
       "tag": "Fashion",
       "client": ""
     },
     {
-      "vimeoId": "1205218964",
+      "vimeoId": "1205218742",
       "aspect": "1:1",
-      "title": "Low pH cleanser",
-      "tag": "Skincare",
+      "title": "Olive oil bottle",
+      "tag": "Product shot",
+      "client": ""
+    },
+    {
+      "vimeoId": "1205218784",
+      "aspect": "1:1",
+      "title": "Body radiance serum",
+      "tag": "Product shot",
       "client": ""
     }
   ],
@@ -70,40 +77,47 @@ export const portfolioDefaults: Record<string, ServicePortfolioItem[]> = {
       "client": ""
     },
     {
-      "vimeoId": "1211608607",
+      "vimeoId": "1211608609",
       "aspect": "16:9",
-      "title": "AI host on a podcast set",
+      "title": "AI presenter with a product",
       "tag": "Presenter",
+      "client": ""
+    },
+    {
+      "vimeoId": "1244171284",
+      "aspect": "16:9",
+      "title": "AI host in an edit studio",
+      "tag": "AI host",
       "client": ""
     }
   ],
   "social": [
     {
-      "vimeoId": "1211611228",
+      "vimeoId": "1205218727",
       "aspect": "1:1",
-      "title": "Ghee reel 1",
-      "tag": "Reels",
+      "title": "Niacinamide launch",
+      "tag": "Static",
       "client": ""
     },
     {
-      "vimeoId": "1205218586",
-      "aspect": "1:1",
-      "title": "Authentic products, delivered",
-      "tag": "Motion",
+      "vimeoId": "1211608606",
+      "aspect": "9:16",
+      "title": "Hair serum billboard",
+      "tag": "CGI",
       "client": ""
     },
     {
       "vimeoId": "1232974660",
       "aspect": "16:9",
       "title": "Brand identity reveal",
-      "tag": "Motion",
+      "tag": "Logo",
       "client": ""
     },
     {
       "vimeoId": "1205218183",
       "aspect": "9:16",
       "title": "Hair oil hook",
-      "tag": "Reels",
+      "tag": "UGC",
       "client": ""
     }
   ],
