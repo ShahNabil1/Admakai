@@ -7,6 +7,7 @@
 - Goal filtering uses browser-safe service-goals helpers and page-local state; derive counts and visible categories from the same filtered published records to avoid mismatches.
 - ServiceFinder uses the supplied pure matcher in event handlers with published slugs and bounded ephemeral history; browser speech APIs are detected only after hydration, with no custom network calls.
 - Catalogue and related cards share ServiceCatalogueCard and the browser-safe serviceCardFigure helper; scoped grid/card CSS keeps card changes isolated from detail content and the finder.
+- Service price displays share ServicePrice/useCurrency; USD service amounts stay in catalogue data, while browser-only exchange caching is isolated from Finder event handlers.
 - Catalogue category tabs use a browser-safe category helper and page-local state; the list alone binds the footer asset to its background, leaving related cards on a plain band and finder logic independent.
 - Service detail pages share the numbered ServiceDetailPage landing template and service-sd stylesheet; service content, category use cases, empty portfolio defaults and verified proof stay browser-safe and separate from the catalogue UI.
 

@@ -4,7 +4,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, CalendarDays, ChevronDown, ChevronRight, Code2, ListChecks, Mic, Plus, Rocket, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { findPublishedService, publishedServices, servicePriceLine, visibleCategories, type Service } from '@/data/services';
+import { findPublishedService, publishedServices, visibleCategories, type Service } from '@/data/services';
+import { CurrencySwitcher } from '@/components/CurrencySwitcher';
+import { ServicePrice } from '@/components/services/ServicePrice';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
 import { appendFinderExchange, createFinderExchange, FINDER_REDIRECT_DELAY, FINDER_REPLY_DELAY, type FinderLanguage, type BrowserSpeechRecognition, type FinderExchange, type SpeechConstructor } from './service-finder-state';
 import './service-finder.css';
@@ -43,7 +45,7 @@ function ResultCard({ service, primary, index }: { service: Service; primary: bo
   return <motion.article className="service-finder-result" initial={reduce ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : .35, delay: reduce ? 0 : index * .07 }}>
     <h3>{service.name}{service.isNew && <span className="service-finder-new">New</span>}</h3>
     <p>{service.shortDescription}</p>
-    <div className="service-finder-result-meta"><span>{service.delivery}</span><strong>{servicePriceLine(service)}</strong></div>
+    <div className="service-finder-result-meta"><span>{service.delivery}</span><strong><ServicePrice service={service}/></strong></div>
     <Button asChild variant={primary ? 'default' : 'outline'} className="service-finder-open"><Link to="/services/$slug" params={{ slug: service.slug }}>Open {service.name}<ArrowUpRight aria-hidden="true"/></Link></Button>
   </motion.article>;
 }
@@ -170,7 +172,7 @@ export function ServiceFinder({ onBrowse }: { onBrowse: (category?: string) => v
         <Button variant="ghost" className="service-finder-tab" onClick={() => onBrowse()}>Browse all</Button>
         {history.length > 0 && <Button variant="ghost" className="service-finder-start" onClick={startOver}>Start over</Button>}
       </div>
-        <div className="service-finder-top-actions"><span className="service-finder-availability"><i aria-hidden="true"/>{publishedServices().length} services available</span>{bookButton}</div>
+        <div className="service-finder-top-actions"><span className="service-finder-availability"><i aria-hidden="true"/>{publishedServices().length} services available</span><CurrencySwitcher location="services"/>{bookButton}</div>
       </div>
       <div className="service-finder-workspace">
         <AnimatePresence initial={false} mode="wait">

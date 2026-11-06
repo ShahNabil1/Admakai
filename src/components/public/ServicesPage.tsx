@@ -12,7 +12,9 @@ import { ServiceCatalogueCard } from '@/components/services/ServiceCatalogueCard
 import { Faq } from '@/components/home/Faq';
 import { CtaStrip, Inclusions } from './PageElements';
 import { ServiceFinder } from '@/components/ServiceFinder';
+import { useCurrency } from '@/lib/currency';
 export function ServicesPage() {
+  const { currency } = useCurrency();
   const [goal, setGoal] = useState<ServiceGoal>('all');
   const [categoryFilter, setCategoryFilter] = useState<ServiceCategoryFilter>('all');
   const reduce = useMotionPreference();
@@ -47,6 +49,7 @@ export function ServicesPage() {
     <section className="service-catalogue-section" id="service-catalogue" style={{ '--service-catalogue-photo': `url("${footerImage.url}")` } as CSSProperties}>
       <div className="service-catalogue-section-inner">
       <header className="service-catalogue-section-header"><h2>{publishedServices().length} ways to make an ad without a shoot.</h2>
+        {currency !== 'USD' && <p className="service-catalogue-currency-note">Prices are set in USD and converted at today's rate.</p>}
         <div className="service-category-tabs" role="group" aria-label="Service categories">{serviceCategoryTabs.map(tab => <Button key={tab.id} variant="ghost" aria-pressed={categoryFilter === tab.id} className={`service-category-tab${categoryFilter === tab.id ? ' active' : ''}`} onClick={() => { setCategoryFilter(tab.id); setGoal('all'); }}>{tab.label}</Button>)}</div>
       </header>
       <div className="service-catalogue-content">

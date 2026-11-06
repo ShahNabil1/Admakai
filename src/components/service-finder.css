@@ -3,10 +3,11 @@
 .service-finder-inner{height:100%;display:flex;flex-direction:column;}
 .service-finder button,.service-finder a{letter-spacing:0;font-family:inherit;}
 .service-finder :focus-visible:not(.service-finder-input),.service-finder-language-menu :focus-visible{outline:2px solid var(--finder-blue);outline-offset:3px;}
-.service-finder-topbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding:24px 40px;flex:none;}
+.service-finder-topbar{display:grid;grid-template-columns:minmax(100px,1fr) auto minmax(0,1fr);align-items:center;gap:16px;padding:24px 40px;flex:none;}
 .service-finder-breadcrumb{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--finder-secondary);}
 .service-finder-breadcrumb span{color:var(--finder-ink);}.service-finder-breadcrumb svg{width:14px;height:14px;}
 .service-finder-top-actions{display:flex;justify-content:flex-end;align-items:center;gap:10px;}
+.service-finder-top-actions .currency-switcher{flex:none;}
 .service-finder-availability{display:flex;align-items:center;gap:7px;border:1px solid var(--finder-chip-border);border-radius:999px;padding:8px 12px;font-size:12px;color:var(--finder-secondary);white-space:nowrap;}
 .service-finder-availability i{width:5px;height:5px;background:var(--finder-success);border-radius:50%;}
 .service-finder-tabs{display:flex;gap:2px;align-items:center;width:fit-content;padding:4px;border-radius:10px;background:var(--finder-chip);}
@@ -102,6 +103,7 @@ body:has(.service-finder) .hero-navbar-wrapper:not(.is-scrolled){background:var(
 .service-finder-result h3{font-size:14.5px;}
 .service-finder-result p{font-size:13.5px;line-height:1.45;margin-top:4px;}
 .service-finder-result-meta{font-size:12.5px;margin:8px 0 10px;}
+.service-finder-result-meta strong{font-weight:500;overflow-wrap:anywhere;}
 .service-finder-result a,.service-finder-result .service-finder-open{font-size:13px;min-height:36px;padding-inline:14px;border-radius:999px;max-width:100%;}
 .service-finder-alternatives{margin-top:8px;font-size:13.5px;}
 .service-finder-help p{font-size:13.5px;}
@@ -121,3 +123,5 @@ body:has(.service-finder) .hero-navbar-wrapper:not(.is-scrolled){background:var(
 .service-finder-wave i:nth-child(7){animation-duration:.94s;animation-delay:-.72s;}
 @keyframes service-finder-wave{0%,100%{transform:scaleY(.22);}50%{transform:scaleY(1);}}
 @media(prefers-reduced-motion:reduce){.service-finder-wave i{animation:none;transform:scaleY(.5);}}
+@media(width>=700px) and (width<1200px){.service-finder-topbar{grid-template-columns:1fr auto;}.service-finder-top-actions{grid-column:2;grid-row:1;}.service-finder-tabs{grid-column:1/-1;grid-row:2;justify-self:center;}}
+@media(width<390px){.service-finder-top-actions>.service-finder-chip{font-size:12px;padding-inline:7px;}}

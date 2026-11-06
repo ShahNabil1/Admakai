@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { supabase } from "../lib/supabase";
 import { safeAppPath } from "../lib/client-rules";
 import { initSmoothScroll } from "../lib/smooth-scroll";
+import { CurrencyProvider } from '../lib/currency';
 
 function NotFoundComponent() {
   return (
@@ -150,7 +151,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <CurrencyProvider><Outlet /></CurrencyProvider>
     </QueryClientProvider>
   );
 }

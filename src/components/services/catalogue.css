@@ -26,6 +26,8 @@
 .service-catalogue-figure{display:flex;align-items:baseline;gap:10px;min-height:56px;margin:16px 0 12px;flex-wrap:wrap;}
 .service-catalogue-figure strong{font-size:40px;line-height:1.1;font-weight:700;font-variant-numeric:tabular-nums;color:var(--service-card-ink);overflow-wrap:anywhere;}
 .service-catalogue-figure>span{font-size:13px;line-height:1.5;color:var(--service-card-muted);}
+.service-catalogue-estimate{font-size:12px;line-height:1.6;color:var(--service-card-muted);margin:0 0 12px;min-height:38px;overflow-wrap:anywhere;}
+.service-catalogue-currency-note{font-size:13px;color:var(--service-card-muted);margin:-12px 0 24px;}
 .service-catalogue-description{font-size:15px;line-height:1.6;color:var(--service-card-muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:48px;}
 .service-catalogue-inclusions-title{font-size:15px;font-weight:600;line-height:1.6;margin:20px 0 12px;}
 .service-catalogue-checklist{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;flex:1;}

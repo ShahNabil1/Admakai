@@ -6,6 +6,7 @@ import { X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { getNavbarScrollState } from '@/lib/navbar-scroll';
+import { CurrencySwitcher } from '@/components/CurrencySwitcher';
 import '@/components/home/hero.css';
 
 const links = [
@@ -43,7 +44,7 @@ export function Navbar({ hero = false }: { hero?: boolean }) {
         <div className="hero-nav-links">
           {links.map(link => <Link key={link.to} to={link.to} className="hero-nav-link">{link.label}</Link>)}
         </div>
-        <Button asChild className="hero-nav-call"><Link to="/book">Book a call</Link></Button>
+        <div className="navbar-currency-actions"><CurrencySwitcher location="header"/><Button asChild className="hero-nav-call"><Link to="/book">Book a call</Link></Button></div>
         <Dialog.Root open={open} onOpenChange={setOpen}>
           <Dialog.Trigger asChild><Button variant="ghost" size="icon" className="hero-menu-trigger" aria-label="Open menu"><span className="hero-menu-icon" aria-hidden="true"><span /><span /></span></Button></Dialog.Trigger>
           <Dialog.Portal>

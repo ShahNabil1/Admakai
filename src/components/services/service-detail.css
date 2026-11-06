@@ -12,6 +12,8 @@
 .service-sd-title{font-size:72px;font-weight:700;line-height:1.12;max-width:1000px;margin:24px auto 0;text-wrap:balance;}
 .service-sd-title em{font-family:var(--font-serif);font-style:italic;font-weight:400;white-space:normal;position:relative;box-shadow:inset 0 -.18em var(--service-landing-yellow);box-decoration-break:clone;-webkit-box-decoration-break:clone;}
 .service-sd-description{max-width:600px;font-size:18px;color:var(--service-landing-muted);margin:24px auto 0;}
+.service-sd-estimate{font-size:14px;color:var(--service-landing-muted);margin:20px auto 0;}
+.service-sd-price-note{font-size:12px;color:var(--service-landing-muted);margin:20px auto 0;max-width:600px;}
 .service-sd-hero-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:32px;}
 .service-sd-button{height:48px;border-radius:999px;background:var(--service-landing-ink);color:var(--service-landing-bg);padding:0 24px;font-size:14px;font-weight:600;box-shadow:none;flex-shrink:0;}
 .service-sd-button:hover{background:var(--service-landing-dark-line);color:var(--service-landing-bg);}

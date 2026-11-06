@@ -10,6 +10,7 @@ import { useCases, serviceDeliveryTerms } from '@/data/useCases';
 import { ServiceLandingReveal } from './ServiceLandingMotion';
 import { ServicePortfolio } from './ServicePortfolio';
 import './service-detail.css';
+import { ServicePrice } from './ServicePrice';
 
 const icons = [Megaphone, Play, Clapperboard, Globe, MonitorPlay, Presentation];
 const steps = [
@@ -38,8 +39,10 @@ export function ServiceDetailPage({ service }: { service: Service }) {
         <ServiceLandingReveal><div className="service-sd-pills"><span>{category?.name} service</span>{service.isNew && <span>New</span>}{service.featured && <span className="service-sd-popular">Popular</span>}</div>
           <h1 className="service-sd-title">{service.heroTitle.lead} <em>{service.heroTitle.accent}</em> {service.heroTitle.rest}</h1>
           <p className="service-sd-description">{service.description}</p>
+          <p className="service-sd-estimate"><ServicePrice service={service}/></p>
           <div className="service-sd-hero-actions"><Call service={service}>Book a free call</Call><Button className="service-sd-button service-sd-button-secondary" disabled title="Pricing section will follow in the next update">See pricing</Button></div>
           <ul className="service-sd-checklist">{[`Delivery in ${service.delivery}`, service.formats, 'Two revision rounds', 'Bangla or English', 'Final files are yours'].map(item => <li key={item}><Check size={15} aria-hidden="true"/>{item}</li>)}</ul>
+          <p className="service-sd-price-note">Final price is confirmed in writing within 24 hours of your brief.</p>
         </ServiceLandingReveal>
       </div>
     </section>

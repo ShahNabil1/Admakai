@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { ChevronDown, Clock, Play, Tag, X } from 'lucide-react';
-import { serviceCategories, servicePriceLine, type HeroMedia, type Service } from '@/data/services';
+import { serviceCategories, type HeroMedia, type Service } from '@/data/services';
+import { ServicePrice } from './ServicePrice';
 import { resolveHeroMedia } from '@/data/heroMediaDefaults';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
 import './service-hero.css';
@@ -85,7 +86,7 @@ export function ServiceHero({ service }: { service: Service }) {
       <button type="submit">Get my quote →</button>
     </form>
     <p className="service-hero-trust">
-      <span><Tag size={13} aria-hidden="true"/>{/^get/i.test(servicePriceLine(service)) ? 'Price on quote' : `Estimated ${servicePriceLine(service)}`}</span>
+      <span><Tag size={13} aria-hidden="true"/><ServicePrice service={service}/></span>
       <span aria-hidden="true">•</span>
       <span><Clock size={13} aria-hidden="true"/>Delivery in {service.delivery}</span>
     </p>
