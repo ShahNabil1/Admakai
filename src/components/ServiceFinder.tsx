@@ -1,15 +1,20 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, ArrowUpRight, CalendarDays, ChevronDown, ChevronRight, Clock3, Code2, ListChecks, Mic, Plus, Rocket, Send, Square } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, CalendarDays, ChevronDown, ChevronRight, Code2, ListChecks, Mic, Plus, Rocket, Send, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { findPublishedService, publishedServices, servicePriceLine, visibleCategories, type Service } from '@/data/services';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
-import { appendFinderExchange, createFinderExchange, FINDER_REDIRECT_DELAY, FINDER_REPLY_DELAY, finderGreeting, type FinderLanguage, type BrowserSpeechRecognition, type FinderExchange, type SpeechConstructor } from './service-finder-state';
+import { appendFinderExchange, createFinderExchange, FINDER_REDIRECT_DELAY, FINDER_REPLY_DELAY, type FinderLanguage, type BrowserSpeechRecognition, type FinderExchange, type SpeechConstructor } from './service-finder-state';
 import './service-finder.css';
 
 const AUTO_REDIRECT = false;
+const HOOKS = [
+  'No camera has ever entered our office. See how we make ads',
+  'We delivered a full TVC in three days. See the work',
+  'Your next ad starts with one sentence. Type it below',
+];
 const PLACEHOLDERS = [
   'Ask anything...',
   'e.g. I sell sarees online and need photos on a model',
@@ -31,6 +36,7 @@ const POPULAR_REQUESTS = [
   ['Cut my podcast into short clips', 'Long to Short'],
   ['Monthly reels and posts for my page', 'Monthly Subscription'],
 ];
+const POPULAR_LABELS = ['Photos of my sarees on a model', 'Eid offer ad', 'Software demo video', 'Logo animation', 'TV commercial for my juice brand', 'White background photos for Daraz', 'Cut my podcast into short clips', 'Monthly reels and posts for my page'];
 
 function ResultCard({ service, primary, index }: { service: Service; primary: boolean; index: number }) {
   const reduce = useMotionPreference();
@@ -45,7 +51,8 @@ function ResultCard({ service, primary, index }: { service: Service; primary: bo
 export function ServiceFinder({ onBrowse }: { onBrowse: (category?: string) => void }) {
   const reduce = useMotionPreference();
   const navigate = useNavigate();
-  const [greeting, setGreeting] = useState('');
+  const [hook, setHook] = useState(0);
+  const [hookHovered, setHookHovered] = useState(false);
   const [language, setLanguage] = useState<FinderLanguage>('bn-BD');
   const [expanded, setExpanded] = useState(false);
   const [input, setInput] = useState('');
@@ -69,18 +76,19 @@ export function ServiceFinder({ onBrowse }: { onBrowse: (category?: string) => v
     for (const weight of [400, 500, 600, 700]) {
       void document.fonts.load(`${weight} 12px "Noto Sans Bengali"`, 'বাংলা English').catch(() => undefined);
     }
-    const updateGreeting = () => setGreeting(finderGreeting(new Date().getHours()));
-    updateGreeting();
-    const greetingTimer = setInterval(updateGreeting, 60000);
     const browser = window as Window & { SpeechRecognition?: SpeechConstructor; webkitSpeechRecognition?: SpeechConstructor };
     speechConstructor.current = browser.SpeechRecognition ?? browser.webkitSpeechRecognition ?? null;
     setSpeechSupported(Boolean(speechConstructor.current));
     return () => {
-      clearInterval(greetingTimer);
       if (recognition.current) { recognition.current.onresult = null; recognition.current.abort(); }
       timers.current.forEach(timer => clearTimeout(timer));
     };
   }, []);
+  useEffect(() => {
+    if (reduce || hookHovered || history.length > 0) return;
+    const timer = setInterval(() => setHook(current => (current + 1) % HOOKS.length), 4000);
+    return () => clearInterval(timer);
+  }, [reduce, hookHovered, history.length]);
   useEffect(() => {
     if (focused || reduce) return;
     const timer = setInterval(() => setPlaceholder(current => (current + 1) % PLACEHOLDERS.length), 3000);
@@ -147,23 +155,28 @@ export function ServiceFinder({ onBrowse }: { onBrowse: (category?: string) => v
   };
   const bookButton = <Button asChild variant="ghost" className="service-finder-chip"><Link to="/book-a-call"><CalendarDays aria-hidden="true"/>Book a call</Link></Button>;
   const transition = { duration: reduce ? 0 : .22 };
+  const focusInput = () => {
+    textarea.current?.scrollIntoView({ block: 'nearest', behavior: reduce ? 'instant' : 'smooth' });
+    textarea.current?.focus({ preventScroll: true });
+  };
+  const hookContent = <><i aria-hidden="true"/><AnimatePresence initial={false} mode="wait"><motion.span key={hook} initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>{HOOKS[hook]}</motion.span></AnimatePresence><ArrowRight aria-hidden="true"/></>;
 
-  return <section className="service-finder" aria-label="Service finder">
+  return <section className={`service-finder${history.length > 0 ? ' service-finder-is-chat' : ''}`} aria-label="Service finder">
     <div className="service-finder-inner">
       <div className="service-finder-topbar">
         <nav aria-label="Breadcrumb" className="service-finder-breadcrumb"><Link to="/">Home</Link><ChevronRight aria-hidden="true"/><span aria-current="page">Services</span></nav>
-        <div className="service-finder-top-actions"><span className="service-finder-availability"><i aria-hidden="true"/>{publishedServices().length} services available</span>{bookButton}</div>
-      </div>
       <div className="service-finder-tabs" role="group" aria-label="Finder views">
         <Button variant="ghost" className="service-finder-tab active" aria-pressed="true" onClick={() => textarea.current?.focus()}>Find a service</Button>
         <Button variant="ghost" className="service-finder-tab" onClick={() => onBrowse()}>Browse all</Button>
         {history.length > 0 && <Button variant="ghost" className="service-finder-start" onClick={startOver}>Start over</Button>}
       </div>
+        <div className="service-finder-top-actions"><span className="service-finder-availability"><i aria-hidden="true"/>{publishedServices().length} services available</span>{bookButton}</div>
+      </div>
       <div className="service-finder-workspace">
         <AnimatePresence initial={false} mode="wait">
           {history.length === 0 ? <motion.header key="greeting" className="service-finder-greeting" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
             <div className="service-finder-orb" aria-hidden="true"/>
-            <p className="service-finder-eyebrow">{greeting || '\u00a0'}</p>
+            <Button asChild={hook < 2} variant="ghost" className="service-finder-hook" onMouseEnter={() => setHookHovered(true)} onMouseLeave={() => setHookHovered(false)} onFocus={() => setHookHovered(true)} onBlur={() => setHookHovered(false)} onClick={hook === 2 ? focusInput : undefined}>{hook < 2 ? <Link to="/work">{hookContent}</Link> : hookContent}</Button>
             <h1>WHAT DO YOU WANT TO MAKE?</h1>
             <p className="service-finder-subtext">Tell us in Bangla or English. We will match you to the right service in seconds.</p>
           </motion.header> : <motion.div key="chat" className="service-finder-chat" ref={chat} data-lenis-prevent tabIndex={0} aria-label="Service finder conversation" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
@@ -208,7 +221,7 @@ export function ServiceFinder({ onBrowse }: { onBrowse: (category?: string) => v
         <AnimatePresence initial={false}>
           {history.length === 0 && <motion.div className="service-finder-discovery" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
             <div className="service-finder-suggestions">{SUGGESTIONS.map(suggestion => <Button key={suggestion.title} variant="ghost" className="service-finder-suggestion" onClick={() => send(suggestion.text)}><span className="service-finder-suggestion-heading"><span className={`service-finder-icon service-finder-icon-${suggestion.tone}`}><suggestion.icon aria-hidden="true"/></span><strong>{suggestion.title}</strong></span><span className="service-finder-suggestion-bottom">{suggestion.subtitle}<ArrowRight aria-hidden="true"/></span></Button>)}</div>
-            <div className="service-finder-popular"><h2><Clock3 aria-hidden="true"/>Popular requests</h2><div>{POPULAR_REQUESTS.slice(0, expanded ? 8 : 4).map(([question, service], index) => <Button key={question} variant="ghost" className={`service-finder-request ${!expanded && index === 3 ? 'service-finder-request-faded' : ''}`} onClick={() => { if (question) send(question); }}><span>{question}</span><span>{service}</span></Button>)}</div><Button variant="ghost" className="service-finder-see-more" aria-expanded={expanded} onClick={() => setExpanded(current => !current)}>{expanded ? 'See less' : 'See more'}<ArrowRight aria-hidden="true"/></Button></div>
+            <div className="service-finder-popular"><h2>Popular:</h2>{POPULAR_REQUESTS.slice(0, expanded ? 8 : 4).map(([question], index) => <Button key={question} variant="ghost" className="service-finder-request" onClick={() => { if (question) send(question); }}>{POPULAR_LABELS[index]}</Button>)}<Button variant="ghost" className="service-finder-see-more" aria-expanded={expanded} onClick={() => setExpanded(current => !current)}>{expanded ? 'Less' : 'More'}<ChevronDown aria-hidden="true"/></Button></div>
           </motion.div>}
         </AnimatePresence>
       </div>
