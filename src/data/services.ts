@@ -4,7 +4,7 @@ export type Service = {
   shortDescription: string; description: string; bestFor: string[]; signsYouNeedIt: string[];
   whatYouGet: string[]; whatWeNeed: string[]; formats: string; delivery: string;
   pricing: 'quote' | 'per-minute' | 'monthly'; priceFrom: number | null;
-  goals: string[]; related: string[]; compareNote?: string;
+  goals: string[]; related: string[]; compareNote?: string; featured?: boolean;
 };
 export const serviceCategories: ServiceCategory[] = [
   {
@@ -42,6 +42,7 @@ export const serviceCategories: ServiceCategory[] = [
 export const services: Service[] = [
   {
     "slug": "ai-commercial-30s",
+    "featured": true,
     "category": "video-ads",
     "published": true,
     "priceFrom": null,
@@ -133,6 +134,7 @@ export const services: Service[] = [
   },
   {
     "slug": "ai-ugc-ads",
+    "featured": true,
     "category": "video-ads",
     "published": true,
     "priceFrom": null,
@@ -563,6 +565,7 @@ export const services: Service[] = [
   },
   {
     "slug": "virtual-try-on",
+    "featured": true,
     "category": "imagery",
     "published": true,
     "priceFrom": null,
@@ -949,6 +952,7 @@ export const services: Service[] = [
   },
   {
     "slug": "reels-pack-of-6",
+    "featured": true,
     "category": "social",
     "published": true,
     "priceFrom": null,
@@ -1627,6 +1631,11 @@ export function servicePriceLine(service: Pick<Service, 'pricing' | 'priceFrom'>
   if (service.pricing === 'per-minute') return 'Priced per minute';
   if (service.pricing === 'monthly') return 'Monthly plan';
   return service.priceFrom === null ? 'Get a quote' : `From BDT ${service.priceFrom.toLocaleString('en-BD')}`;
+}
+export function serviceCardFigure(service: Pick<Service, 'pricing' | 'priceFrom' | 'delivery'>) {
+  if (service.priceFrom === null) return { figure: service.delivery.trim().split(/\s+/).slice(0, 2).join(' '), caption: 'delivery', unit: 'price on request' };
+  const unit = service.pricing === 'per-minute' ? 'per minute of video' : service.pricing === 'monthly' ? 'per month' : 'per project';
+  return { figure: `৳${service.priceFrom.toLocaleString('en-US')}`, caption: 'starting from', unit };
 }
 export const projectInclusions = ['Concept and script','Two revision rounds','Licensed music and AI voice','Captions in Bangla or English','Final files yours'];
 export const detailInclusions = ['Concept and script','Two revision rounds','Licensed music and AI voice','Captions in Bangla or English','Final files are yours','Every frame reviewed by a human: hands, faces and Bangla text checked.'];

@@ -52,7 +52,7 @@ export function ServicesPage() {
             <Reveal><h2 className="section-title serif">{category.name}</h2><p className="family-intro">{category.intro}</p></Reveal>
             <div className="service-grid service-catalogue-grid">
               <AnimatePresence initial={false} mode="popLayout" propagate>
-                {data.filter(service => service.category === category.id).map(service => <motion.div key={service.slug} layout={!reduce} initial={reduce ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reduce ? 0 : -8 }} transition={transition}><ServiceCatalogueCard service={service}/></motion.div>)}
+                {data.filter(service => service.category === category.id).map((service, index) => <motion.div key={service.slug} layout={!reduce} initial={reduce ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reduce ? 0 : -8 }} transition={transition}><ServiceCatalogueCard service={service} index={index}/></motion.div>)}
               </AnimatePresence>
             </div>
           </motion.section>)}

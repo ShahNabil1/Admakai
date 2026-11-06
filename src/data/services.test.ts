@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { findPublishedService, publishedServices, relatedServices, services, visibleCategories, servicePriceLine } from './services';
+import { findPublishedService, publishedServices, relatedServices, services, visibleCategories, servicePriceLine, serviceCardFigure } from './services';
 import { publicSeoPaths, prerenderPaths } from './seo-routes';
 
 describe('Static service catalogue rules', () => {
+  it('features only the four requested services', () => expect(services.filter(service => service.featured).map(service => service.slug)).toEqual(['ai-commercial-30s', 'ai-ugc-ads', 'virtual-try-on', 'reels-pack-of-6']));
+  it.each([['quote', 'per project'], ['per-minute', 'per minute of video'], ['monthly', 'per month']] as const)('formats configured %s prices', (pricing, unit) => expect(serviceCardFigure({ pricing, priceFrom: 6000, delivery: '7 days' })).toEqual({ figure: '৳6,000', caption: 'starting from', unit }));
+  it.each([['7 days', '7 days'], ['5 days setup', '5 days'], ['Monthly', 'Monthly']])('shows first two delivery words for unset price %s', (delivery, figure) => expect(serviceCardFigure({ pricing: 'quote', priceFrom: null, delivery })).toEqual({ figure, caption: 'delivery', unit: 'price on request' }));
   it('starts with all 37 supplied services published', () => expect(publishedServices()).toHaveLength(37));
   it('leaves all supplied prices unconfigured', () => expect(services.map(service => service.priceFrom)).toEqual(Array(37).fill(null)));
   it('shows all six populated categories in supplied order', () => expect(visibleCategories().map(category => category.id)).toEqual(['video-ads','imagery','people','social','voice','strategy']));

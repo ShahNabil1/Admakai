@@ -6,3 +6,4 @@
 - Catalogue text lives in src/data/services.ts; foundation media configuration stays in src/content. Missing media or contact data stays honestly unavailable, not invented.
 - Goal filtering uses browser-safe service-goals helpers and page-local state; derive counts and visible categories from the same filtered published records to avoid mismatches.
 - ServiceFinder uses the supplied pure matcher in event handlers with published slugs and bounded ephemeral history; browser speech APIs are detected only after hydration, with no custom network calls.
+- Catalogue and related cards share ServiceCatalogueCard and the browser-safe serviceCardFigure helper; scoped grid/card CSS keeps card changes isolated from detail content and the finder.
