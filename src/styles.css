@@ -228,22 +228,21 @@ html.lenis body {
 :root { --booking-copy: oklch(0.49 0 0); --booking-border: oklch(0.90 0 0); --booking-disabled: oklch(0.72 0 0); --booking-sage: oklch(0.90 0.035 145); --booking-sage-ink: oklch(0.39 0.045 145); --booking-overlay: linear-gradient(to bottom, oklch(0 0 0 / .25), oklch(0 0 0 / .08) 45%, oklch(0 0 0 / .70)); }
 
 :root {
-  --service-card-bg: #FAFAFA;
-  --service-card-border: #FFFFFF;
-  --service-card-ink: #0E1116;
-  --service-card-copy: #1F2328;
-  --service-card-muted: #6B7280;
-  --service-card-divider: #ECECEC;
-  --service-card-name: linear-gradient(110deg,#5B7CFA,#A35BF0 55%,#F59E2B);
-  --service-card-shadow: 0 20px 40px rgba(0,0,0,.06);
-  --service-card-button-light: linear-gradient(#F3F3F3,#E4E4E4);
-  --service-card-button-dark: linear-gradient(#2B2B2B,#161616);
-  --service-card-button-border: #D6D6D6;
-  --service-card-button-ink: #111111;
-  --service-card-button-shadow: inset 0 1px 0 rgba(255,255,255,.8),0 2px 3px rgba(0,0,0,.1);
-  --service-card-button-dark-shadow: inset 0 1px 0 rgba(255,255,255,.2),0 2px 3px rgba(0,0,0,.2);
-  --service-card-glow-blue: #8FB2FF;
-  --service-card-glow-orange: #FFB547;
-  --service-card-glow-hot: #FF7A1A;
-  --service-card-glow-pink: #FF6B6B;
+  --service-card-bg: oklch(1 0 0 / .94);
+  --service-card-white: oklch(1 0 0);
+  --service-card-border: oklch(.922 .007 90);
+  --service-card-ink: oklch(.145 0 0);
+  --service-card-copy: oklch(.145 0 0);
+  --service-card-muted: oklch(.485 0 0);
+  --service-card-divider: oklch(.935 .007 90);
+  --service-card-yellow: oklch(.882589 .164848 92.2217);
+  --service-card-featured-border: oklch(.841944 .168378 90.4299);
+  --service-card-shadow: 0 10px 30px oklch(0 0 0 / .08);
+  --service-card-hover-shadow: 0 16px 36px oklch(0 0 0 / .12);
+  --service-card-button-border: oklch(.885 0 0);
+  --service-list-overlay: oklch(1 0 0 / .35);
+  --service-list-frame: oklch(1 0 0 / .6);
+  --service-list-control: oklch(1 0 0 / .7);
+  --service-list-heading: oklch(1 0 0 / .85);
+  --service-list-active-shadow: 0 2px 8px oklch(0 0 0 / .08);
 }

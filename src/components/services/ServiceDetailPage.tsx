@@ -30,7 +30,7 @@ export function ServiceDetailPage({ service }: { service: Service }) {
     <section className="container-site page-section"><Reveal><h2 className="section-title serif">What we need from you</h2></Reveal><Checklist items={service.whatWeNeed}/></section>
     <section className="page-paper page-section"><div className="container-site service-detail-included"><Reveal><h2 className="section-title serif">Included in every project</h2></Reveal><Checklist items={detailInclusions}/></div></section>
     {service.compareNote && <section className="container-site page-section"><Reveal><div className="service-detail-compare"><h2 className="section-title serif">Not sure which one?</h2><p className="page-intro">{service.compareNote}</p></div></Reveal></section>}
-    {related.length > 0 && <section className="container-site page-section"><Reveal><h2 className="section-title serif">You might also need</h2></Reveal><div className="service-grid service-catalogue-grid">{related.map((item,i) => <Reveal key={item.slug} delay={i*.07}><ServiceCatalogueCard service={item}/></Reveal>)}</div></section>}
+    {related.length > 0 && <section className="page-section service-catalogue-related"><div className="container-site"><Reveal><h2 className="section-title serif">You might also need</h2></Reveal><div className="service-grid service-catalogue-grid">{related.map((item,i) => <Reveal key={item.slug} delay={i*.07}><ServiceCatalogueCard service={item}/></Reveal>)}</div></div></section>}
     <CtaStrip/>
   </div>;
 }

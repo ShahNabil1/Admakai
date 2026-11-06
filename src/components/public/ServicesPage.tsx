@@ -1,23 +1,28 @@
-import { Link, useLocation } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useLocation } from '@tanstack/react-router';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
 import { filterServicesByGoal, serviceGoals, toggleServiceGoal, type ServiceGoal } from '@/data/service-goals';
+import { filterServicesByCategory, serviceCategoryTabs, type ServiceCategoryFilter } from '@/data/service-category-filter';
+import footerImage from '@/assets/footer/footer-bg.jpg.asset.json';
 import { Reveal } from '@/components/motion/Reveal';
 import { publishedServices, visibleCategories, serviceAliases } from '@/data/services';
 import { ServiceCatalogueCard } from '@/components/services/ServiceCatalogueCard';
 import { Faq } from '@/components/home/Faq';
-import { CtaStrip, Inclusions, PageHero } from './PageElements';
+import { CtaStrip, Inclusions } from './PageElements';
 import { ServiceFinder } from '@/components/ServiceFinder';
 export function ServicesPage() {
   const [goal, setGoal] = useState<ServiceGoal>('all');
+  const [categoryFilter, setCategoryFilter] = useState<ServiceCategoryFilter>('all');
   const reduce = useMotionPreference();
-  const data = filterServicesByGoal(goal);
+  const data = filterServicesByCategory(categoryFilter, filterServicesByGoal(goal));
   const categories = visibleCategories(data);
   const hash = useLocation({ select: location => location.hash });
   useEffect(() => {
     if (!hash) return;
+    setCategoryFilter('all');
+    setGoal('all');
     const slug = serviceAliases[hash] || hash;
     const target = document.getElementById(slug);
     if (!target) return;
@@ -36,11 +41,14 @@ export function ServicesPage() {
   return <div className="public-page">
     <ServiceFinder onBrowse={category => {
       setGoal('all');
+      setCategoryFilter('all');
       window.setTimeout(() => document.getElementById(category ?? 'service-catalogue')?.scrollIntoView({ block: 'start', behavior: reduce ? 'instant' : 'smooth' }), reduce ? 0 : 320);
     }}/>
-    <PageHero eyebrow="Services" title={`${publishedServices().length} ways to make an ad without a shoot.`} intro="Pick a service, or tell us the job and we will pick for you."/>
-    <section className="container-site services-layout" id="service-catalogue">
-      <nav className="service-index" aria-label="Service families">{categories.map(category => <Link to="/services" hash={category.id} key={category.id}>{category.name}</Link>)}</nav>
+    <section className="service-catalogue-section" id="service-catalogue" style={{ '--service-catalogue-photo': `url("${footerImage.url}")` } as CSSProperties}>
+      <div className="service-catalogue-section-inner">
+      <header className="service-catalogue-section-header"><h2>{publishedServices().length} ways to make an ad without a shoot.</h2>
+        <div className="service-category-tabs" role="group" aria-label="Service categories">{serviceCategoryTabs.map(tab => <Button key={tab.id} variant="ghost" aria-pressed={categoryFilter === tab.id} className={`service-category-tab${categoryFilter === tab.id ? ' active' : ''}`} onClick={() => { setCategoryFilter(tab.id); setGoal('all'); }}>{tab.label}</Button>)}</div>
+      </header>
       <div className="service-catalogue-content">
         <div className="service-goal-filter" role="group" aria-labelledby="service-goal-label">
           <h2 id="service-goal-label">Which service do I need?</h2>
@@ -49,7 +57,7 @@ export function ServicesPage() {
         </div>
         <AnimatePresence initial={false} mode="popLayout">
           {categories.map(category => <motion.section className="service-family service-filter-family" id={category.id} key={category.id} layout={!reduce} initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>
-            <Reveal><h2 className="section-title serif">{category.name}</h2><p className="family-intro">{category.intro}</p></Reveal>
+            <Reveal><h2 className="service-category-heading">{category.name}</h2><p className="family-intro">{category.intro}</p></Reveal>
             <div className="service-grid service-catalogue-grid">
               <AnimatePresence initial={false} mode="popLayout" propagate>
                 {data.filter(service => service.category === category.id).map((service, index) => <motion.div key={service.slug} layout={!reduce} initial={reduce ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reduce ? 0 : -8 }} transition={transition}><ServiceCatalogueCard service={service} index={index}/></motion.div>)}
@@ -57,6 +65,7 @@ export function ServicesPage() {
             </div>
           </motion.section>)}
         </AnimatePresence>
+      </div>
       </div>
     </section>
     <Inclusions/><Faq/><CtaStrip/>
