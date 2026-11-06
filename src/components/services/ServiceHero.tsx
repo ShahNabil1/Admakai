@@ -44,7 +44,7 @@ export function ServiceHero({ service }: { service: Service }) {
 
   useEffect(() => {
     const el = root.current; if (!el) return;
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.15 });
+    const io = new IntersectionObserver(([e]) => setInView(!!e?.isIntersecting), { threshold: 0.15 });
     io.observe(el); return () => io.disconnect();
   }, []);
   useEffect(() => {
