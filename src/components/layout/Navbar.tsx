@@ -12,7 +12,7 @@ import '@/components/home/hero.css';
 const links = [
   { label: 'Pricing', to: '/pricing' },
   { label: 'Services', to: '/services' },
-  { label: 'Work', to: '/work' },
+  { label: 'Our Work', to: '/work' },
   { label: 'About', to: '/about' },
   { label: 'Blog', to: '/blog' },
 ] as const;
