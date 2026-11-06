@@ -8,10 +8,12 @@ import { formatDuration, getThumbnail } from '@/lib/vimeo';
 import { rankUpNext } from '@/lib/work-search';
 import { publishedWorksQueryOptions, type WorkWithLinks } from '@/lib/works';
 import { findPublishedService, type Service } from '@/data/services';
+import { useCurrency } from '@/lib/currency';
 import { Reveal } from '@/components/motion/Reveal';
 
 /** Public work detail: a YouTube-style watch page with the case study below. */
 export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
+  const { formatRange } = useCurrency();
   const [expanded, setExpanded] = useState(false);
   const [needsUnmute, setNeedsUnmute] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -19,7 +21,7 @@ export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
   const playerRef = useRef<import('@vimeo/player').default | null>(null);
 
   const services = useMemo(
-    () => (work.work_services ?? []).map((link) => findPublishedService(link.service_slug)).filter((service): service is Service => service != null),
+    () => [...(work.work_services ?? [])].sort((a,b) => a.position - b.position).map((link) => findPublishedService(link.service_slug)).filter((service): service is Service => service != null),
     [work.work_services],
   );
   const firstService = services[0];
@@ -124,7 +126,7 @@ export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
                 </div>
               </div>
               <div className="workpage-watch-buttons">
-                <Link to="/book" className="workpage-cta-button">
+                <Link to="/book" search={firstService ? {service: firstService.slug} : {}} className="workpage-cta-button">
                   Get a video like this
                 </Link>
                 <button type="button" className="workpage-share" onClick={() => void share()}>
@@ -135,7 +137,7 @@ export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
             {services.length ? (
               <div className="workpage-watch-services">
                 {services.map((service) => (
-                  <Link key={service.slug} to="/services/$slug" params={{ slug: service.slug }} className="workpage-service-chip">
+                  <Link key={service.slug} to="/services/$slug" params={{ slug: service.slug }} className="workpage-service-chip" title={`Estimated ${formatRange(service.priceMinUsd, service.priceMaxUsd)} per ${service.priceUnit}`}>
                     {service.name}
                   </Link>
                 ))}
@@ -306,7 +308,7 @@ export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
         <div className="container-site">
           <h2>Want a <em>video</em> like this?</h2>
           <div>
-            <Link to="/book" className="workpage-cta-button">Book a free call</Link>
+            <Link to="/book" search={firstService ? {service: firstService.slug} : {}} className="workpage-cta-button">Book a free call</Link>
             {firstService ? (
               <Link to="/services/$slug" params={{ slug: firstService.slug }} className="workpage-cta-link">
                 See the service <ArrowRight size={15} />

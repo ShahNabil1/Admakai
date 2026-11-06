@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { supabase } from '@/lib/supabase';
+import { interestedMessage } from './booking-interest';
 import { bookingFormSchema, slotSchema, type BookingDetails } from './booking-form';
 
 // The app schema owns the logic; the existing public wrappers are used when it is not exposed by PostgREST.
@@ -10,9 +11,10 @@ async function bookingRpc(name: string, args: Record<string, unknown> = {}) {
   return response.data;
 }
 export async function fetchOpenSlots() { return z.array(slotSchema).parse(await bookingRpc('open_slots')); }
-export async function createPublicBooking(slotAt: string, details: BookingDetails, source: Record<string, string>) {
-  bookingFormSchema.parse(details);
-  const id = await bookingRpc('create_booking', { p_slot_at: slotAt, p_name: details.name, p_email: details.email, p_whatsapp: details.whatsapp, p_brand: details.brand, p_need: details.need, p_message: details.message, p_budget_band: details.budget, p_source: source });
+export async function createPublicBooking(slotAt: string, details: BookingDetails, source: Record<string, string>, interest?: string) {
+  const message = interest ? interestedMessage(interest, details.message) : details.message;
+  bookingFormSchema.parse({...details, message});
+  const id = await bookingRpc('create_booking', { p_slot_at: slotAt, p_name: details.name, p_email: details.email, p_whatsapp: details.whatsapp, p_brand: details.brand, p_need: details.need, p_message: message, p_budget_band: details.budget, p_source: source });
   return z.string().uuid().parse(id);
 }
 export async function sendBookingLink(email: string) {

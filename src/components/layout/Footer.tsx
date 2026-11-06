@@ -8,11 +8,10 @@ import { gsap, registerGsap } from "@/lib/gsap";
 import { siteQueryOptions } from "@/lib/site-query";
 import landscape from "@/assets/footer/footer-bg.jpg.asset.json";
 import logo from "@/assets/brand/logo-dark-cropped.png.asset.json";
-import { findPublishedService } from "@/data/services";
 import "./footer.css";
 
 const columns = [
-  { label: "Services", links: [...['ai-commercial-30s', 'ai-ugc-ads', 'ai-product-photoshoot', 'ai-brand-model', 'ai-voiceover'].flatMap(slug => { const service = findPublishedService(slug); return service ? [[service.name, `/services/${service.slug}`]] : []; }), ["All services", "/services"]] },
+  { label: "Services", links: [["AI Commercials", "/services/ai-commercial-30s"], ["AI UGC Ads", "/services/ai-ugc-ads"], ["Product Photoshoot", "/services/ai-product-photoshoot"], ["Brand Models and Clones", "/services/ai-brand-model"], ["Voice and Dubbing", "/services/ai-voiceover"], ["All services", "/services"]] },
   { label: "Work", links: [["Portfolio", "/work"], ["Case studies", "/work"], ["Formats", "/#formats"], ["Pricing", "/pricing"]] },
   { label: "Company", links: [["About", "/about"], ["Our AI policy", "/about#ai-policy"], ["Book a call", "/book"]] },
   { label: "Legal", links: [["Privacy policy", "/privacy"], ["Terms", "/terms"], ["Refund policy", "/refund"], ["AI disclosure", "/about#ai-policy"]] },

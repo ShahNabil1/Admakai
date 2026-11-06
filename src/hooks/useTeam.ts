@@ -1,4 +1,3 @@
-import { useSupabaseTable } from './useSupabaseTable';
-import type { TeamMember } from '@/data/team';
+import { team } from '@/data/team';
 export type { TeamMember } from '@/data/team';
-export const useTeam = () => useSupabaseTable<TeamMember>('team');
+export const useTeam = () => ({data:team,loading:false,error:null});

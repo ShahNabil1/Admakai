@@ -44,3 +44,6 @@
 
 - Monthly plan terms and ranges live only in src/data/plans.ts; legacy pricing adapters return that static source rather than database pricing rows, so Home and Pricing cannot drift.
 - Home featured works and exact published count use src/lib/works.ts Query reads; failed counts remain null rather than invented totals.
+
+- Booking interest helpers resolve published services and shared plans; exact interest prefixes the existing message while legacy need codes preserve SQL compatibility without schema changes.
+- About uses the approved browser-safe team list rather than database fallback identities, ensuring supplied order and initials-only presentation.
