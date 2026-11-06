@@ -31,6 +31,7 @@ import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppReviewsRouteImport } from './routes/_authenticated.app.reviews'
 import { Route as SiteBlogIndexRouteImport } from './routes/_site.blog.index'
 import { Route as SiteBlogSazdahTvcRouteImport } from './routes/_site.blog.sazdah-tvc'
+import { Route as SiteServicesSlugRouteImport } from './routes/_site.services_.$slug'
 import { Route as SiteWorkIndexRouteImport } from './routes/_site.work.index'
 import { Route as SiteWorkSlugRouteImport } from './routes/_site.work.$slug'
 import { Route as AuthSsoCallbackRouteImport } from './routes/auth.sso.callback'
@@ -144,6 +145,11 @@ const SiteBlogSazdahTvcRoute = SiteBlogSazdahTvcRouteImport.update({
   path: '/blog/sazdah-tvc',
   getParentRoute: () => SiteRoute,
 } as any)
+const SiteServicesSlugRoute = SiteServicesSlugRouteImport.update({
+  id: '/services_/$slug',
+  path: '/services/$slug',
+  getParentRoute: () => SiteRoute,
+} as any)
 const SiteWorkIndexRoute = SiteWorkIndexRouteImport.update({
   id: '/work/',
   path: '/work/',
@@ -179,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/reviews': typeof AuthenticatedAppReviewsRoute
   '/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
+  '/services/$slug': typeof SiteServicesSlugRoute
   '/work/$slug': typeof SiteWorkSlugRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/app/': typeof AuthenticatedAppIndexRoute
@@ -203,6 +210,7 @@ export interface FileRoutesByTo {
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/reviews': typeof AuthenticatedAppReviewsRoute
   '/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
+  '/services/$slug': typeof SiteServicesSlugRoute
   '/work/$slug': typeof SiteWorkSlugRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/app': typeof AuthenticatedAppIndexRoute
@@ -231,6 +239,7 @@ export interface FileRoutesById {
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRoute
   '/_authenticated/app/reviews': typeof AuthenticatedAppReviewsRoute
   '/_site/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
+  '/_site/services_/$slug': typeof SiteServicesSlugRoute
   '/_site/work/$slug': typeof SiteWorkSlugRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
@@ -258,6 +267,7 @@ export interface FileRouteTypes {
     | '/app/projects'
     | '/app/reviews'
     | '/blog/sazdah-tvc'
+    | '/services/$slug'
     | '/work/$slug'
     | '/auth/sso/callback'
     | '/app/'
@@ -282,6 +292,7 @@ export interface FileRouteTypes {
     | '/app/projects'
     | '/app/reviews'
     | '/blog/sazdah-tvc'
+    | '/services/$slug'
     | '/work/$slug'
     | '/auth/sso/callback'
     | '/app'
@@ -309,6 +320,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/projects'
     | '/_authenticated/app/reviews'
     | '/_site/blog/sazdah-tvc'
+    | '/_site/services_/$slug'
     | '/_site/work/$slug'
     | '/auth/sso/callback'
     | '/_authenticated/app/'
@@ -480,6 +492,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteBlogSazdahTvcRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_site/services_/$slug': {
+      id: '/_site/services_/$slug'
+      path: '/services/$slug'
+      fullPath: '/services/$slug'
+      preLoaderRoute: typeof SiteServicesSlugRouteImport
+      parentRoute: typeof SiteRoute
+    }
     '/_site/work/': {
       id: '/_site/work/'
       path: '/work'
@@ -548,6 +567,7 @@ interface SiteRouteChildren {
   SiteTermsRoute: typeof SiteTermsRoute
   SiteIndexRoute: typeof SiteIndexRoute
   SiteBlogSazdahTvcRoute: typeof SiteBlogSazdahTvcRoute
+  SiteServicesSlugRoute: typeof SiteServicesSlugRoute
   SiteWorkSlugRoute: typeof SiteWorkSlugRoute
   SiteBlogIndexRoute: typeof SiteBlogIndexRoute
   SiteWorkIndexRoute: typeof SiteWorkIndexRoute
@@ -564,6 +584,7 @@ const SiteRouteChildren: SiteRouteChildren = {
   SiteTermsRoute: SiteTermsRoute,
   SiteIndexRoute: SiteIndexRoute,
   SiteBlogSazdahTvcRoute: SiteBlogSazdahTvcRoute,
+  SiteServicesSlugRoute: SiteServicesSlugRoute,
   SiteWorkSlugRoute: SiteWorkSlugRoute,
   SiteBlogIndexRoute: SiteBlogIndexRoute,
   SiteWorkIndexRoute: SiteWorkIndexRoute,

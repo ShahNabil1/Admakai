@@ -1,0 +1,27 @@
+.service-catalogue-card{position:relative;height:100%;transition:transform .3s cubic-bezier(.22,1,.36,1),border-color .3s;}
+.service-catalogue-card:hover,.service-catalogue-card:focus-within{transform:translateY(-5px);border-color:var(--fg);}
+.service-catalogue-heading{display:flex;align-items:flex-start;flex-wrap:wrap;gap:8px;}
+.service-catalogue-heading h3{flex:1;min-width:120px;overflow-wrap:anywhere;}
+.service-catalogue-new{color:var(--fg);flex:none;}
+.service-catalogue-card .service-catalogue-checklist{list-style:none;padding:0;}
+.service-catalogue-checklist li{display:flex;align-items:flex-start;gap:10px;line-height:1.5;}
+.service-catalogue-checklist svg{flex:none;margin-top:4px;}
+.service-catalogue-link::after{content:'';position:absolute;inset:0;border-radius:inherit;}
+.service-catalogue-link:focus-visible{outline:none;box-shadow:none;}
+.service-catalogue-link:focus-visible::after{outline:2px solid var(--fg);outline-offset:4px;}
+.service-catalogue-grid>div{min-width:0;}
+.service-detail-back{display:inline-flex;align-items:center;gap:8px;color:var(--page-secondary);font-size:14px;margin-bottom:24px;}
+.service-detail-back:hover{color:var(--fg);}
+.service-detail-title{display:flex;align-items:center;flex-wrap:wrap;gap:16px;}
+.service-detail-info{margin:28px 0;}
+.service-detail-info .page-pill{white-space:normal;}
+.service-detail-list{display:grid;gap:20px;max-width:900px;list-style:none;padding:0;}
+.service-detail-list li{display:flex;align-items:flex-start;gap:16px;font-size:17px;line-height:1.65;color:var(--page-body);}
+.service-detail-list svg{flex:none;margin-top:5px;}
+.service-detail-deliverables li{padding:24px 0;border-bottom:1px solid var(--line);font-size:22px;color:var(--fg);}
+.service-detail-number{font:italic 32px var(--font-serif);color:var(--page-secondary);width:42px;flex:none;}
+.service-detail-compare{border-left:2px solid var(--accent);padding-left:28px;}
+.service-detail-included li{color:var(--ink);}
+@media(width<768px){.public-page .service-catalogue-grid{grid-template-columns:1fr;}}
+@media(width<600px){.service-detail-deliverables li{font-size:18px;}.service-detail-number{font-size:26px;width:32px;}}
+@media(prefers-reduced-motion:reduce){.service-catalogue-card{transition:none;}.service-catalogue-card:hover,.service-catalogue-card:focus-within{transform:none;}}

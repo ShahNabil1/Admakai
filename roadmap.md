@@ -1,4 +1,5 @@
 # Tasks
+- [x] Replace /services with the supplied static 16-service catalogue and detail pages; preserve design, inclusions/exclusions, FAQ, CTA and booking flow. 65 tests pass; desktop/375px/603px, whole-card navigation, selected booking service, unknown redirects, metadata and reduced motion verified. Live updates require publishing.
 - [x] Add service-only content, lazy Vimeo player, shared components and isolated motion without changing existing pages or database; 17 tests and desktop/mobile lightbox, focus/Escape and overflow checks pass. Real playback awaits supplied Vimeo IDs/posters; no service pages added.
 - [x] Replace admin redirect with popup SSO, strict state/message checks, cancellation and blocked-popup fallback; 20 tests and local browser card/open/cancel/close/fallback/error/mobile checks pass. Real Hub password/2FA/passkey success flow remains unverified without a Hub session.
 - [x] Phase 2 delivery: projects, tasks, versioned deliverables, private 15-min links, timecoded review, client approve/request changes within revision limit, won lead opens project; 5 tests pass. Real signed-in review flow unverified (no session here).
