@@ -730,6 +730,565 @@ export const services: Service[] = [
       "cgi-product-commercial",
       "ai-product-photoshoot"
     ]
+  },
+  {
+    "slug": "digital-clone",
+    "category": "people",
+    "published": true,
+    "priceFrom": null,
+    "name": "Digital Clone",
+    "isNew": false,
+    "shortDescription": "Your own face and voice, cloned with consent, so you can post without filming.",
+    "description": "A digital twin made from a 3 minute recording and your written consent. Post regular videos in Bangla and English without sitting in front of a camera every week.",
+    "bestFor": [
+      "CEOs and founders",
+      "Doctors, lawyers and consultants",
+      "Coaches and teachers",
+      "Real estate agents"
+    ],
+    "signsYouNeedIt": [
+      "You want to post videos but have no time",
+      "Filming every week is not realistic",
+      "You want content in both Bangla and English"
+    ],
+    "whatYouGet": [
+      "Setup from a 3 minute recording and written consent",
+      "4 videos per month",
+      "Bangla and English",
+      "Your clone is used only with your approval"
+    ],
+    "whatWeNeed": [
+      "A 3 minute video in good light",
+      "Signed consent form",
+      "Topics for the month"
+    ],
+    "formats": "16:9, 9:16",
+    "delivery": "5 days setup",
+    "pricing": "monthly",
+    "goals": [
+      "creator",
+      "corp",
+      "edu"
+    ],
+    "related": [
+      "ai-presenter-video",
+      "ai-voiceover"
+    ],
+    "compareNote": "Digital Clone is you, with your own face and voice. AI Presenter is a new face, for when you would rather not appear."
+  },
+  {
+    "slug": "ai-presenter-video",
+    "category": "people",
+    "published": true,
+    "priceFrom": null,
+    "name": "AI Presenter Video",
+    "isNew": false,
+    "shortDescription": "An AI presenter explains your product or service on camera.",
+    "description": "A professional presenter speaks to camera with on-screen graphics and text. Complex products become easy to understand.",
+    "bestFor": [
+      "Banks and insurance",
+      "Hospitals",
+      "Edtech",
+      "Government and NGO projects"
+    ],
+    "signsYouNeedIt": [
+      "You do not want to appear on camera yourself",
+      "You need to explain rules or terms",
+      "You need an intro video for your website or page"
+    ],
+    "whatYouGet": [
+      "Script",
+      "AI presenter of your choice",
+      "60 to 90s video",
+      "Background graphics and text",
+      "Captions"
+    ],
+    "whatWeNeed": [
+      "What you want explained",
+      "Logo and colours"
+    ],
+    "formats": "16:9, 9:16",
+    "delivery": "5 days",
+    "pricing": "quote",
+    "goals": [
+      "corp",
+      "edu",
+      "tech"
+    ],
+    "related": [
+      "digital-clone",
+      "training-video"
+    ],
+    "compareNote": "Digital Clone is you, with your own face and voice. AI Presenter is a new face, for when you would rather not appear."
+  },
+  {
+    "slug": "training-video",
+    "category": "people",
+    "published": true,
+    "priceFrom": null,
+    "name": "Training Video",
+    "isNew": false,
+    "shortDescription": "Training modules for staff or customers, with slides and a presenter.",
+    "description": "We turn your SOPs and know-how into clear 5 to 8 minute modules your team can watch anytime. Train every branch the same way.",
+    "bestFor": [
+      "Corporate HR",
+      "Factory safety training",
+      "Banks and franchises",
+      "Online courses"
+    ],
+    "signsYouNeedIt": [
+      "You repeat the same training for every new hire",
+      "You have many branches and few trainers",
+      "You want to build a course"
+    ],
+    "whatYouGet": [
+      "5 to 8 minute modules",
+      "Slides and presenter",
+      "Chapters",
+      "Bangla or English"
+    ],
+    "whatWeNeed": [
+      "Training content or SOPs",
+      "Number of modules"
+    ],
+    "formats": "16:9",
+    "delivery": "7 days per 5 modules",
+    "pricing": "quote",
+    "goals": [
+      "edu",
+      "corp"
+    ],
+    "related": [
+      "ai-presenter-video",
+      "explainer-motion-graphics"
+    ]
+  },
+  {
+    "slug": "ai-brand-ambassador",
+    "category": "people",
+    "published": true,
+    "priceFrom": null,
+    "name": "AI Brand Ambassador",
+    "isNew": true,
+    "shortDescription": "A virtual face for your brand who shows up every month, like a real ambassador.",
+    "description": "A character with a name, personality and voice who appears in your posts and reels every month. Fully exclusive to your brand.",
+    "bestFor": [
+      "Skincare",
+      "Telecom and apps",
+      "Food brands",
+      "Brands that post every day"
+    ],
+    "signsYouNeedIt": [
+      "A celebrity ambassador is out of budget",
+      "You need a lot of content every month",
+      "You want your brand to have a personality"
+    ],
+    "whatYouGet": [
+      "Character, name, personality and voice",
+      "8 posts and 4 reels every month",
+      "Monthly content calendar",
+      "Exclusive rights"
+    ],
+    "whatWeNeed": [
+      "Your brand mood and audience",
+      "Products and offers for the month"
+    ],
+    "formats": "9:16, 4:5",
+    "delivery": "Monthly",
+    "pricing": "monthly",
+    "goals": [
+      "brand",
+      "creator",
+      "sales"
+    ],
+    "related": [
+      "ai-brand-model",
+      "monthly-content-subscription"
+    ],
+    "compareNote": "AI Brand Model is a one-time job: one face and 10 images. AI Brand Ambassador is a monthly service with a personality, a voice, posts and reels."
+  },
+  {
+    "slug": "ai-corporate-headshots",
+    "category": "people",
+    "published": true,
+    "priceFrom": null,
+    "name": "AI Corporate Headshots",
+    "isNew": true,
+    "shortDescription": "Matching professional headshots for your whole team, without a photographer.",
+    "description": "Send selfies and get studio-quality portraits back. Everyone gets the same background, light and style.",
+    "bestFor": [
+      "Corporate offices",
+      "Startups",
+      "Law firms and hospitals",
+      "Schools and colleges"
+    ],
+    "signsYouNeedIt": [
+      "Your website needs a team page",
+      "Your team needs LinkedIn profile photos",
+      "You are making ID cards",
+      "Your team works from different places"
+    ],
+    "whatYouGet": [
+      "5 images per person",
+      "Same background, lighting and outfit style",
+      "Sizes for website and LinkedIn"
+    ],
+    "whatWeNeed": [
+      "8 to 10 casual selfies per person"
+    ],
+    "formats": "1:1, 4:5",
+    "delivery": "2 days",
+    "pricing": "quote",
+    "goals": [
+      "corp",
+      "creator"
+    ],
+    "related": [
+      "digital-clone"
+    ]
+  },
+  {
+    "slug": "reels-pack-of-6",
+    "category": "social",
+    "published": true,
+    "priceFrom": null,
+    "name": "Reels Pack of 6",
+    "isNew": false,
+    "shortDescription": "Six reels from one brief to keep your page active all month.",
+    "description": "Six short reels, each with its own hook, captions and cover, planned around your business. One brief, a month of content.",
+    "bestFor": [
+      "Restaurants and cafes",
+      "Facebook commerce",
+      "Coaching centres",
+      "Salons and gyms"
+    ],
+    "signsYouNeedIt": [
+      "Your page has no regular content",
+      "Your reach is dropping",
+      "You do not know what to make reels about"
+    ],
+    "whatYouGet": [
+      "6 reels, 15 to 30s each",
+      "A different hook for each reel",
+      "Captions",
+      "Cover images",
+      "Post captions written for you"
+    ],
+    "whatWeNeed": [
+      "Business details and offers",
+      "Photos or footage, if you have them"
+    ],
+    "formats": "9:16",
+    "delivery": "5 days",
+    "pricing": "quote",
+    "goals": [
+      "sales",
+      "ecom",
+      "creator"
+    ],
+    "related": [
+      "monthly-content-subscription",
+      "ai-ugc-ads"
+    ],
+    "compareNote": "Reels Pack of 6 is a one-time order. Monthly Content Subscription gives you a set amount every month with a dedicated manager."
+  },
+  {
+    "slug": "ai-video-editing",
+    "category": "social",
+    "published": true,
+    "priceFrom": null,
+    "name": "AI Video Editing",
+    "isNew": false,
+    "shortDescription": "Your raw footage turned into a finished, professional cut.",
+    "description": "Cutting, pacing, colour grading, voice cleanup, captions and sound effects. Priced per minute of final video.",
+    "bestFor": [
+      "YouTubers",
+      "Podcasts",
+      "Events",
+      "Companies with footage but no editor"
+    ],
+    "signsYouNeedIt": [
+      "You have shot on a phone or camera",
+      "You do not have the time or skills to edit"
+    ],
+    "whatYouGet": [
+      "Cut and pacing",
+      "Cinematic colour grade",
+      "Voice cleanup",
+      "Captions",
+      "Sound effects"
+    ],
+    "whatWeNeed": [
+      "Raw footage",
+      "Transcript or key points",
+      "References, if you have them"
+    ],
+    "formats": "16:9, 9:16, 1:1",
+    "delivery": "3 days",
+    "pricing": "per-minute",
+    "goals": [
+      "creator",
+      "corp"
+    ],
+    "related": [
+      "long-to-short-repurposing",
+      "youtube-channel-pack"
+    ]
+  },
+  {
+    "slug": "motion-ad-logo-animation",
+    "category": "social",
+    "published": true,
+    "priceFrom": null,
+    "name": "Motion Ad or Logo Animation",
+    "isNew": false,
+    "shortDescription": "Kinetic type, logo reveals and product motion in 10 to 20 seconds.",
+    "description": "Short, polished animation for intros, outros, offers and announcements. Eye-catching without any footage.",
+    "bestFor": [
+      "New brands",
+      "YouTube channels",
+      "Events",
+      "Software companies"
+    ],
+    "signsYouNeedIt": [
+      "You need a logo at the start or end of your videos",
+      "You want to announce an offer fast",
+      "You want something eye-catching without footage"
+    ],
+    "whatYouGet": [
+      "10 to 20s animation",
+      "3 formats",
+      "After Effects source file on request"
+    ],
+    "whatWeNeed": [
+      "Logo vector file (AI, SVG or PDF)",
+      "Your message or offer"
+    ],
+    "formats": "16:9, 9:16, 1:1",
+    "delivery": "4 days",
+    "pricing": "quote",
+    "goals": [
+      "brand",
+      "launch"
+    ],
+    "related": [
+      "explainer-motion-graphics",
+      "product-film"
+    ],
+    "compareNote": "Motion Ad is a 10 to 20 second burst for a logo or an offer. Explainer Motion Graphics runs 1 to 2 minutes and explains data or a process."
+  },
+  {
+    "slug": "explainer-motion-graphics",
+    "category": "social",
+    "published": true,
+    "priceFrom": null,
+    "name": "Explainer Motion Graphics",
+    "isNew": true,
+    "shortDescription": "A 1 to 2 minute infographic video that makes data or a process easy to follow.",
+    "description": "Charts, icons, glass UI cards and kinetic text that turn numbers, reports and complex ideas into something anyone understands. No footage needed.",
+    "bestFor": [
+      "NGOs and development projects",
+      "Edtech",
+      "Banks and finance",
+      "Educational YouTube channels"
+    ],
+    "signsYouNeedIt": [
+      "You need to present data or a report",
+      "You need to explain a process, such as how to apply for a loan",
+      "There is no footage to show"
+    ],
+    "whatYouGet": [
+      "Script",
+      "Style frames for approval",
+      "Glass UI cards, charts and icon animation",
+      "Voiceover",
+      "Music and sound effects"
+    ],
+    "whatWeNeed": [
+      "Your data, report or content",
+      "Logo and colours"
+    ],
+    "formats": "16:9, 9:16",
+    "delivery": "7 days",
+    "pricing": "quote",
+    "goals": [
+      "corp",
+      "edu",
+      "tech"
+    ],
+    "related": [
+      "saas-explainer",
+      "corporate-avc-event-video"
+    ],
+    "compareNote": "Motion Ad is a 10 to 20 second burst for a logo or an offer. Explainer Motion Graphics runs 1 to 2 minutes and explains data or a process."
+  },
+  {
+    "slug": "long-to-short-repurposing",
+    "category": "social",
+    "published": true,
+    "priceFrom": null,
+    "name": "Long to Short Repurposing",
+    "isNew": true,
+    "shortDescription": "Your podcast, webinar or live stream cut into 10 to 15 short videos.",
+    "description": "We find the best moments in your long video and turn them into vertical clips with hooks and animated captions. One recording, weeks of shorts.",
+    "bestFor": [
+      "Podcasters",
+      "Coaches and speakers",
+      "YouTubers",
+      "Companies running webinars"
+    ],
+    "signsYouNeedIt": [
+      "You have hour-long videos nobody watches in full",
+      "You need shorts every week"
+    ],
+    "whatYouGet": [
+      "10 to 15 clips, 30 to 60s each",
+      "A hook title on every clip",
+      "Animated captions",
+      "Face-tracked 9:16 crop",
+      "Covers"
+    ],
+    "whatWeNeed": [
+      "The long video file or link"
+    ],
+    "formats": "9:16, 1:1",
+    "delivery": "3 days",
+    "pricing": "quote",
+    "goals": [
+      "creator",
+      "edu"
+    ],
+    "related": [
+      "ai-video-editing",
+      "youtube-channel-pack"
+    ]
+  },
+  {
+    "slug": "corporate-avc-event-video",
+    "category": "social",
+    "published": true,
+    "priceFrom": null,
+    "name": "Corporate AVC and Event Video",
+    "isNew": true,
+    "shortDescription": "Audio visual presentations for AGMs, anniversaries, launches and event screens.",
+    "description": "Your company's story, milestones and numbers on the big screen, plus an opener that sets the tone for the event.",
+    "bestFor": [
+      "Corporates and banks",
+      "Schools and colleges",
+      "NGOs",
+      "Event management companies"
+    ],
+    "signsYouNeedIt": [
+      "An AGM or annual event is coming",
+      "You are inaugurating a project",
+      "It will play on a large stage screen"
+    ],
+    "whatYouGet": [
+      "2 to 5 minute AVC",
+      "History, milestones and number graphics",
+      "Event opener",
+      "Voiceover",
+      "4K export"
+    ],
+    "whatWeNeed": [
+      "Company information, photos and figures",
+      "Event date"
+    ],
+    "formats": "16:9",
+    "delivery": "7 days",
+    "pricing": "quote",
+    "goals": [
+      "corp"
+    ],
+    "related": [
+      "ai-commercial-60s",
+      "explainer-motion-graphics"
+    ]
+  },
+  {
+    "slug": "youtube-channel-pack",
+    "category": "social",
+    "published": true,
+    "priceFrom": null,
+    "name": "YouTube Thumbnail and Channel Pack",
+    "isNew": true,
+    "shortDescription": "Thumbnails, banner, intro and outro in one consistent style.",
+    "description": "A channel that looks like a brand, with thumbnails designed to earn the click.",
+    "bestFor": [
+      "YouTubers",
+      "Coaching centres",
+      "News pages",
+      "Podcasts"
+    ],
+    "signsYouNeedIt": [
+      "Your videos are good but clicks are low",
+      "Your channel looks messy",
+      "You are starting a new channel"
+    ],
+    "whatYouGet": [
+      "10 thumbnails",
+      "Channel banner and profile image",
+      "5s intro and 10s outro",
+      "Thumbnail template"
+    ],
+    "whatWeNeed": [
+      "Your channel link",
+      "A few photos of you"
+    ],
+    "formats": "16:9",
+    "delivery": "2 days",
+    "pricing": "quote",
+    "goals": [
+      "creator"
+    ],
+    "related": [
+      "long-to-short-repurposing",
+      "ai-video-editing"
+    ]
+  },
+  {
+    "slug": "monthly-content-subscription",
+    "category": "social",
+    "published": true,
+    "priceFrom": null,
+    "name": "Monthly Content Subscription",
+    "isNew": true,
+    "shortDescription": "A set amount of reels, posts and edits every month at one rate.",
+    "description": "No new quote for every job. A dedicated team and project manager keep your brand visible all year.",
+    "bestFor": [
+      "Restaurants and clinics",
+      "Fashion and skincare brands",
+      "Real estate",
+      "Brands that need content all year"
+    ],
+    "signsYouNeedIt": [
+      "You are tired of negotiating every project",
+      "You want a dedicated team",
+      "You need a consistent presence all year"
+    ],
+    "whatYouGet": [
+      "Reels, statics and edits every month by package, for example 8 reels and 12 posts",
+      "Monthly content calendar",
+      "Dedicated project manager",
+      "Short monthly report"
+    ],
+    "whatWeNeed": [
+      "Offers and products for the month",
+      "One planning call per month"
+    ],
+    "formats": "All formats",
+    "delivery": "Monthly",
+    "pricing": "monthly",
+    "goals": [
+      "sales",
+      "brand",
+      "ecom"
+    ],
+    "related": [
+      "reels-pack-of-6",
+      "ai-brand-ambassador"
+    ],
+    "compareNote": "Reels Pack of 6 is a one-time order. Monthly Content Subscription gives you a set amount every month with a dedicated manager."
   }
 ];
 
