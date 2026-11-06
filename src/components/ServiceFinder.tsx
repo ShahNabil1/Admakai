@@ -1,7 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, ArrowUpRight, CalendarDays, ChevronDown, ChevronRight, Code2, ListChecks, Mic, Plus, Rocket, Send, Square } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, CalendarDays, ChevronDown, ChevronRight, Code2, ListChecks, Mic, Plus, Rocket, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { findPublishedService, publishedServices, servicePriceLine, visibleCategories, type Service } from '@/data/services';
@@ -212,7 +212,7 @@ export function ServiceFinder({ onBrowse }: { onBrowse: (category?: string) => v
               {bookButton}
             </div>
             <div className="service-finder-tools">
-              {speechSupported && <Button type="button" variant="ghost" className="service-finder-chip service-finder-mic" aria-label={listening ? 'Stop voice input' : 'Start voice input'} aria-pressed={listening} title={listening ? 'Stop voice input' : 'Start voice input. Your browser may send audio to its speech recognition provider.'} onClick={toggleMic}>{listening ? <Square aria-hidden="true"/> : <Mic aria-hidden="true"/>}<span>Voice</span></Button>}
+              {speechSupported && <Button type="button" variant="ghost" className="service-finder-chip service-finder-mic" aria-label={listening ? 'Stop voice input' : 'Start voice input'} aria-pressed={listening} title={listening ? 'Stop voice input' : 'Start voice input. Your browser may send audio to its speech recognition provider.'} onClick={toggleMic}>{listening ? <span className="service-finder-wave" aria-hidden="true"><i/><i/><i/><i/><i/><i/><i/></span> : <Mic aria-hidden="true"/>}<span>{listening ? 'Listening' : 'Voice'}</span></Button>}
               <Button type="submit" size="icon" className="service-finder-send" aria-label="Send message" title="Send message" disabled={!input.trim()}><Send aria-hidden="true"/></Button>
             </div>
           </div>
