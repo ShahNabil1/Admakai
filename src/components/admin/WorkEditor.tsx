@@ -227,7 +227,7 @@ export function WorkEditor({ work, categories, onDirtyChange, onSaved, onCancel 
       {tab === 'basics' && (
         <div className="admin-form work-form">
           <label>Vimeo link or ID
-            <input placeholder="https://vimeo.com/123456789" value={form.vimeo} onChange={(e) => patch({ vimeo: e.target.value })} />
+            <input placeholder="Paste a Vimeo link or video id" value={form.vimeo} onChange={(e) => patch({ vimeo: e.target.value })} />
             {err('vimeo_id')}
           </label>
           {vimeoId && (

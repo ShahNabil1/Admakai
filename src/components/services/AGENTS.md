@@ -9,6 +9,6 @@
 - Catalogue and related cards share ServiceCatalogueCard and the browser-safe serviceCardFigure helper; scoped grid/card CSS keeps card changes isolated from detail content and the finder.
 - Service price displays share ServicePrice/useCurrency; USD service amounts stay in catalogue data, while browser-only exchange caching is isolated from Finder event handlers.
 - Catalogue category tabs use a browser-safe category helper and page-local state; the list alone binds the footer asset to its background, leaving related cards on a plain band and finder logic independent.
-- Service detail pages share the numbered ServiceDetailPage landing template and service-sd stylesheet; service content, category use cases, empty portfolio defaults and verified proof stay browser-safe and separate from the catalogue UI.
+- Service detail pages share the numbered ServiceDetailPage landing template and service-sd stylesheet; service content, category use cases, category use cases and verified proof stay browser-safe and separate from the catalogue UI.
 
-- Detail heroes read heroTitle directly; the previous ServiceHero module stays unused for this layout. Portfolio previews and lightbox playback use VimeoPlayer with direct supplied metadata, visibility gating and at most four active previews.
+- Detail heroes read heroTitle directly; the previous ServiceHero module stays unused for this layout. Service portfolio scrollers read admin-managed works (direct service links, else same-category fallback) via service-works; previews and lightbox use VimeoPlayer, visibility gating and at most four active previews.

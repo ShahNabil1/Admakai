@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { TrustedClients } from '@/components/home/TrustedClients';
 import { clients } from '@/data/clients';
 import { serviceCategories, type Service } from '@/data/services';
-import { servicePortfolio } from '@/data/portfolioDefaults';
+import { useQuery } from '@tanstack/react-query';
+import { servicePortfolioWorksQueryOptions } from '@/lib/service-works';
 import { proof } from '@/data/proof';
 import { useCases, serviceDeliveryTerms } from '@/data/useCases';
 import { ServiceLandingReveal } from './ServiceLandingMotion';
@@ -48,7 +49,7 @@ export function ServiceDetailPage({ service }: { service: Service }) {
     </section>
     {clients.length > 0 && <div className="service-sd-clients"><p className="service-sd-client-label">Brands that trust Admakai</p><TrustedClients/></div>}
     <section id="service-work" className="service-sd-section service-sd-dark">
-      <div className="service-sd-inner"><Heading number="03" label="Our work" title={`Made with ${service.name}`} intro="Real projects, made with AI, no shoot."/><ServicePortfolio items={servicePortfolio(service)}/></div>
+      <div className="service-sd-inner"><Heading number="03" label="Our work" title={`Made with ${service.name}`} intro="Real projects, made with AI, no shoot."/><ServicePortfolioSection slug={service.slug}/></div>
     </section>
     <section className="service-sd-section">
       <div className="service-sd-inner"><Heading number="04" label="The reality" title="Sound familiar?"/><div className={`service-sd-problems${stat ? ' service-sd-problems-with-stat' : ''}`}>
@@ -72,4 +73,9 @@ export function ServiceDetailPage({ service }: { service: Service }) {
       </div>
     </section>
   </div>;
+}
+
+function ServicePortfolioSection({ slug }: { slug: string }) {
+  const { data } = useQuery(servicePortfolioWorksQueryOptions(slug));
+  return <ServicePortfolio items={data ?? []}/>;
 }

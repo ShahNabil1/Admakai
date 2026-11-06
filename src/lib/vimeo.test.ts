@@ -3,11 +3,11 @@ import { parseVimeoId, closestAspect, formatDuration } from './vimeo';
 
 describe('parseVimeoId', () => {
   it.each([
-    ['https://vimeo.com/1205218185', '1205218185'],
-    ['https://vimeo.com/1205218185/abc123def', '1205218185'],
-    ['https://player.vimeo.com/video/1205218185?autoplay=1', '1205218185'],
-    ['1205218185', '1205218185'],
-    ['  1205218185  ', '1205218185'],
+    ['https://vimeo.com/123456789', '123456789'],
+    ['https://vimeo.com/123456789/abc123def', '123456789'],
+    ['https://player.vimeo.com/video/123456789?autoplay=1', '123456789'],
+    ['123456789', '123456789'],
+    ['  123456789  ', '123456789'],
   ])('parses %s', (input, expected) => {
     expect(parseVimeoId(input)).toBe(expected);
   });
