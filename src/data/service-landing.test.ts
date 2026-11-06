@@ -49,7 +49,8 @@ describe('service landing rules', () => {
     const video = { vimeoId: '123456', aspect: '9:16' as const, title: 'Supplied video' };
     expect(servicePortfolio({ ...base, portfolio: [video] })).toEqual([video]);
     expect(servicePortfolio({ ...base, portfolio: [] })).toEqual(portfolioDefaults[base.category]);
-    expect(servicePortfolio({ ...base, portfolio: undefined })).toEqual(portfolioDefaults[base.category]);
+    const { portfolio, ...withoutPortfolio } = base;
+    expect(servicePortfolio(withoutPortfolio)).toEqual(portfolioDefaults[base.category]);
   });
   it('never permits more than four unique autoplay previews', () => expect(playingPreviews([5, 4, 3, 2, 1, 1, 0])).toEqual([0, 1, 2, 3]));
 });
