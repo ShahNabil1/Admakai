@@ -1,59 +1,380 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { ArrowLeft } from 'lucide-react';
-import type { WorkWithLinks } from '@/lib/works';
-import { formatDuration } from '@/lib/vimeo';
-import { CtaStrip } from './PageElements';
-import './work-page.css';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowRight, Check, Pencil, Play, Share2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { supabase } from '@/lib/supabase';
+import { formatDuration, getThumbnail } from '@/lib/vimeo';
+import { rankUpNext } from '@/lib/work-search';
+import { publishedWorksQueryOptions, type WorkWithLinks } from '@/lib/works';
+import { findPublishedService, type Service } from '@/data/services';
+import { Reveal } from '@/components/motion/Reveal';
 
-/** Public detail page for a works-table video, reached from /work cards. */
+/** Public work detail: a YouTube-style watch page with the case study below. */
 export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
-  const meta = [work.client_name || 'Admakai', work.work_categories?.name, work.industry, work.year].filter(Boolean).join(' · ');
-  const study = work.case_study ?? {};
-  const hasStudy = Boolean(study.overview || study.problems?.length || study.solutions?.length || study.process?.length || study.result || study.metrics?.length || study.testimonial?.quote);
-  return (
-    <div className="public-page workpage workpage-detail">
-      <main className="container-site workpage-detail-main">
-        <Link to="/work" className="workpage-back"><ArrowLeft size={16} /> All work</Link>
-        <div className="workpage-player">
-          <iframe
-            title={work.title}
-            src={`https://player.vimeo.com/video/${work.vimeo_id}?title=0&byline=0&portrait=0`}
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowFullScreen
-          />
-        </div>
-        <header className="workpage-detail-head">
-          <h1>{work.title}</h1>
-          <p className="workpage-detail-meta">{meta}{work.duration_sec ? ` · ${formatDuration(work.duration_sec)}` : ''}</p>
-          {work.short_description && <p className="workpage-detail-desc">{work.short_description}</p>}
-          {work.tags.length > 0 && <div className="workpage-chips workpage-detail-tags">{work.tags.map((t) => <span key={t}>{t}</span>)}</div>}
-        </header>
+  const [expanded, setExpanded] = useState(false);
+  const [needsUnmute, setNeedsUnmute] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<import('@vimeo/player').default | null>(null);
 
-        {hasStudy && (
-          <section className="workpage-study" aria-label="Case study">
-            {study.is_sample && <p className="workpage-sample">Sample case study, shown to explain how we work. Not a real client project.</p>}
-            {study.overview && <div><h2>Overview</h2><p>{study.overview}</p></div>}
-            {!!study.problems?.length && <div><h2>Problems</h2><ul>{study.problems.map((p, i) => <li key={i}>{p}</li>)}</ul></div>}
-            {!!study.solutions?.length && <div><h2>Solutions</h2><ul>{study.solutions.map((s, i) => <li key={i}>{s}</li>)}</ul></div>}
-            {!!study.process?.length && (
-              <div><h2>Process</h2><ol className="workpage-process">{study.process.map((s, i) => <li key={i}><strong>{s.title}</strong><p>{s.body}</p></li>)}</ol></div>
-            )}
-            {!!study.tools?.length && <div><h2>Tools</h2><div className="workpage-chips workpage-detail-tags">{study.tools.map((t) => <span key={t}>{t}</span>)}</div></div>}
-            {!!study.deliverables?.length && <div><h2>Deliverables</h2><ul>{study.deliverables.map((d, i) => <li key={i}>{d}</li>)}</ul></div>}
-            {study.result && <div><h2>Result</h2><p>{study.result}</p></div>}
-            {!!study.metrics?.length && (
-              <div className="workpage-metrics">{study.metrics.map((m, i) => <div key={i}><b>{m.value}</b><span>{m.label}</span></div>)}</div>
-            )}
-            {study.testimonial?.quote && (
-              <blockquote className="workpage-quote">
-                <p>&ldquo;{study.testimonial.quote}&rdquo;</p>
-                <footer>{study.testimonial.name}{study.testimonial.role ? `, ${study.testimonial.role}` : ''}</footer>
-              </blockquote>
-            )}
-          </section>
-        )}
-      </main>
-      <CtaStrip title="Want one of these for your brand?" />
-    </div>
+  const services = useMemo(
+    () => (work.work_services ?? []).map((link) => findPublishedService(link.service_slug)).filter((service): service is Service => service != null),
+    [work.work_services],
+  );
+  const firstService = services[0];
+
+  const allWorks = useQuery(publishedWorksQueryOptions);
+  const upNext = useMemo(() => (allWorks.data ? rankUpNext(work, allWorks.data) : []), [allWorks.data, work]);
+  const moreWorks = useMemo(() => upNext.slice(0, 3), [upNext]);
+
+  const study = work.case_study;
+  const problems: string[] = study?.problems ?? [];
+  const solutions: string[] = study?.solutions ?? [];
+  const processSteps: { title: string; body: string }[] = study?.process ?? [];
+  const tools: string[] = study?.tools ?? [];
+  const deliverables: string[] = study?.deliverables ?? [];
+  const metrics: { label: string; value: string }[] = study?.metrics ?? [];
+  const hasCaseStudy = Boolean(
+    study && (study.overview || problems.length || solutions.length || processSteps.length || tools.length || deliverables.length || study.result || metrics.length || study.testimonial),
+  );
+
+  useEffect(() => {
+    let disposed = false;
+    let player: import('@vimeo/player').default | null = null;
+    void import('@vimeo/player').then(({ default: Player }) => {
+      if (disposed || !stageRef.current) return;
+      const instance = new Player(stageRef.current, {
+        id: Number(work.vimeo_id),
+        autoplay: true,
+        dnt: true,
+        title: false,
+        byline: false,
+        portrait: false,
+        responsive: true,
+      });
+      player = instance;
+      playerRef.current = instance;
+      instance.play().catch(() => {
+        void instance.setMuted(true).then(() => instance.play());
+        if (!disposed) setNeedsUnmute(true);
+      });
+    });
+    return () => {
+      disposed = true;
+      playerRef.current = null;
+      void player?.destroy();
+    };
+  }, [work.vimeo_id]);
+
+  useEffect(() => {
+    void supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return;
+      const { data: row } = await supabase.from('user_roles').select('role').eq('user_id', data.user.id).maybeSingle();
+      if (row && (row.role === 'owner' || row.role === 'manager')) setIsAdmin(true);
+    });
+  }, []);
+
+  const share = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: work.title, url });
+        return;
+      } catch {
+        return;
+      }
+    }
+    await navigator.clipboard.writeText(url);
+    toast.success('Link copied');
+  };
+
+  const metaLine = [work.work_categories?.name, work.industry, work.year ? String(work.year) : null, formatDuration(work.duration_sec)].filter(Boolean).join(' · ');
+  const hashtags = work.tags.map((tag: string) => `#${tag.toLowerCase().replace(/\s+/g, '')}`);
+  const ratio = work.aspect.replace(':', ' / ');
+
+  return (
+    <section className="workpage-watch">
+      <div className="container-site workpage-watch-grid">
+        <div className="workpage-watch-main">
+          <div className="workpage-stage" style={{ '--workpage-ratio': ratio } as React.CSSProperties}>
+            <div className="workpage-stage-inner" ref={stageRef} />
+            {needsUnmute ? (
+              <button
+                type="button"
+                className="workpage-unmute"
+                onClick={() => {
+                  void playerRef.current?.setMuted(false).then(() => playerRef.current?.setVolume(1));
+                  setNeedsUnmute(false);
+                }}
+              >
+                Tap to unmute
+              </button>
+            ) : null}
+          </div>
+
+          <div className="workpage-watch-head">
+            <h1>{work.title}</h1>
+            <div className="workpage-watch-actions">
+              <div className="workpage-watch-brand">
+                <img src="/brand/icon-512.png" alt="Admakai" width={40} height={40} />
+                <div>
+                  <strong>Admakai</strong>
+                  {work.client_name ? <span>{work.client_name}</span> : null}
+                </div>
+              </div>
+              <div className="workpage-watch-buttons">
+                <Link to="/book" className="workpage-cta-button">
+                  Get a video like this
+                </Link>
+                <button type="button" className="workpage-share" onClick={() => void share()}>
+                  <Share2 size={16} /> Share
+                </button>
+              </div>
+            </div>
+            {services.length ? (
+              <div className="workpage-watch-services">
+                {services.map((service) => (
+                  <Link key={service.slug} to="/services/$slug" params={{ slug: service.slug }} className="workpage-service-chip">
+                    {service.name}
+                  </Link>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          <div className={`workpage-description${expanded ? ' expanded' : ''}`}>
+            <p className="workpage-description-meta">{metaLine}</p>
+            <div className="workpage-description-body">
+              <p>{work.short_description}</p>
+              {hashtags.length ? <p className="workpage-description-tags">{hashtags.join(' ')}</p> : null}
+            </div>
+            <button type="button" className="workpage-description-toggle" onClick={() => setExpanded((value) => !value)}>
+              {expanded ? 'Show less' : '...more'}
+            </button>
+          </div>
+
+          {hasCaseStudy && study ? (
+            <div className="workpage-study">
+              <Reveal>
+                <div className="workpage-study-head">
+                  <h2>Case study</h2>
+                  {study.is_sample && isAdmin ? (
+                    <a href={`/admin?tab=work&work=edit&work_id=${work.id}`} className="workpage-sample-badge">
+                      <Pencil size={12} /> Sample case study, edit in admin
+                    </a>
+                  ) : null}
+                </div>
+              </Reveal>
+
+              <Reveal>
+                <div className="workpage-study-meta">
+                  <div><small>Industry</small><strong>{work.industry ?? 'Not specified'}</strong></div>
+                  <div><small>Service</small><strong>{firstService?.name ?? 'Not linked'}</strong></div>
+                  <div><small>Format</small><strong>{work.aspect}{work.duration_sec ? `, ${formatDuration(work.duration_sec)}` : ''}</strong></div>
+                  {work.client_name ? <div><small>Client</small><strong>{work.client_name}</strong></div> : null}
+                </div>
+              </Reveal>
+
+              {study.overview ? (
+                <Reveal>
+                  <div className="workpage-study-section">
+                    <h3>Project overview</h3>
+                    <p>{study.overview}</p>
+                  </div>
+                </Reveal>
+              ) : null}
+
+              {problems.length ? (
+                <Reveal>
+                  <div className="workpage-study-section">
+                    <h3>The problem</h3>
+                    <div className="workpage-study-cards">
+                      {problems.map((problem, index) => (
+                        <div key={index} className="workpage-study-card">
+                          <span>{String(index + 1).padStart(2, '0')}</span>
+                          <p>{problem}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </Reveal>
+              ) : null}
+
+              {solutions.length ? (
+                <Reveal>
+                  <div className="workpage-study-section workpage-study-band">
+                    <h3>Our solution</h3>
+                    <div className="workpage-study-cards">
+                      {solutions.map((solution, index) => (
+                        <div key={index} className="workpage-study-card">
+                          <span>{String(index + 1).padStart(2, '0')}</span>
+                          <p>{solution}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </Reveal>
+              ) : null}
+
+              {processSteps.length ? (
+                <Reveal>
+                  <div className="workpage-study-section">
+                    <h3>How we made it</h3>
+                    <ol className="workpage-study-steps">
+                      {processSteps.map((step, index) => (
+                        <li key={index}>
+                          <span>{String(index + 1).padStart(2, '0')}</span>
+                          <strong>{step.title}</strong>
+                          <p>{step.body}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                </Reveal>
+              ) : null}
+
+              {tools.length || deliverables.length ? (
+                <Reveal>
+                  <div className="workpage-study-section workpage-study-twocol">
+                    {tools.length ? (
+                      <div>
+                        <h3>Tools</h3>
+                        <div className="workpage-study-tools">
+                          {tools.map((tool) => <span key={tool}>{tool}</span>)}
+                        </div>
+                      </div>
+                    ) : null}
+                    {deliverables.length ? (
+                      <div>
+                        <h3>Deliverables</h3>
+                        <ul className="workpage-study-deliverables">
+                          {deliverables.map((item) => <li key={item}><Check size={15} /> {item}</li>)}
+                        </ul>
+                      </div>
+                    ) : null}
+                  </div>
+                </Reveal>
+              ) : null}
+
+              {study.result || metrics.length ? (
+                <Reveal>
+                  <div className="workpage-study-section">
+                    <h3>The result</h3>
+                    {study.result ? <p>{study.result}</p> : null}
+                    {metrics.length ? (
+                      <div className="workpage-study-metrics">
+                        {metrics.map((metric, index) => (
+                          <div key={index}>
+                            <strong>{metric.value}</strong>
+                            <small>{metric.label}</small>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                </Reveal>
+              ) : null}
+
+              {study.testimonial ? (
+                <Reveal>
+                  <blockquote className="workpage-study-quote">
+                    <p>{study.testimonial.quote}</p>
+                    <footer>{study.testimonial.name}{study.testimonial.role ? `, ${study.testimonial.role}` : ''}</footer>
+                  </blockquote>
+                </Reveal>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+
+        <aside className="workpage-rail">
+          <h2>Up next</h2>
+          {allWorks.isPending ? (
+            <div className="workpage-rail-list">
+              {Array.from({ length: 5 }, (_, i) => <div key={i} className="workpage-rail-skeleton" />)}
+            </div>
+          ) : (
+            <div className="workpage-rail-list">
+              {upNext.map((item) => <UpNextRow key={item.id} work={item} />)}
+            </div>
+          )}
+        </aside>
+      </div>
+
+      <div className="workpage-watch-cta">
+        <div className="container-site">
+          <h2>Want a <em>video</em> like this?</h2>
+          <div>
+            <Link to="/book" className="workpage-cta-button">Book a free call</Link>
+            {firstService ? (
+              <Link to="/services/$slug" params={{ slug: firstService.slug }} className="workpage-cta-link">
+                See the service <ArrowRight size={15} />
+              </Link>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
+      {moreWorks.length ? (
+        <div className="container-site workpage-more">
+          <div className="workpage-more-head">
+            <h2>More from our work</h2>
+            <Link to="/work" className="workpage-more-link">See all work <ArrowRight size={15} /></Link>
+          </div>
+          <div className="workpage-more-grid">
+            {moreWorks.map((item) => <MoreCard key={item.id} work={item} />)}
+          </div>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+function useWorkThumbnail(work: WorkWithLinks): string {
+  const [thumb, setThumb] = useState(work.thumbnail_url ?? '');
+  useEffect(() => {
+    let alive = true;
+    if (work.thumbnail_url) { setThumb(work.thumbnail_url); return; }
+    void getThumbnail(work).then((url) => { if (alive) setThumb(url); });
+    return () => { alive = false; };
+  }, [work]);
+  return thumb;
+}
+
+function UpNextRow({ work }: { work: WorkWithLinks }) {
+  const vertical = work.aspect === '9:16' || work.aspect === '4:5';
+  const thumb = useWorkThumbnail(work);
+  return (
+    <Link to="/work/$slug" params={{ slug: work.slug }} className="workpage-rail-row">
+      <span className={`workpage-rail-thumb${vertical ? ' vertical' : ''}`}>
+        {vertical && thumb ? <img className="workpage-rail-blur" src={thumb} alt="" aria-hidden="true" loading="lazy" /> : null}
+        {thumb ? <img className="workpage-rail-img" src={thumb} alt="" loading="lazy" /> : null}
+        {work.duration_sec ? <span className="workpage-rail-duration">{formatDuration(work.duration_sec)}</span> : null}
+      </span>
+      <span className="workpage-rail-info">
+        <strong>{work.title}</strong>
+        <small>{work.client_name ?? 'Admakai'}{work.work_categories?.name ? ` · ${work.work_categories.name}` : ''}</small>
+      </span>
+    </Link>
+  );
+}
+
+function MoreCard({ work }: { work: WorkWithLinks }) {
+  const thumb = useWorkThumbnail(work);
+  return (
+    <Link to="/work/$slug" params={{ slug: work.slug }} className="workpage-more-card">
+      <span className="workpage-more-thumb">
+        {thumb ? <img src={thumb} alt="" loading="lazy" /> : null}
+        <span className="workpage-more-play"><Play size={18} fill="currentColor" /></span>
+      </span>
+      <span className="workpage-more-info">
+        <img src="/brand/icon-512.png" alt="" width={32} height={32} />
+        <span>
+          <strong>{work.title}</strong>
+          <small>{[work.client_name ?? 'Admakai', work.work_categories?.name, work.year].filter(Boolean).join(' · ')}</small>
+        </span>
+      </span>
+    </Link>
   );
 }

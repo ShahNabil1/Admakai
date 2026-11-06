@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { splitByOrientation, workMatchesQuery } from './work-search';
+import { isoDuration, rankUpNext, splitByOrientation, workMatchesQuery } from './work-search';
 import type { WorkWithLinks } from './works';
 
 function work(partial: Partial<WorkWithLinks>): WorkWithLinks {
@@ -52,5 +52,38 @@ describe('splitByOrientation', () => {
     const { grid, reels } = splitByOrientation([a, b, c, d]);
     expect(grid.map((w) => w.id)).toEqual(['a', 'c', 'd']);
     expect(reels.map((w) => w.id)).toEqual(['b']);
+  });
+});
+
+describe('rankUpNext', () => {
+  const base = work({ id: 'current', category_id: 'cat-a', work_services: [{ service_slug: 'ai-video-ads', position: 1 }] });
+  const sameCategory = work({ id: 'same-cat', category_id: 'cat-a', sort_order: 2 });
+  const sameService = work({ id: 'same-service', category_id: 'cat-b', sort_order: 3, work_services: [{ service_slug: 'ai-video-ads', position: 1 }] });
+  const featured = work({ id: 'featured', category_id: 'cat-b', sort_order: 4, featured: true });
+  const plain = work({ id: 'plain', category_id: 'cat-b', sort_order: 5 });
+
+  it('orders same category, then shared service, then featured, then the rest', () => {
+    const ranked = rankUpNext(base, [plain, featured, sameService, sameCategory, base]);
+    expect(ranked.map((w) => w.id)).toEqual(['same-cat', 'same-service', 'featured', 'plain']);
+  });
+
+  it('never includes the current work', () => {
+    expect(rankUpNext(base, [base, sameCategory]).some((w) => w.id === 'current')).toBe(false);
+  });
+
+  it('respects the limit', () => {
+    const many = Array.from({ length: 15 }, (_, i) => work({ id: `w${i}`, sort_order: i }));
+    expect(rankUpNext(base, many)).toHaveLength(10);
+  });
+});
+
+describe('isoDuration', () => {
+  it('formats seconds as ISO 8601', () => {
+    expect(isoDuration(81)).toBe('PT1M21S');
+    expect(isoDuration(21)).toBe('PT0M21S');
+  });
+  it('returns undefined for missing or zero durations', () => {
+    expect(isoDuration(null)).toBeUndefined();
+    expect(isoDuration(0)).toBeUndefined();
   });
 });
