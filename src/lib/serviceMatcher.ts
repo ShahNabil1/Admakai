@@ -49,7 +49,7 @@ function prepare(): Prepared {
   return all.map(({ slug, phrase, factor }) => {
     const isPhrase = phrase.includes(" ");
     const base = isPhrase ? 3 : 2;
-    return { slug, phrase, isPhrase, weight: (base * factor) / Math.sqrt(df[phrase]) };
+    return { slug, phrase, isPhrase, weight: (base * factor) / Math.sqrt(df[phrase] as number) };
   });
 }
 
@@ -90,7 +90,7 @@ export function matchService(input: string, enabledSlugs?: string[]): MatchResul
   const ranked = Object.entries(scores).sort((a, b) => b[1] - a[1]);
   if (!ranked.length) return { confidence: "none", best: null, alternatives: [], scores };
 
-  const [bestSlug, bestScore] = ranked[0];
+  const [bestSlug, bestScore] = ranked[0] as [string, number];
   const alternatives = ranked.slice(1, 3).filter(([, s]) => s >= bestScore * 0.35).map(([slug]) => slug);
   const margin = ranked[1] ? bestScore - ranked[1][1] : bestScore;
 
