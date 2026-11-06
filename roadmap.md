@@ -1,4 +1,5 @@
 # Tasks
+- [x] Add single-select service goal chips, filtered counts/categories and reduced-motion-safe card transitions; 92 tests pass and all ten goals, toggle/reset, keyboard and detail navigation verified at desktop/375px with reduced motion. No database changes.
 - [x] Add the supplied five Voice and three Strategy services only to catalogue content; all 37 detail pages, metadata, six categories, related destinations and 375px mobile layout verified without design or database changes. Updated catalogue regression expectations.
 - [x] Replace /services with the supplied static 16-service catalogue and detail pages; preserve design, inclusions/exclusions, FAQ, CTA and booking flow. 65 tests pass; desktop/375px/603px, whole-card navigation, selected booking service, unknown redirects, metadata and reduced motion verified. Live updates require publishing.
 - [x] Add service-only content, lazy Vimeo player, shared components and isolated motion without changing existing pages or database; 17 tests and desktop/mobile lightbox, focus/Escape and overflow checks pass. Real playback awaits supplied Vimeo IDs/posters; no service pages added.

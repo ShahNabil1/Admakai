@@ -10,6 +10,13 @@
 .service-catalogue-link:focus-visible{outline:none;box-shadow:none;}
 .service-catalogue-link:focus-visible::after{outline:2px solid var(--fg);outline-offset:4px;}
 .service-catalogue-grid>div{min-width:0;}
+.service-catalogue-content{min-width:0;}
+.service-goal-filter{margin-bottom:40px;}
+.service-goal-filter h2{font-size:16px;font-weight:500;line-height:1.5;margin-bottom:16px;}
+.service-goal-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.service-goal-chips .service-goal-chip{height:auto;min-height:38px;max-width:100%;white-space:normal;text-align:left;line-height:1.5;padding-block:8px;}
+.service-goal-count{font-size:13px;line-height:1.5;color:var(--page-secondary);margin-top:16px;}
+.service-filter-family,.service-filter-family .service-catalogue-grid{position:relative;}
 .service-detail-back{display:inline-flex;align-items:center;gap:8px;color:var(--page-secondary);font-size:14px;margin-bottom:24px;}
 .service-detail-back:hover{color:var(--fg);}
 .service-detail-title{display:flex;align-items:center;flex-wrap:wrap;gap:16px;}

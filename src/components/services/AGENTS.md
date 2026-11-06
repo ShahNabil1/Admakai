@@ -4,3 +4,4 @@
 - All service embeds go through VimeoPlayer; preload within 300px, let the SDK play only when visible, stop offscreen and never autoplay under reduced motion.
 - Service leaf routes use serviceHead for existing SEO plus Vimeo preconnects; catalogue details reuse the current Book a call flow and preserve the service search parameter.
 - Catalogue text lives in src/data/services.ts; foundation media configuration stays in src/content. Missing media or contact data stays honestly unavailable, not invented.
+- Goal filtering uses browser-safe service-goals helpers and page-local state; derive counts and visible categories from the same filtered published records to avoid mismatches.
