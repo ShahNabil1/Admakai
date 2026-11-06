@@ -7,7 +7,9 @@ export type Service = {
   goals: string[]; related: string[]; compareNote?: string; featured?: boolean;
   heroTitle: { lead: string; accent: string; rest: string };
   heroMedia?: { reels: HeroMedia[]; sides: HeroMedia[] };
+  portfolio?: ServicePortfolioItem[];
 };
+export type ServicePortfolioItem = { vimeoId: string; aspect: '9:16' | '16:9' | '1:1'; title: string; client?: string; tag?: string };
 export type HeroMedia = { src: string; poster?: string; aspect: '9:16' | '16:9' | '1:1'; label?: string };
 export const serviceCategories: ServiceCategory[] = [
   {

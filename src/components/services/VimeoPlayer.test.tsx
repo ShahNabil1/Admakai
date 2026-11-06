@@ -59,4 +59,22 @@ describe('Vimeo lifecycle', () => {
     intersect(0, true); intersect(1, true);
     expect(container.querySelector('iframe')).toBeNull(); expect(sdk.play).not.toHaveBeenCalled();
   });
+  it('supports supplied portfolio metadata without changing the shared registry', () => {
+    const { container } = render(<VimeoPlayer videoKey="portfolio" mode="inline" videoData={{ id: '987654', title: 'Supplied project', poster: '' }} />);
+    expect(container.querySelector('iframe')?.src).toContain('/video/987654?');
+    expect(container.querySelector('iframe')?.src).toContain('muted=0');
+    expect(videos['portfolio']).toBeUndefined();
+  });
+  it('does not start an inactive portfolio preview even when visible', () => {
+    const { container } = render(<VimeoPlayer videoKey="testReal" mode="background" previewActive={false} />);
+    intersect(0, true); intersect(1, true);
+    expect(container.querySelector('iframe')).toBeNull(); expect(sdk.play).not.toHaveBeenCalled();
+  });
+  it('uses the supplied gallery callback instead of opening a nested lightbox', () => {
+    const onPlay = vi.fn();
+    render(<VimeoPlayer videoKey="testReal" mode="background" onPlay={onPlay} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Play Test real video' }));
+    expect(onPlay).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
 });

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Play, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { backgroundMode, videos } from '@/content/videos';
+import { backgroundMode, videos, type ServiceVideo } from '@/content/videos';
 import { cn } from '@/lib/utils';
 import { isReadyVideo, vimeoUrl } from './video-rules';
 import './services.css';
@@ -10,7 +10,10 @@ import './services.css';
 export type VideoAspect = '16/9' | '9/16' | '1/1' | '4/5';
 export interface VimeoPlayerProps {
   videoKey: string;
-  mode: 'background' | 'player';
+  mode: 'background' | 'player' | 'inline';
+  videoData?: ServiceVideo;
+  fetchThumbnail?: boolean;
+  onPlay?: () => void;
   aspect?: VideoAspect;
   className?: string;
   /** VideoCard previews only autoplay while hovered. */
@@ -22,8 +25,8 @@ const aspectClasses: Record<VideoAspect, string> = {
   '1/1': 'service-video--square', '4/5': 'service-video--social',
 };
 
-export function VimeoPlayer({ videoKey, mode, aspect = '16/9', className, previewActive = true, hoverPreview = false }: VimeoPlayerProps) {
-  const video = videos[videoKey];
+export function VimeoPlayer({ videoKey, mode, aspect = '16/9', className, previewActive = true, hoverPreview = false, videoData, fetchThumbnail = false, onPlay }: VimeoPlayerProps) {
+  const video = videoData ?? videos[videoKey];
   const ready = isReadyVideo(video);
   const title = video?.title ?? 'Service video';
   const frame = useRef<HTMLDivElement>(null);
@@ -35,6 +38,7 @@ export function VimeoPlayer({ videoKey, mode, aspect = '16/9', className, previe
   const [reduce, setReduce] = useState<boolean | null>(null);
   const [open, setOpen] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [thumbnail, setThumbnail] = useState('');
   const autoplay = (mode === 'background' || hoverPreview) && reduce === false && previewActive && !open;
   shouldPlay.current = autoplay && visible;
 
@@ -44,6 +48,18 @@ export function VimeoPlayer({ videoKey, mode, aspect = '16/9', className, previe
     update(); preference.addEventListener('change', update);
     return () => preference.removeEventListener('change', update);
   }, []);
+
+  useEffect(() => {
+    if (!fetchThumbnail || !ready || !near || video.poster) return;
+    const controller = new AbortController();
+    setThumbnail('');
+    void fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${video.id}`, { signal: controller.signal })
+      .then(response => response.ok ? response.json() : null)
+      .then((data: { thumbnail_url?: string } | null) => {
+        if (data?.thumbnail_url?.startsWith('https://')) setThumbnail(data.thumbnail_url);
+      }).catch(() => {});
+    return () => controller.abort();
+  }, [fetchThumbnail, ready, near, video?.id, video?.poster]);
   useEffect(() => {
     const element = frame.current;
     if (!element) return;
@@ -88,10 +104,13 @@ export function VimeoPlayer({ videoKey, mode, aspect = '16/9', className, previe
   return <Dialog.Root open={open} onOpenChange={setOpen}>
     <div ref={frame} className={cn('service-foundation service-video', aspectClasses[aspect], className)}>
       {ready ? <>
-        {near && video.poster && <img src={video.poster} alt="" loading="lazy" />}
+        {near && (video.poster || thumbnail) && <img src={video.poster || thumbnail} alt="" loading="lazy" />}
+        {mode === 'inline' && <iframe src={vimeoUrl(video, 'player', backgroundMode)} title={title} allow="autoplay; fullscreen; picture-in-picture" allowFullScreen />}
         {mountBackground && <iframe ref={iframe} src={vimeoUrl(video, 'background', backgroundMode, false)} title={title} allow="autoplay; fullscreen; picture-in-picture" tabIndex={-1} />}
         {failed && placeholder}
-        {(mode === 'player' || reduce === true) && <Dialog.Trigger asChild><Button variant="ghost" className="service-play" aria-label={`Play ${title}`}><span className="service-play-symbol"><Play aria-hidden="true" /></span></Button></Dialog.Trigger>}
+        {mode !== 'inline' && (mode === 'player' || reduce === true || onPlay) && (onPlay
+          ? <Button variant="ghost" className="service-play" aria-label={`Play ${title}`} onClick={onPlay}><span className="service-play-symbol"><Play aria-hidden="true" /></span></Button>
+          : <Dialog.Trigger asChild><Button variant="ghost" className="service-play" aria-label={`Play ${title}`}><span className="service-play-symbol"><Play aria-hidden="true" /></span></Button></Dialog.Trigger>)}
       </> : placeholder}
     </div>
     {ready && <Dialog.Portal>

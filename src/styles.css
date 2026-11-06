@@ -58,6 +58,20 @@
 :root,
 .dark {
   --radius: 12px;
+  --service-landing-bg: oklch(1 0 0);
+  --service-landing-soft: oklch(.975 .003 106);
+  --service-landing-ink: oklch(.145 0 0);
+  --service-landing-muted: oklch(.5 .009 258);
+  --service-landing-line: oklch(.92 .007 91);
+  --service-landing-dark: oklch(.15 .002 286);
+  --service-landing-dark-line: oklch(.253 .004 286);
+  --service-landing-placeholder: oklch(.2 .004 286);
+  --service-landing-caption: oklch(.685 0 0);
+  --service-landing-yellow: oklch(.882 .164 91);
+  --service-landing-button-line: oklch(.885 0 0);
+  --service-landing-glow: radial-gradient(ellipse at 50% 45%, color-mix(in oklch, var(--service-landing-yellow) 15%, transparent), transparent 65%);
+  --service-landing-fade: linear-gradient(to right, transparent, var(--service-landing-ink) 120px, var(--service-landing-ink) calc(100% - 120px), transparent);
+  --service-landing-font: 'Plus Jakarta Sans', sans-serif;
   --bg: oklch(0.145 0 0); /* #0A0A0A */
   --surface: oklch(0.195 0 0); /* #141414 */
   --line: oklch(0.269 0 0); /* #262626 */
