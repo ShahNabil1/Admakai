@@ -1,7 +1,7 @@
 
 .service-catalogue-section{position:relative;isolation:isolate;overflow:hidden;padding:80px 48px;color:var(--service-card-ink);font-family:var(--finder-font);background:var(--service-card-white);scroll-margin-top:80px;}
-.service-catalogue-section::before{content:'';position:absolute;inset:0;z-index:-2;background-image:var(--service-catalogue-photo);background-size:cover;background-position:center;background-attachment:fixed;filter:blur(48px) grayscale(1);transform:scale(1.1);pointer-events:none;}
-.service-catalogue-section::after{content:'';position:absolute;inset:0;z-index:-1;background:var(--service-list-overlay);pointer-events:none;}
+.service-catalogue-section::before{content:'';position:absolute;inset:0;z-index:-2;background-image:var(--service-catalogue-photo);background-size:cover;background-position:center bottom;filter:blur(14px) saturate(1.05);transform:scale(1.08);pointer-events:none;}
+.service-catalogue-section::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(to bottom,var(--service-card-white) 0%,color-mix(in oklab,var(--service-card-white) 70%,transparent) 22%,color-mix(in oklab,var(--service-card-white) 15%,transparent) 55%,color-mix(in oklab,var(--service-card-white) 25%,transparent) 100%);pointer-events:none;}
 .service-catalogue-section-inner{max-width:1200px;margin:auto;}
 .service-catalogue-section-inner::before{content:'';position:absolute;inset:24px;border:1px dashed var(--service-list-frame);pointer-events:none;}
 .service-catalogue-section-header{text-align:center;margin-bottom:48px;}

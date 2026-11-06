@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
 import { filterServicesByGoal, serviceGoals, toggleServiceGoal, type ServiceGoal } from '@/data/service-goals';
 import { filterServicesByCategory, serviceCategoryTabs, type ServiceCategoryFilter } from '@/data/service-category-filter';
-import footerImage from '@/assets/footer/footer-bg.jpg.asset.json';
+import footerImage from "@/assets/services-sky-hills.png.asset.json";
 import { Reveal } from '@/components/motion/Reveal';
 import { publishedServices, visibleCategories, serviceAliases } from '@/data/services';
 import { ServiceCatalogueCard } from '@/components/services/ServiceCatalogueCard';
