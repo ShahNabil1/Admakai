@@ -153,7 +153,7 @@ export function WorkingFormats() {
 
         <p className="wf-foot">
           Not sure which one? Tell us the job on a call and we will pick.{" "}
-          <Link to="/book-a-call">Book a call</Link>
+          <Link to="/book">Book a call</Link>
         </p>
       </div>
       <p className="sr-only">

@@ -23,7 +23,7 @@ export const getPublicRows = createServerFn({method:'GET'}).inputValidator((inpu
   const client=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false},global:{fetch:(input,init)=>{const headers=new Headers(init?.headers);if(key.startsWith('sb_'))headers.delete('Authorization');headers.set('apikey',key);return fetch(input,{...init,headers,signal:AbortSignal.timeout(3000)});}}});
   let query=client.from(table).select(projections[table]).limit(250);
   if(table==='projects')query=query.eq('isPublished',true);
-  if(table==='site_settings')query=query.in('key',[...publicSiteKeys,'CALENDLY_URL']);
+  if(table==='site_settings')query=query.in('key',[...publicSiteKeys]);
   const {data,error}=await query;
   return error || !data?.length ? fallback : data;
  } catch { return fallback; }

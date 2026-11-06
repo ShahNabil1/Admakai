@@ -43,7 +43,7 @@ export function ServiceDetailPage({ service }: { service: Service }) {
         <motion.p {...rise(.8)} className="service-sd-sub">{service.description}</motion.p>
       </div>
       <motion.div {...rise(1)} className="service-sd-hero-bottom">
-        <Magnetic><Button asChild className="service-sd-call"><Link to="/book-a-call" search={{ service: service.slug, plan: '' }}>Book a call <ArrowUpRight size={18}/></Link></Button></Magnetic>
+        <Magnetic><Button asChild className="service-sd-call"><Link to="/book" search={{ service: service.slug, plan: '' }}>Book a call <ArrowUpRight size={18}/></Link></Button></Magnetic>
         <dl className="service-sd-facts">
           <div><dt>Price</dt><dd>{servicePriceLine(service)}</dd></div>
           <div><dt>Delivery</dt><dd>{service.delivery}</dd></div>
@@ -84,7 +84,7 @@ export function ServiceDetailPage({ service }: { service: Service }) {
       <div className="service-sd-inner">
         <Reveal><Eyebrow>Ready when you are</Eyebrow><h2 className="service-sd-h2 service-sd-final-title">Let's make your {service.name}.</h2>
           <p className="service-sd-final-sub">Tell us what you need on a short call and we will scope it, price it and plan the delivery.</p>
-          <Magnetic><Button asChild className="service-sd-call"><Link to="/book-a-call" search={{ service: service.slug, plan: '' }}>Book a call <ArrowUpRight size={18}/></Link></Button></Magnetic></Reveal>
+          <Magnetic><Button asChild className="service-sd-call"><Link to="/book" search={{ service: service.slug, plan: '' }}>Book a call <ArrowUpRight size={18}/></Link></Button></Magnetic></Reveal>
       </div>
     </section>
   </div>;

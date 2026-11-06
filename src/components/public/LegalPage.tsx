@@ -11,7 +11,7 @@ const refundSections = [
 ];
 
 export function LegalPage({ kind }: { kind: 'privacy' | 'terms' | 'refund' }) {
-  if (kind === 'refund') return <div className="public-page"><article className="legal-document"><p className="page-eyebrow">Legal</p><h1>Refund policy</h1><p className="legal-todo">TODO: This is a placeholder, not an approved policy. Final legal text has not yet been supplied.</p>{refundSections.map(([title, text]) => <section key={title}><h2>{title}</h2><p>{text}</p></section>)}<Button asChild variant="link"><Link to="/book-a-call">Contact Admakai</Link></Button></article></div>;
+  if (kind === 'refund') return <div className="public-page"><article className="legal-document"><p className="page-eyebrow">Legal</p><h1>Refund policy</h1><p className="legal-todo">TODO: This is a placeholder, not an approved policy. Final legal text has not yet been supplied.</p>{refundSections.map(([title, text]) => <section key={title}><h2>{title}</h2><p>{text}</p></section>)}<Button asChild variant="link"><Link to="/book">Contact Admakai</Link></Button></article></div>;
 
   const doc = legalDocuments[kind];
   return <div className="public-page"><article className="legal-document">

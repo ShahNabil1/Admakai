@@ -17,7 +17,7 @@ export function Faq() {
         <p className="home-faq-eyebrow">Questions people ask</p>
         <h2 id="home-faq-title">Do AI ads actually work?</h2>
         <p className="home-faq-sub">Short answers. For anything else, ask us on a call.</p>
-        <Button asChild variant="link" className="home-faq-call"><Link to="/book-a-call">Book a call</Link></Button>
+        <Button asChild variant="link" className="home-faq-call"><Link to="/book">Book a call</Link></Button>
       </Reveal></div>
       <div>{faqItems.map((item, index) => {
         const expanded = open === item.id;

@@ -11,7 +11,7 @@ describe("App routing", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
     expect(router.matchRoutes('/services/ai-commercial-30s').at(-1)?.routeId).toBe('/_site/services_/$slug');
   });
-  for (const [path, routeId] of [["/work", "/_site/work/"], ["/work/sample-commercial", "/_site/work/$slug"], ["/services", "/_site/services"], ["/pricing", "/_site/pricing"], ["/about", "/_site/about"], ["/book-a-call", "/_site/book-a-call"], ["/privacy", "/_site/privacy"], ["/terms", "/_site/terms"], ["/refund", "/_site/refund"]]) {
+  for (const [path, routeId] of [["/work", "/_site/work/"], ["/work/sample-commercial", "/_site/work/$slug"], ["/services", "/_site/services"], ["/pricing", "/_site/pricing"], ["/about", "/_site/about"], ["/book", "/_site/book"], ["/privacy", "/_site/privacy"], ["/terms", "/_site/terms"], ["/refund", "/_site/refund"]]) {
     it(`matches ${path} to its public page`, () => {
       const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
       expect(router.matchRoutes(path ?? "/").at(-1)?.routeId).toBe(routeId);

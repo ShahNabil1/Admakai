@@ -64,7 +64,7 @@ export function HomeHero() {
           <motion.p {...rise(1)} className="hero-sub">Admakai combines real directors and editors with generative video, image and voice models. You get human-level ads, finished in days, without a shoot.</motion.p>
         </div>
         <motion.div {...rise(1.2)} className="hero-bottom">
-          <Magnetic><Button asChild className="hero-main-call"><Link to="/book-a-call">Book a call</Link></Button></Magnetic>
+          <Magnetic><Button asChild className="hero-main-call"><Link to="/book">Book a call</Link></Button></Magnetic>
           <p className="hero-note">Ship <span>3x</span> more ads<br />without booking a single shoot.</p>
         </motion.div>
       </section>

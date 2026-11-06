@@ -43,7 +43,7 @@ export function Navbar({ hero = false }: { hero?: boolean }) {
         <div className="hero-nav-links">
           {links.map(link => <Link key={link.to} to={link.to} className="hero-nav-link">{link.label}</Link>)}
         </div>
-        <Button asChild className="hero-nav-call"><Link to="/book-a-call">Book a call</Link></Button>
+        <Button asChild className="hero-nav-call"><Link to="/book">Book a call</Link></Button>
         <Dialog.Root open={open} onOpenChange={setOpen}>
           <Dialog.Trigger asChild><Button variant="ghost" size="icon" className="hero-menu-trigger" aria-label="Open menu"><span className="hero-menu-icon" aria-hidden="true"><span /><span /></span></Button></Dialog.Trigger>
           <Dialog.Portal>
@@ -52,7 +52,7 @@ export function Navbar({ hero = false }: { hero?: boolean }) {
               <Link to="/" onClick={() => setOpen(false)} aria-label="Admakai home"><img className="hero-logo" src="/brand/logo-white.png" alt="Admakai" width="218" height="44" /></Link>
               <Dialog.Close asChild><Button variant="ghost" size="icon" className="hero-menu-close" aria-label="Close menu"><X /></Button></Dialog.Close>
               <motion.nav className="hero-menu-items" aria-label="Mobile navigation" initial="hidden" animate="visible" transition={{ staggerChildren: reduce ? 0 : .05 }}>
-                {[...links, { label: 'Book a call', to: '/book-a-call' } as const].map(link => (
+                {[...links, { label: 'Book a call', to: '/book' } as const].map(link => (
                   <motion.div key={link.to} variants={{ hidden: { opacity: reduce ? 1 : 0, y: reduce ? 0 : 20 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: reduce ? 0 : .4 }}>
                     <Link to={link.to} onClick={() => setOpen(false)}>{link.label}</Link>
                   </motion.div>

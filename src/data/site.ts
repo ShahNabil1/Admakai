@@ -26,6 +26,4 @@ export function resolveSiteSettings(rows: { key: string; value: unknown }[]): Si
   }
   return result;
 }
-export const CALENDLY_URL = '';
-// Booking-only placeholders do not change the approved Home/footer contact fallbacks.
-export const bookingContacts = { WHATSAPP:'[number]', EMAIL:'hello@admakai.com', CALENDLY_URL };
+

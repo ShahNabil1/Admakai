@@ -153,7 +153,7 @@ export function ServiceFinder({ onBrowse }: { onBrowse: (category?: string) => v
     try { speech.start(); setListening(true); setFocused(true); setNotice(''); }
     catch { setListening(false); setNotice('Voice input is unavailable. You can type your message instead.'); }
   };
-  const bookButton = <Button asChild variant="ghost" className="service-finder-chip"><Link to="/book-a-call"><CalendarDays aria-hidden="true"/>Book a call</Link></Button>;
+  const bookButton = <Button asChild variant="ghost" className="service-finder-chip"><Link to="/book"><CalendarDays aria-hidden="true"/>Book a call</Link></Button>;
   const transition = { duration: reduce ? 0 : .22 };
   const focusInput = () => {
     textarea.current?.scrollIntoView({ block: 'nearest', behavior: reduce ? 'instant' : 'smooth' });

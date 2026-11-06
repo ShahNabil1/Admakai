@@ -17,7 +17,6 @@ import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated.ap
 import { Route as SiteIndexRouteImport } from './routes/_site.index'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
 import { Route as SiteBookRouteImport } from './routes/_site.book'
-import { Route as SiteBookACallRouteImport } from './routes/_site.book-a-call'
 import { Route as SitePricingRouteImport } from './routes/_site.pricing'
 import { Route as SitePrivacyRouteImport } from './routes/_site.privacy'
 import { Route as SiteRefundRouteImport } from './routes/_site.refund'
@@ -72,11 +71,6 @@ const SiteAboutRoute = SiteAboutRouteImport.update({
 const SiteBookRoute = SiteBookRouteImport.update({
   id: '/book',
   path: '/book',
-  getParentRoute: () => SiteRoute,
-} as any)
-const SiteBookACallRoute = SiteBookACallRouteImport.update({
-  id: '/book-a-call',
-  path: '/book-a-call',
   getParentRoute: () => SiteRoute,
 } as any)
 const SitePricingRoute = SitePricingRouteImport.update({
@@ -173,7 +167,6 @@ export interface FileRoutesByFullPath {
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/about': typeof SiteAboutRoute
   '/book': typeof SiteBookRoute
-  '/book-a-call': typeof SiteBookACallRoute
   '/pricing': typeof SitePricingRoute
   '/privacy': typeof SitePrivacyRoute
   '/refund': typeof SiteRefundRoute
@@ -198,7 +191,6 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/about': typeof SiteAboutRoute
   '/book': typeof SiteBookRoute
-  '/book-a-call': typeof SiteBookACallRoute
   '/pricing': typeof SitePricingRoute
   '/privacy': typeof SitePrivacyRoute
   '/refund': typeof SiteRefundRoute
@@ -226,7 +218,6 @@ export interface FileRoutesById {
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/_site/about': typeof SiteAboutRoute
   '/_site/book': typeof SiteBookRoute
-  '/_site/book-a-call': typeof SiteBookACallRoute
   '/_site/pricing': typeof SitePricingRoute
   '/_site/privacy': typeof SitePrivacyRoute
   '/_site/refund': typeof SiteRefundRoute
@@ -255,7 +246,6 @@ export interface FileRouteTypes {
     | '/app'
     | '/about'
     | '/book'
-    | '/book-a-call'
     | '/pricing'
     | '/privacy'
     | '/refund'
@@ -280,7 +270,6 @@ export interface FileRouteTypes {
     | '/signin'
     | '/about'
     | '/book'
-    | '/book-a-call'
     | '/pricing'
     | '/privacy'
     | '/refund'
@@ -307,7 +296,6 @@ export interface FileRouteTypes {
     | '/_authenticated/app'
     | '/_site/about'
     | '/_site/book'
-    | '/_site/book-a-call'
     | '/_site/pricing'
     | '/_site/privacy'
     | '/_site/refund'
@@ -392,13 +380,6 @@ declare module '@tanstack/react-router' {
       path: '/book'
       fullPath: '/book'
       preLoaderRoute: typeof SiteBookRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/book-a-call': {
-      id: '/_site/book-a-call'
-      path: '/book-a-call'
-      fullPath: '/book-a-call'
-      preLoaderRoute: typeof SiteBookACallRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/pricing': {
@@ -559,7 +540,6 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 interface SiteRouteChildren {
   SiteAboutRoute: typeof SiteAboutRoute
   SiteBookRoute: typeof SiteBookRoute
-  SiteBookACallRoute: typeof SiteBookACallRoute
   SitePricingRoute: typeof SitePricingRoute
   SitePrivacyRoute: typeof SitePrivacyRoute
   SiteRefundRoute: typeof SiteRefundRoute
@@ -576,7 +556,6 @@ interface SiteRouteChildren {
 const SiteRouteChildren: SiteRouteChildren = {
   SiteAboutRoute: SiteAboutRoute,
   SiteBookRoute: SiteBookRoute,
-  SiteBookACallRoute: SiteBookACallRoute,
   SitePricingRoute: SitePricingRoute,
   SitePrivacyRoute: SitePrivacyRoute,
   SiteRefundRoute: SiteRefundRoute,

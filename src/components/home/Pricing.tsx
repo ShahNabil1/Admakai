@@ -35,7 +35,7 @@ export function Pricing() {
             <p className="home-pricing-price"><strong><span itemProp="priceCurrency">{CURRENCY}</span><MonthlyPrice /></strong><small>/month</small></p>
             <p className="home-pricing-copy">{contentPartner.videos} videos and {contentPartner.statics} statics every month, any mix of the services below. Pause or cancel any month.</p>
             <div className="home-pricing-actions">
-              <Magnetic><Button asChild className="home-pricing-start"><Link to="/book-a-call">Get started</Link></Button></Magnetic>
+              <Magnetic><Button asChild className="home-pricing-start"><Link to="/book">Get started</Link></Button></Magnetic>
               <Button asChild variant="link" className="home-pricing-all"><Link to="/pricing">See all plans</Link></Button>
             </div>
             <p className="home-pricing-guarantee"><ShieldCheck aria-hidden="true" />First cut in {contentPartner.firstCutDays} days or the month is free</p>
