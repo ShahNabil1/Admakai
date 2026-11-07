@@ -8,9 +8,9 @@ describe('lighting guide data', () => {
     lightingStyles.forEach((s, i) => expect(s.id).toBe(i + 1));
   });
 
-  it('has full approved content for styles 1 to 21 and pending slots after', () => {
+  it('has full approved content for all 34 styles', () => {
     const ready = lightingStyles.filter(s => !s.pending);
-    expect(ready.map(s => s.id)).toEqual(Array.from({ length: 21 }, (_, i) => i + 1));
+    expect(ready.map(s => s.id)).toEqual(Array.from({ length: 34 }, (_, i) => i + 1));
     for (const s of ready) {
       expect(s.what.length).toBeGreaterThan(10);
       expect(s.when.length).toBeGreaterThan(10);
@@ -18,7 +18,12 @@ describe('lighting guide data', () => {
       expect(s.colour.length).toBeGreaterThan(20);
       expect(s.tip.length).toBeGreaterThan(10);
     }
-    expect(lightingStyles.filter(s => s.pending)).toHaveLength(13);
+    expect(lightingStyles.filter(s => s.pending)).toHaveLength(0);
+  });
+
+  it('marks only styles 32 and 33 with swatch motion effects', () => {
+    const fx = lightingStyles.filter(s => s.swatchFx).map(s => [s.id, s.swatchFx]);
+    expect(fx).toEqual([[32, 'sweep'], [33, 'pulse']]);
   });
 
   it('builds prompts from the master template with style name, light and colour', () => {

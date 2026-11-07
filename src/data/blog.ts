@@ -1,6 +1,6 @@
 // Hardcoded blog posts (no CMS). Images live in public/blog/<slug-folder>/.
 export const SAZDAH_DIR = '/blog/sazdah';
-export const DISCORD_URL = 'https://discord.gg/DF3cfYQmm';
+export const DISCORD_URL = 'https://discord.gg/GEpQUmhrV';
 export const WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/KNPhJo9DkGvKgCoRO2nH53';
 
 export type BlogPostSummary = {

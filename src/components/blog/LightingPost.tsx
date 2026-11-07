@@ -20,10 +20,11 @@ function Fade({ children, className }: { children: ReactNode; className?: string
   return <div ref={ref} className={`lg-fade${inView ? ' in' : ''}${className ? ` ${className}` : ''}`}>{children}</div>;
 }
 
-function LightSwatch({ swatch }: { swatch: LightingStyle['swatch'] }) {
+function LightSwatch({ swatch, fx }: { swatch: LightingStyle['swatch']; fx?: LightingStyle['swatchFx'] }) {
   return (
-    <div className="lg-swatch" style={{ background: `radial-gradient(90% 90% at ${swatch.x}% ${swatch.y}%, ${swatch.key} 0%, ${swatch.bg} 58%)` }} aria-hidden="true">
+    <div className={`lg-swatch${fx ? ` lg-swatch-${fx}` : ''}`} style={{ background: `radial-gradient(90% 90% at ${swatch.x}% ${swatch.y}%, ${swatch.key} 0%, ${swatch.bg} 58%)` }} aria-hidden="true">
       <div className="lg-swatch-head" />
+      {fx && <div className="lg-swatch-fx" style={{ background: `linear-gradient(100deg, transparent 20%, ${swatch.key} 50%, transparent 80%)` }} />}
     </div>
   );
 }
@@ -67,7 +68,7 @@ function StyleCard({ style, index, onCopy, onJump }: { style: LightingStyle; ind
           <span className="lg-bn">{style.nameBn}</span>
         </div>
         <div className="lg-tags"><span className="lg-tag">{style.category}</span><span className="lg-tag">{style.mood}</span></div>
-        <LightSwatch swatch={style.swatch} />
+        <LightSwatch swatch={style.swatch} fx={style.swatchFx} />
         <h4>এটা কী</h4>
         <p>{style.what}</p>
         <h4>কখন ব্যবহার করবেন</h4>

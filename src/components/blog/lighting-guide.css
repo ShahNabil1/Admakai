@@ -120,6 +120,28 @@
 .lg-swatch { position: relative; aspect-ratio: 16 / 9; overflow: hidden; }
 .lg-swatch-head { position: absolute; left: 50%; top: 56%; width: 20%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle at 40% 35%, #33363D 0%, #17181C 70%); }
 
+/* gentle swatch motion for the moving-light styles (32 sweep, 33 pulse) */
+.lg-swatch-fx { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+.lg-swatch-sweep .lg-swatch-fx { animation: lg-swatch-sweep 4.5s ease-in-out infinite; }
+.lg-swatch-pulse .lg-swatch-fx { animation: lg-swatch-pulse 5.5s ease-in-out infinite; }
+@keyframes lg-swatch-sweep {
+  0%, 18% { transform: translateX(-110%); opacity: 0; }
+  30% { opacity: .55; }
+  55% { transform: translateX(110%); opacity: 0; }
+  100% { transform: translateX(110%); opacity: 0; }
+}
+@keyframes lg-swatch-pulse {
+  0%, 100% { opacity: 0; }
+  12% { opacity: .3; }
+  24% { opacity: .08; }
+  40% { opacity: .38; }
+  58% { opacity: .12; }
+  74% { opacity: .28; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lg-swatch-sweep .lg-swatch-fx, .lg-swatch-pulse .lg-swatch-fx { animation: none; opacity: 0; }
+}
+
 /* style sections */
 .lg-style { background: var(--lg-card); border: 1px solid var(--lg-line); border-radius: 20px; padding: 28px; margin-top: 40px; scroll-margin-top: 104px; }
 .lg-style-head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
