@@ -8,9 +8,9 @@ describe('lighting guide data', () => {
     lightingStyles.forEach((s, i) => expect(s.id).toBe(i + 1));
   });
 
-  it('has full approved content for styles 1 to 8 and pending slots after', () => {
+  it('has full approved content for styles 1 to 21 and pending slots after', () => {
     const ready = lightingStyles.filter(s => !s.pending);
-    expect(ready.map(s => s.id)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+    expect(ready.map(s => s.id)).toEqual(Array.from({ length: 21 }, (_, i) => i + 1));
     for (const s of ready) {
       expect(s.what.length).toBeGreaterThan(10);
       expect(s.when.length).toBeGreaterThan(10);
@@ -18,7 +18,7 @@ describe('lighting guide data', () => {
       expect(s.colour.length).toBeGreaterThan(20);
       expect(s.tip.length).toBeGreaterThan(10);
     }
-    expect(lightingStyles.filter(s => s.pending)).toHaveLength(26);
+    expect(lightingStyles.filter(s => s.pending)).toHaveLength(13);
   });
 
   it('builds prompts from the master template with style name, light and colour', () => {
