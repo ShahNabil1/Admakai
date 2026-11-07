@@ -18,7 +18,9 @@ function BlogIndex() {
           <div className="blog-grid">
             {blogPosts.map(post => (
               <Link key={post.slug} to={post.path} className="blog-card blog-frame">
-                <SafeImg src={post.cover} alt={post.title} ratio="16 / 10" />
+                {post.cover
+                  ? <SafeImg src={post.cover} alt={post.title} ratio="16 / 10" />
+                  : <div className="blog-css-cover" role="img" aria-label={post.title} style={{ aspectRatio: '16 / 10' }} />}
                 <div className="blog-card-body">
                   <span className="blog-chip">{post.category}</span>
                   <h2>{post.title}</h2>

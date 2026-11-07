@@ -30,6 +30,7 @@ import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppReviewsRouteImport } from './routes/_authenticated.app.reviews'
 import { Route as SiteBlogIndexRouteImport } from './routes/_site.blog.index'
 import { Route as SiteBlogSazdahTvcRouteImport } from './routes/_site.blog.sazdah-tvc'
+import { Route as SiteBlogVideoLightingGuideRouteImport } from './routes/_site.blog.video-lighting-guide'
 import { Route as SiteServicesSlugRouteImport } from './routes/_site.services_.$slug'
 import { Route as SiteWorkIndexRouteImport } from './routes/_site.work.index'
 import { Route as SiteWorkSlugRouteImport } from './routes/_site.work.$slug'
@@ -139,6 +140,12 @@ const SiteBlogSazdahTvcRoute = SiteBlogSazdahTvcRouteImport.update({
   path: '/blog/sazdah-tvc',
   getParentRoute: () => SiteRoute,
 } as any)
+const SiteBlogVideoLightingGuideRoute =
+  SiteBlogVideoLightingGuideRouteImport.update({
+    id: '/blog/video-lighting-guide',
+    path: '/blog/video-lighting-guide',
+    getParentRoute: () => SiteRoute,
+  } as any)
 const SiteServicesSlugRoute = SiteServicesSlugRouteImport.update({
   id: '/services_/$slug',
   path: '/services/$slug',
@@ -178,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/reviews': typeof AuthenticatedAppReviewsRoute
   '/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
+  '/blog/video-lighting-guide': typeof SiteBlogVideoLightingGuideRoute
   '/services/$slug': typeof SiteServicesSlugRoute
   '/work/$slug': typeof SiteWorkSlugRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
@@ -202,6 +210,7 @@ export interface FileRoutesByTo {
   '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/app/reviews': typeof AuthenticatedAppReviewsRoute
   '/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
+  '/blog/video-lighting-guide': typeof SiteBlogVideoLightingGuideRoute
   '/services/$slug': typeof SiteServicesSlugRoute
   '/work/$slug': typeof SiteWorkSlugRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
@@ -230,6 +239,7 @@ export interface FileRoutesById {
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRoute
   '/_authenticated/app/reviews': typeof AuthenticatedAppReviewsRoute
   '/_site/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
+  '/_site/blog/video-lighting-guide': typeof SiteBlogVideoLightingGuideRoute
   '/_site/services_/$slug': typeof SiteServicesSlugRoute
   '/_site/work/$slug': typeof SiteWorkSlugRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
@@ -257,6 +267,7 @@ export interface FileRouteTypes {
     | '/app/projects'
     | '/app/reviews'
     | '/blog/sazdah-tvc'
+    | '/blog/video-lighting-guide'
     | '/services/$slug'
     | '/work/$slug'
     | '/auth/sso/callback'
@@ -281,6 +292,7 @@ export interface FileRouteTypes {
     | '/app/projects'
     | '/app/reviews'
     | '/blog/sazdah-tvc'
+    | '/blog/video-lighting-guide'
     | '/services/$slug'
     | '/work/$slug'
     | '/auth/sso/callback'
@@ -308,6 +320,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/projects'
     | '/_authenticated/app/reviews'
     | '/_site/blog/sazdah-tvc'
+    | '/_site/blog/video-lighting-guide'
     | '/_site/services_/$slug'
     | '/_site/work/$slug'
     | '/auth/sso/callback'
@@ -473,6 +486,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteBlogSazdahTvcRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_site/blog/video-lighting-guide': {
+      id: '/_site/blog/video-lighting-guide'
+      path: '/blog/video-lighting-guide'
+      fullPath: '/blog/video-lighting-guide'
+      preLoaderRoute: typeof SiteBlogVideoLightingGuideRouteImport
+      parentRoute: typeof SiteRoute
+    }
     '/_site/services_/$slug': {
       id: '/_site/services_/$slug'
       path: '/services/$slug'
@@ -547,6 +567,7 @@ interface SiteRouteChildren {
   SiteTermsRoute: typeof SiteTermsRoute
   SiteIndexRoute: typeof SiteIndexRoute
   SiteBlogSazdahTvcRoute: typeof SiteBlogSazdahTvcRoute
+  SiteBlogVideoLightingGuideRoute: typeof SiteBlogVideoLightingGuideRoute
   SiteServicesSlugRoute: typeof SiteServicesSlugRoute
   SiteWorkSlugRoute: typeof SiteWorkSlugRoute
   SiteBlogIndexRoute: typeof SiteBlogIndexRoute
@@ -563,6 +584,7 @@ const SiteRouteChildren: SiteRouteChildren = {
   SiteTermsRoute: SiteTermsRoute,
   SiteIndexRoute: SiteIndexRoute,
   SiteBlogSazdahTvcRoute: SiteBlogSazdahTvcRoute,
+  SiteBlogVideoLightingGuideRoute: SiteBlogVideoLightingGuideRoute,
   SiteServicesSlugRoute: SiteServicesSlugRoute,
   SiteWorkSlugRoute: SiteWorkSlugRoute,
   SiteBlogIndexRoute: SiteBlogIndexRoute,
