@@ -4,3 +4,4 @@
 - Home FAQ and its route-head FAQPage structured data share one browser-safe data module; use the TanStack head scripts API rather than react-helmet, and keep accordion state single-valued with accessible button headings.
 
 - Home cards derive service text and links from the catalogue; live published-work count and recent featured cards share works Query helpers and the WorkCard presentation with VideoPreviewCard media.
+- The Home client section owns its scoped styles and reads logo pointers and counts from `src/data/clients.ts`; CSS translates duplicated marquee tracks so continuous motion needs no JavaScript loop.
