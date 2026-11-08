@@ -20,6 +20,7 @@ import {
   type Answer,
   type CandidateFields,
 } from "@/lib/application-rules";
+import { applicantErrorText } from "@/lib/application-rules";
 import {
   readApplication,
   saveOpeningsPreference,
@@ -68,8 +69,7 @@ type Snapshot = {
   taskUrl: string;
   later: boolean;
 };
-const errorText = (error: unknown) =>
-  error instanceof Error ? error.message : "Your changes could not be saved. Please try again.";
+const errorText = applicantErrorText;
 
 export function ApplicationPage({
   slug,

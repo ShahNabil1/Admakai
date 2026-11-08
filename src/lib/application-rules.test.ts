@@ -16,7 +16,21 @@ import {
   adminAccessAllowed,
   questionStep,
   type ApplicationQuestion,
+  APPLICANT_SAVE_ERROR,
+  applicantDbMessage,
+  applicantErrorText,
 } from "./application-rules";
+describe("Applicant-facing save errors", () => {
+  it("hides raw permission errors behind the friendly WhatsApp message", () => {
+    expect(APPLICANT_SAVE_ERROR).toBe("We could not save this step. Please try again, or message us on WhatsApp if it keeps happening.");
+    expect(applicantDbMessage({ code: "42501", message: "permission denied for table applications" })).toBe(APPLICANT_SAVE_ERROR);
+    expect(applicantErrorText(new Error("permission denied for table applications"))).toBe(APPLICANT_SAVE_ERROR);
+  });
+  it("keeps intentional SQL guidance readable", () => {
+    expect(applicantDbMessage({ code: "P0001", message: "Upload your passport size photo first" })).toBe("Upload your passport size photo first");
+    expect(applicantErrorText(new Error("Choose and crop your passport size photo."))).toBe("Choose and crop your passport size photo.");
+  });
+});
 describe("Application requirements", () => {
   it('places optional Your work questions in step 4 and Last thing in answers', () => {
     const q = { id: 'q', label: 'Creative work', type: 'long_text', options: null, required: false, section: 'Your work', sort_order: 1, max_length: 400, help_text: null };

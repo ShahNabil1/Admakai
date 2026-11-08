@@ -2948,6 +2948,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      hiring_set_passport_photo: {
+        Args: { _application_id: string }
+        Returns: string
+      }
       hiring_staff_contacts: {
         Args: { _ids: string[] }
         Returns: {

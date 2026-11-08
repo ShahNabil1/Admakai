@@ -8,6 +8,15 @@ export const APPLICATION_STEPS = [
   "Declaration and signature",
   "Review and submit",
 ];
+export const APPLICANT_SAVE_ERROR =
+  "We could not save this step. Please try again, or message us on WhatsApp if it keeps happening.";
+/** Only intentional SQL RAISE messages (P0001) are readable to applicants; every other database or storage error is hidden. */
+export const applicantDbMessage = (error: { message?: string; code?: string } | null | undefined) =>
+  error?.code === "P0001" && error.message ? error.message : APPLICANT_SAVE_ERROR;
+const RAW_ERROR = /permission denied|row-level security|violates|relation|column|syntax|duplicate key|JWT|PGRST|fetch failed|network|timeout/i;
+/** Client-side guard: any message that still looks technical is replaced before an applicant sees it. */
+export const applicantErrorText = (error: unknown) =>
+  error instanceof Error && error.message && !RAW_ERROR.test(error.message) ? error.message : APPLICANT_SAVE_ERROR;
 export const PHOTO_LIMIT = 2 * 1024 * 1024;
 export const CV_LIMIT = 5 * 1024 * 1024;
 export const RESEND_SECONDS = 60;

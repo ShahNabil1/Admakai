@@ -6,7 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { decode } from "fast-png";
 import { passportFileError, passportJpegDimensions, PASSPORT_WIDTH, PASSPORT_HEIGHT } from './passport-rules';
-import { candidateDraftSchema, CV_LIMIT, PHOTO_LIMIT, type Answer } from "./application-rules";
+import { applicantDbMessage, candidateDraftSchema, CV_LIMIT, PHOTO_LIMIT, type Answer } from "./application-rules";
 import type { CareerJob } from "./careers.functions";
 type Tables = Database["public"]["Tables"];
 export type ApplicationRow = Tables["applications"]["Row"];
@@ -24,8 +24,12 @@ export type SignedRow = Pick<
 >;
 const signedColumns =
   "id,application_id,template_id,template_version,signer_full_name,signature_path,accepted_terms,signed_at";
-function checked<T>(result: { data: T; error: { message: string } | null }): T {
-  if (result.error) throw new Error(result.error.message);
+function checked<T>(result: { data: T; error: { message: string; code?: string } | null }): T {
+  if (result.error) {
+    // Keep the real cause in server logs; applicants only see intentional SQL messages or the friendly fallback.
+    console.error("Application save failed", { code: result.error.code ?? null, message: result.error.message });
+    throw new Error(applicantDbMessage(result.error));
+  }
   return result.data;
 }
 const slugSchema = z.object({ slug: z.string().min(1).max(160) });
@@ -278,8 +282,9 @@ export const uploadApplicationFile = createServerFn({ method: "POST" })
           .upload(path, bytes, { contentType: mime, upsert: kind === "cv" || kind === 'passport' }),
       );
     if (kind === 'passport') {
-      checked(await context.supabase.from('applications').update({ passport_photo_path: path }).eq('id', app.id).eq('candidate_id', context.userId).eq('is_draft', true).select('id').single());
-      checked(await context.supabase.from('candidates').update({ photo_url: path }).eq('id', context.userId).is('photo_url', null));
+      // The checked RPC re-verifies own draft ownership and the fixed object path; applicants get no direct column grant.
+      const saved = checked(await context.supabase.rpc('hiring_set_passport_photo', { _application_id: app.id }));
+      if (saved !== path) throw new Error(applicantDbMessage(null));
     }
     if (kind === "photo")
       checked(
