@@ -2295,6 +2295,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      hiring_application_agreement: {
+        Args: { _job_id: string }
+        Returns: {
+          body: string
+          id: string
+          key_terms: Json
+          version: number
+        }[]
+      }
       hiring_application_questions: {
         Args: { _job_id: string }
         Returns: {

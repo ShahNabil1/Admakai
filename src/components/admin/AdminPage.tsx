@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } fro
 import { Toaster, toast } from 'sonner';
 import { Activity, ArrowLeft, CalendarDays, Clapperboard, FolderKanban, LayoutDashboard, LogOut, Receipt, Search, Users } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { adminAccessAllowed } from '@/lib/application-rules';
 import { cancelHubPopupSignIn, isStaffRole, startHubPopupSignIn, startHubSignIn, type StaffRole } from '@/lib/sso';
 import { Button } from '@/components/ui/button';
 import type { ActivityRow } from '@/lib/activity';
@@ -47,8 +48,9 @@ export function AdminPage() {
       if (!active.current || version !== checkVersion.current) return;
       if (!data.user) { setState('signed-out'); return; }
       const { data: r } = await supabase.from('user_roles').select('role').eq('user_id', data.user.id).maybeSingle();
+      const { data: hiring, error: hiringError } = await supabase.rpc('is_hiring_staff', { _user_id: data.user.id });
       if (!active.current || version !== checkVersion.current) return;
-      setState(isStaffRole(r?.role) ? { role: r.role, userId: data.user.id, email: data.user.email ?? '' } : 'denied');
+      setState(adminAccessAllowed(r?.role, !hiringError && hiring === true) ? { role: isStaffRole(r?.role) ? r.role : 'member', userId: data.user.id, email: data.user.email ?? '' } : 'denied');
     } catch {
       if (active.current && version === checkVersion.current) { setState('signed-out'); setNote('Could not check your account. Please try again.'); }
     }

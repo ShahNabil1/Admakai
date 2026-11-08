@@ -1,3 +1,6 @@
 - Reuse the shared internship URL resolver and player so Careers and internship job details cannot diverge.
 - Prime public video settings through Query and expose only video fields through the safe reader; private settings stay private.
 - Hero previews use only direct MP4, loop the first ten seconds muted and respect reduced motion.
+- Application private reads and mutations use authenticated no-store server functions; public loaders read only safe role/settings data. Serialize autosaves and Next writes to prevent stale progress overwrites.
+- Application signatures use signature_pad and server-validated transparent PNGs; personal name/version matching is rechecked by SQL on final submission.
+- Signature object writes are privileged only after user-scoped draft ownership and PNG checks; restrictive storage policies block browser bypass. Candidate name changes invalidate unfinished signatures in SQL.

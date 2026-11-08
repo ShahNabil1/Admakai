@@ -1,0 +1,46 @@
+DO $$ DECLARE staff uuid:=gen_random_uuid(); candidate uuid:=gen_random_uuid(); jid uuid; aid uuid; a public.applications; q record; answers jsonb:='{}'; n integer; denied boolean; BEGIN
+ BEGIN
+ INSERT INTO auth.users(id,email,raw_user_meta_data) VALUES(staff,'step3-staff-'||staff::text||'@example.invalid','{}'),(candidate,'step3-candidate-'||candidate::text||'@example.invalid','{}');
+ INSERT INTO public.hiring_user_roles(user_id,role) VALUES(staff,'reviewer');
+ INSERT INTO public.candidates(id,full_name,phone,whatsapp,area,education,current_occupation) VALUES(staff,'Step Three Staff','01712345678','01712345678','Dhaka','Graduate','Artist'),(candidate,'Step Three Candidate','01812345678','','Dhaka','Graduate','Student');
+ SELECT id INTO jid FROM public.jobs WHERE slug='ai-video-artist-intern';
+ IF jid IS NULL THEN SELECT id INTO jid FROM public.jobs WHERE status='draft' AND type='internship' LIMIT 1; END IF;
+ IF jid IS NULL THEN RAISE EXCEPTION 'Draft internship fixture missing'; END IF;
+ PERFORM set_config('request.jwt.claim.sub',candidate::text,true);PERFORM set_config('request.jwt.claims',jsonb_build_object('sub',candidate,'role','authenticated')::text,true);SET LOCAL ROLE authenticated;
+ denied:=false;BEGIN PERFORM public.hiring_save_progress(jid,3,'{}','');EXCEPTION WHEN insufficient_privilege THEN denied:=true;END;IF NOT denied THEN RAISE EXCEPTION 'Non staff draft accepted';END IF;
+ IF EXISTS(SELECT 1 FROM public.jobs WHERE id=jid) THEN RAISE EXCEPTION 'Non staff sees draft'; END IF;
+ RESET ROLE;
+ PERFORM set_config('request.jwt.claim.sub',staff::text,true);PERFORM set_config('request.jwt.claims',jsonb_build_object('sub',staff,'role','authenticated')::text,true);SET LOCAL ROLE authenticated;
+ a:=public.hiring_save_progress(jid,3,'{}','');aid:=a.id;
+ IF NOT a.is_test OR a.cv_path IS NOT NULL OR a.current_step<>3 THEN RAISE EXCEPTION 'Draft test classification or empty CV failed';END IF;
+ a:=public.hiring_save_progress(jid,4,'{}','');IF a.id<>aid OR (SELECT current_step FROM public.applications WHERE id=aid)<>4 THEN RAISE EXCEPTION 'Resume uses wrong application';END IF;
+ denied:=false;BEGIN PERFORM public.submit_application(aid);EXCEPTION WHEN OTHERS THEN denied:=true;END;IF NOT denied THEN RAISE EXCEPTION 'Incomplete submission accepted';END IF;
+ RESET ROLE;
+ FOR q IN SELECT jq.*,qb.label FROM public.job_questions jq LEFT JOIN public.question_bank qb ON qb.id=jq.question_id WHERE jq.job_id=jid LOOP
+ answers:=answers||jsonb_build_object(q.id::text,CASE WHEN q.type='yes_no' THEN '"no"'::jsonb WHEN q.type='single_choice' THEN q.options->0 WHEN q.type='multi_choice' THEN jsonb_build_array(q.options->0) WHEN q.type='rating' THEN '4'::jsonb WHEN q.type IN ('link','video_link') THEN '"https://example.com/work"'::jsonb ELSE '"Synthetic process answer"'::jsonb END);
+ END LOOP;
+ SET LOCAL ROLE authenticated;a:=public.hiring_save_progress(jid,6,answers,'');PERFORM public.submit_task(aid,'');IF (SELECT task_submission_url IS NOT NULL FROM public.applications WHERE id=aid) THEN RAISE EXCEPTION 'Defer task failed';END IF;
+ PERFORM public.submit_task(aid,'https://example.com/task');IF (SELECT task_submitted_at IS NULL FROM public.applications WHERE id=aid) THEN RAISE EXCEPTION 'Task timestamp missing';END IF;
+ RESET ROLE;
+ INSERT INTO public.signed_agreements(application_id,template_id,template_version,signer_full_name,signature_path,pdf_path,pdf_sha256,accepted_terms) SELECT aid,t.id,t.version,'Step Three Staff',staff::text||'/'||aid::text||'/signature.png','',repeat('0',64),t.key_terms FROM public.hiring_current_template(jid) t;
+ SET LOCAL ROLE authenticated;UPDATE public.candidates SET full_name='Changed Staff' WHERE id=staff;
+ denied:=false;BEGIN PERFORM public.submit_application(aid);EXCEPTION WHEN OTHERS THEN denied:=true;END;IF NOT denied THEN RAISE EXCEPTION 'Name change did not require re-signing';END IF;
+ RESET ROLE;
+ UPDATE public.candidates SET full_name='Step Three Staff' WHERE id=staff;
+ SET LOCAL ROLE authenticated;PERFORM public.submit_application(aid);
+ IF (SELECT is_draft OR NOT is_test OR submitted_at IS NULL FROM public.applications WHERE id=aid) THEN RAISE EXCEPTION 'Atomic staff submission failed';END IF;
+ denied:=false;BEGIN PERFORM public.submit_application(aid);EXCEPTION WHEN OTHERS THEN denied:=true;END;IF NOT denied THEN RAISE EXCEPTION 'Duplicate submission allowed';END IF;
+ RESET ROLE;
+ IF NOT EXISTS(SELECT 1 FROM public.application_reviews WHERE application_id=aid AND jsonb_array_length(knockout_flags)>=2) THEN RAISE EXCEPTION 'Knockout flags missing';END IF;
+ PERFORM set_config('request.jwt.claim.sub',candidate::text,true);PERFORM set_config('request.jwt.claims',jsonb_build_object('sub',candidate,'role','authenticated')::text,true);SET LOCAL ROLE authenticated;
+ IF EXISTS(SELECT 1 FROM public.application_reviews WHERE application_id=aid) THEN RAISE EXCEPTION 'Candidate reads flags';END IF;
+ denied:=false;BEGIN PERFORM public.submit_task(aid,'https://example.com/attack');EXCEPTION WHEN insufficient_privilege THEN denied:=true;END;IF NOT denied THEN RAISE EXCEPTION 'Other candidate edits task';END IF;
+ RESET ROLE;
+ PERFORM set_config('request.jwt.claim.sub',staff::text,true);PERFORM set_config('request.jwt.claims',jsonb_build_object('sub',staff,'role','authenticated')::text,true);SET LOCAL ROLE authenticated;
+ PERFORM public.change_application_status(aid,'shortlisted',NULL,NULL);PERFORM public.submit_task(aid,'https://example.com/short-task');
+ IF NOT EXISTS(SELECT 1 FROM public.application_events WHERE application_id=aid AND message_to_candidate='Task submitted') THEN RAISE EXCEPTION 'Shortlist task event missing';END IF;
+ RESET ROLE;
+ denied:=false;BEGIN UPDATE public.signed_agreements SET signer_full_name='Changed' WHERE application_id=aid;EXCEPTION WHEN OTHERS THEN denied:=true;END;IF NOT denied THEN RAISE EXCEPTION 'Submitted agreement changed';END IF;
+ RAISE EXCEPTION USING ERRCODE='ZX003',MESSAGE='Step 3 rollback assertions passed';
+ EXCEPTION WHEN SQLSTATE 'ZX003' THEN RAISE NOTICE 'Step3 assertions passed; all synthetic records rolled back';END;
+ END $$;

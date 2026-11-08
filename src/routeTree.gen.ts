@@ -39,6 +39,8 @@ import { Route as SiteWorkSlugRouteImport } from './routes/_site.work.$slug'
 import { Route as AuthSsoCallbackRouteImport } from './routes/auth.sso.callback'
 import { Route as SiteCareersSlugIndexRouteImport } from './routes/_site.careers.$slug.index'
 import { Route as SiteCareersSlugApplyRouteImport } from './routes/_site.careers.$slug.apply'
+import { Route as SiteCareersSlugApplyIndexRouteImport } from './routes/_site.careers.$slug.apply.index'
+import { Route as SiteCareersSlugApplyDoneRouteImport } from './routes/_site.careers.$slug.apply.done'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
@@ -190,6 +192,18 @@ const SiteCareersSlugApplyRoute = SiteCareersSlugApplyRouteImport.update({
   path: '/careers/$slug/apply',
   getParentRoute: () => SiteRoute,
 } as any)
+const SiteCareersSlugApplyIndexRoute =
+  SiteCareersSlugApplyIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => SiteCareersSlugApplyRoute,
+  } as any)
+const SiteCareersSlugApplyDoneRoute =
+  SiteCareersSlugApplyDoneRouteImport.update({
+    id: '/done',
+    path: '/done',
+    getParentRoute: () => SiteCareersSlugApplyRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
@@ -218,8 +232,10 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof SiteBlogIndexRoute
   '/careers/': typeof SiteCareersIndexRoute
   '/work/': typeof SiteWorkIndexRoute
-  '/careers/$slug/apply': typeof SiteCareersSlugApplyRoute
+  '/careers/$slug/apply': typeof SiteCareersSlugApplyRouteWithChildren
   '/careers/$slug/': typeof SiteCareersSlugIndexRoute
+  '/careers/$slug/apply/done': typeof SiteCareersSlugApplyDoneRoute
+  '/careers/$slug/apply/': typeof SiteCareersSlugApplyIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof SiteIndexRoute
@@ -247,8 +263,9 @@ export interface FileRoutesByTo {
   '/blog': typeof SiteBlogIndexRoute
   '/careers': typeof SiteCareersIndexRoute
   '/work': typeof SiteWorkIndexRoute
-  '/careers/$slug/apply': typeof SiteCareersSlugApplyRoute
   '/careers/$slug': typeof SiteCareersSlugIndexRoute
+  '/careers/$slug/apply/done': typeof SiteCareersSlugApplyDoneRoute
+  '/careers/$slug/apply': typeof SiteCareersSlugApplyIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -280,8 +297,10 @@ export interface FileRoutesById {
   '/_site/blog/': typeof SiteBlogIndexRoute
   '/_site/careers/': typeof SiteCareersIndexRoute
   '/_site/work/': typeof SiteWorkIndexRoute
-  '/_site/careers/$slug/apply': typeof SiteCareersSlugApplyRoute
+  '/_site/careers/$slug/apply': typeof SiteCareersSlugApplyRouteWithChildren
   '/_site/careers/$slug/': typeof SiteCareersSlugIndexRoute
+  '/_site/careers/$slug/apply/done': typeof SiteCareersSlugApplyDoneRoute
+  '/_site/careers/$slug/apply/': typeof SiteCareersSlugApplyIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -314,6 +333,8 @@ export interface FileRouteTypes {
     | '/work/'
     | '/careers/$slug/apply'
     | '/careers/$slug/'
+    | '/careers/$slug/apply/done'
+    | '/careers/$slug/apply/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -341,8 +362,9 @@ export interface FileRouteTypes {
     | '/blog'
     | '/careers'
     | '/work'
-    | '/careers/$slug/apply'
     | '/careers/$slug'
+    | '/careers/$slug/apply/done'
+    | '/careers/$slug/apply'
   id:
     | '__root__'
     | '/_authenticated'
@@ -375,6 +397,8 @@ export interface FileRouteTypes {
     | '/_site/work/'
     | '/_site/careers/$slug/apply'
     | '/_site/careers/$slug/'
+    | '/_site/careers/$slug/apply/done'
+    | '/_site/careers/$slug/apply/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -597,6 +621,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteCareersSlugApplyRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_site/careers/$slug/apply/': {
+      id: '/_site/careers/$slug/apply/'
+      path: '/'
+      fullPath: '/careers/$slug/apply/'
+      preLoaderRoute: typeof SiteCareersSlugApplyIndexRouteImport
+      parentRoute: typeof SiteCareersSlugApplyRoute
+    }
+    '/_site/careers/$slug/apply/done': {
+      id: '/_site/careers/$slug/apply/done'
+      path: '/done'
+      fullPath: '/careers/$slug/apply/done'
+      preLoaderRoute: typeof SiteCareersSlugApplyDoneRouteImport
+      parentRoute: typeof SiteCareersSlugApplyRoute
+    }
   }
 }
 
@@ -633,6 +671,19 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface SiteCareersSlugApplyRouteChildren {
+  SiteCareersSlugApplyDoneRoute: typeof SiteCareersSlugApplyDoneRoute
+  SiteCareersSlugApplyIndexRoute: typeof SiteCareersSlugApplyIndexRoute
+}
+
+const SiteCareersSlugApplyRouteChildren: SiteCareersSlugApplyRouteChildren = {
+  SiteCareersSlugApplyDoneRoute: SiteCareersSlugApplyDoneRoute,
+  SiteCareersSlugApplyIndexRoute: SiteCareersSlugApplyIndexRoute,
+}
+
+const SiteCareersSlugApplyRouteWithChildren =
+  SiteCareersSlugApplyRoute._addFileChildren(SiteCareersSlugApplyRouteChildren)
+
 interface SiteRouteChildren {
   SiteAboutRoute: typeof SiteAboutRoute
   SiteBookRoute: typeof SiteBookRoute
@@ -650,7 +701,7 @@ interface SiteRouteChildren {
   SiteBlogIndexRoute: typeof SiteBlogIndexRoute
   SiteCareersIndexRoute: typeof SiteCareersIndexRoute
   SiteWorkIndexRoute: typeof SiteWorkIndexRoute
-  SiteCareersSlugApplyRoute: typeof SiteCareersSlugApplyRoute
+  SiteCareersSlugApplyRoute: typeof SiteCareersSlugApplyRouteWithChildren
   SiteCareersSlugIndexRoute: typeof SiteCareersSlugIndexRoute
 }
 
@@ -671,7 +722,7 @@ const SiteRouteChildren: SiteRouteChildren = {
   SiteBlogIndexRoute: SiteBlogIndexRoute,
   SiteCareersIndexRoute: SiteCareersIndexRoute,
   SiteWorkIndexRoute: SiteWorkIndexRoute,
-  SiteCareersSlugApplyRoute: SiteCareersSlugApplyRoute,
+  SiteCareersSlugApplyRoute: SiteCareersSlugApplyRouteWithChildren,
   SiteCareersSlugIndexRoute: SiteCareersSlugIndexRoute,
 }
 

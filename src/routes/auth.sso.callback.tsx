@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { seoHead } from '@/lib/seo';
 import { supabase } from '@/lib/supabase';
-import { clearSsoState, readSsoState, ssoResultMessage, isStaffRole, parseSsoFragment, startHubSignIn } from '@/lib/sso';
+import { adminAccessAllowed } from '@/lib/application-rules';
+import { clearSsoState, readSsoState, ssoResultMessage, parseSsoFragment, startHubSignIn } from '@/lib/sso';
 import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/auth/sso/callback')({
@@ -37,7 +38,8 @@ function SsoCallback() {
       const { data, error: e } = await supabase.auth.setSession({ access_token: parsed.access_token, refresh_token: parsed.refresh_token });
       if (e || !data.user) { finish('Could not start your session.'); return; }
       const { data: r } = await supabase.from('user_roles').select('role').eq('user_id', data.user.id).maybeSingle();
-      if (!isStaffRole(r?.role)) { await supabase.auth.signOut(); finish('Your Branta account does not have Admakai access.'); return; }
+      const { data: hiring, error: hiringError } = await supabase.rpc('is_hiring_staff', { _user_id: data.user.id });
+      if (!adminAccessAllowed(r?.role, !hiringError && hiring === true)) { await supabase.auth.signOut(); finish('Your Branta account does not have Admakai access.'); return; }
       finish();
       } catch {
         await supabase.auth.signOut().catch(() => undefined);

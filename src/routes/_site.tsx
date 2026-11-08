@@ -15,13 +15,14 @@ export const Route = createFileRoute("/_site")({
 
 function Layout() {
   const isHome = useLocation({ select: location => location.pathname === '/' });
+  const isApplication = useLocation({ select: location => /^\/careers\/[^/]+\/apply(?:\/done)?\/?$/.test(location.pathname) });
   return (
     <>
       <Navbar hero />
       <main>
         {isHome ? <Outlet /> : <PageTransition><Outlet /></PageTransition>}
       </main>
-      <Footer />
+      {!isApplication && <Footer />}
     </>
   );
 }

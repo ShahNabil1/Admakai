@@ -1,11 +1,96 @@
-import { Button } from '@/components/ui/button';
-import type { Answer,ApplicationQuestion as Question } from '@/lib/application-rules';
-export function ApplicationQuestion({question:q,value,error,onChange}:{question:Question;value:Answer|undefined;error?:string;onChange:(value:Answer)=>void}){
- const options=q.type==='yes_no'?['yes','no']:q.type==='rating'?[1,2,3,4,5]:Array.isArray(q.options)?q.options.filter((v):v is string=>typeof v==='string'):[];
- const optionType=['single_choice','multi_choice','yes_no','rating'].includes(q.type);
- return <fieldset id={`field-${q.id}`} className={error?'application-field invalid':'application-field'} tabIndex={-1}><legend>{q.label}{q.required&&<span aria-label="required"> *</span>}</legend>{q.help_text&&<p className="application-hint">{q.help_text}</p>}
- {optionType ? <div className={`application-options ${q.type==='rating'?'application-rating':''} ${q.type==='multi_choice'?'application-chips':''}`} role="group" aria-label={q.label}>{options.map(option=>{const selected=Array.isArray(value)?value.includes(String(option)):value===option;return <Button type="button" key={option} variant="outline" aria-pressed={selected} onClick={()=>onChange(q.type==='multi_choice'?(Array.isArray(value)&&value.includes(String(option))?value.filter(v=>v!==String(option)):[...(Array.isArray(value)?value:[]),String(option)]):option)}>{option==='yes'?'Yes':option==='no'?'No':option}</Button>;})}</div>
- : q.type==='long_text'?<><textarea aria-label={q.label} aria-invalid={!!error} rows={5} maxLength={q.max_length??3000} value={typeof value==='string'?value:''} onChange={e=>onChange(e.target.value)}/><span className="application-counter">{typeof value==='string'?value.length:0} / {q.max_length??3000}</span></>
- : <input aria-label={q.label} aria-invalid={!!error} type={['link','video_link'].includes(q.type)?'url':'text'} maxLength={q.max_length??3000} value={typeof value==='string'?value:''} onChange={e=>onChange(e.target.value)}/>}
- {error&&<p className="application-error" role="alert">{error}</p>}</fieldset>;
+import { Button } from "@/components/ui/button";
+import type { Answer, ApplicationQuestion as Question } from "@/lib/application-rules";
+export function ApplicationQuestion({
+  question: q,
+  value,
+  error,
+  onChange,
+}: {
+  question: Question;
+  value: Answer | undefined;
+  error?: string;
+  onChange: (value: Answer) => void;
+}) {
+  const options =
+    q.type === "yes_no"
+      ? ["yes", "no"]
+      : q.type === "rating"
+        ? [1, 2, 3, 4, 5]
+        : Array.isArray(q.options)
+          ? q.options.filter((v): v is string => typeof v === "string")
+          : [];
+  const optionType = ["single_choice", "multi_choice", "yes_no", "rating"].includes(q.type);
+  return (
+    <fieldset
+      id={`field-${q.id}`}
+      className={error ? "application-field invalid" : "application-field"}
+      tabIndex={-1}
+    >
+      <legend>
+        {q.label}
+        {q.required && <span aria-label="required"> *</span>}
+      </legend>
+      {q.help_text && <p className="application-hint">{q.help_text}</p>}
+      {optionType ? (
+        <div
+          className={`application-options ${q.type === "rating" ? "application-rating" : ""} ${q.type === "multi_choice" ? "application-chips" : ""}`}
+          role="group"
+          aria-label={q.label}
+        >
+          {options.map((option) => {
+            const selected = Array.isArray(value)
+              ? value.includes(String(option))
+              : value === option;
+            return (
+              <Button
+                type="button"
+                key={option}
+                variant="outline"
+                aria-pressed={selected}
+                onClick={() =>
+                  onChange(
+                    q.type === "multi_choice"
+                      ? Array.isArray(value) && value.includes(String(option))
+                        ? value.filter((v) => v !== String(option))
+                        : [...(Array.isArray(value) ? value : []), String(option)]
+                      : option,
+                  )
+                }
+              >
+                {option === "yes" ? "Yes" : option === "no" ? "No" : option}
+              </Button>
+            );
+          })}
+        </div>
+      ) : q.type === "long_text" ? (
+        <>
+          <textarea
+            aria-label={q.label}
+            aria-invalid={!!error}
+            rows={5}
+            maxLength={q.max_length ?? 3000}
+            value={typeof value === "string" ? value : ""}
+            onChange={(e) => onChange(e.target.value)}
+          />
+          <span className="application-counter">
+            {typeof value === "string" ? value.length : 0} / {q.max_length ?? 3000}
+          </span>
+        </>
+      ) : (
+        <input
+          aria-label={q.label}
+          aria-invalid={!!error}
+          type={["link", "video_link"].includes(q.type) ? "url" : "text"}
+          maxLength={q.max_length ?? 3000}
+          value={typeof value === "string" ? value : ""}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      )}
+      {error && (
+        <p className="application-error" role="alert">
+          {error}
+        </p>
+      )}
+    </fieldset>
+  );
 }
