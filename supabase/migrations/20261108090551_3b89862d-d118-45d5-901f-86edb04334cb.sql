@@ -1,0 +1,1 @@
+ALTER FUNCTION public.hiring_snapshot_category_step4() SET SCHEMA hiring_private; REVOKE ALL ON FUNCTION hiring_private.hiring_snapshot_category_step4() FROM PUBLIC,anon,authenticated;

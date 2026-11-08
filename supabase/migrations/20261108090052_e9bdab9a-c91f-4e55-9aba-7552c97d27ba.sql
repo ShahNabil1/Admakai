@@ -1,0 +1,15 @@
+ALTER FUNCTION public.hiring_public_help() SET SCHEMA hiring_private;
+CREATE FUNCTION public.hiring_public_help() RETURNS text LANGUAGE sql STABLE SECURITY INVOKER SET search_path=public AS $$ SELECT hiring_private.hiring_public_help() $$;
+ALTER FUNCTION public.hiring_job_publish_errors(uuid) SET SCHEMA hiring_private;
+CREATE FUNCTION public.hiring_job_publish_errors(_job_id uuid) RETURNS text[] LANGUAGE sql STABLE SECURITY INVOKER SET search_path=public AS $$ SELECT hiring_private.hiring_job_publish_errors(_job_id) $$;
+ALTER FUNCTION public.hiring_admin_save_job(jsonb,jsonb) SET SCHEMA hiring_private;
+CREATE FUNCTION public.hiring_admin_save_job(_job jsonb,_questions jsonb) RETURNS uuid LANGUAGE sql SECURITY INVOKER SET search_path=public AS $$ SELECT hiring_private.hiring_admin_save_job(_job,_questions) $$;
+ALTER FUNCTION public.hiring_admin_duplicate_job(uuid) SET SCHEMA hiring_private;
+CREATE FUNCTION public.hiring_admin_duplicate_job(_id uuid) RETURNS uuid LANGUAGE sql SECURITY INVOKER SET search_path=public AS $$ SELECT hiring_private.hiring_admin_duplicate_job(_id) $$;
+ALTER FUNCTION public.hiring_admin_update_drafts(uuid) SET SCHEMA hiring_private;
+CREATE FUNCTION public.hiring_admin_update_drafts(_bank_id uuid) RETURNS int LANGUAGE sql SECURITY INVOKER SET search_path=public AS $$ SELECT hiring_private.hiring_admin_update_drafts(_bank_id) $$;
+ALTER FUNCTION public.hiring_admin_agreement_version(jsonb) SET SCHEMA hiring_private;
+CREATE FUNCTION public.hiring_admin_agreement_version(_template jsonb) RETURNS uuid LANGUAGE sql SECURITY INVOKER SET search_path=public AS $$ SELECT hiring_private.hiring_admin_agreement_version(_template) $$;
+REVOKE ALL ON FUNCTION public.hiring_public_help(),public.hiring_job_publish_errors(uuid),public.hiring_admin_save_job(jsonb,jsonb),public.hiring_admin_duplicate_job(uuid),public.hiring_admin_update_drafts(uuid),public.hiring_admin_agreement_version(jsonb) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.hiring_public_help() TO anon,authenticated,service_role;
+GRANT EXECUTE ON FUNCTION public.hiring_job_publish_errors(uuid),public.hiring_admin_save_job(jsonb,jsonb),public.hiring_admin_duplicate_job(uuid),public.hiring_admin_update_drafts(uuid),public.hiring_admin_agreement_version(jsonb) TO authenticated,service_role;

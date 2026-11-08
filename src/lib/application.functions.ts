@@ -31,7 +31,7 @@ const slugSchema = z.object({ slug: z.string().min(1).max(160) });
 export const applicationSettings = createServerFn({ method: "GET" }).handler(async () => {
   const url = process.env["SUPABASE_URL"],
     key = process.env["SUPABASE_PUBLISHABLE_KEY"];
-  if (!url || !key) return { google_login_enabled: false };
+  if (!url || !key) return { google_login_enabled: false, whatsapp_help_url: null };
   const db = createClient<Database>(url, key, {
     auth: { persistSession: false },
     global: {
@@ -45,7 +45,8 @@ export const applicationSettings = createServerFn({ method: "GET" }).handler(asy
     },
   });
   const { data } = await db.rpc("hiring_application_settings");
-  return { google_login_enabled: data?.[0]?.google_login_enabled === true };
+  const { data: help } = await db.rpc('hiring_public_help');
+  return { google_login_enabled: data?.[0]?.google_login_enabled === true, whatsapp_help_url: help ?? null };
 });
 export const readApplication = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

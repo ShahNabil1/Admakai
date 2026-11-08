@@ -38,6 +38,7 @@ import {
 } from "@/lib/application.functions";
 import { ApplicationQuestion } from "./ApplicationQuestion";
 import { ApplicationSignature } from "./ApplicationSignature";
+import { HiringRichText } from './HiringRichText';
 import "./application.css";
 
 const emptyCandidate: CandidateFields = {
@@ -71,10 +72,12 @@ export function ApplicationPage({
   slug,
   googleEnabled,
   publicTitle,
+  whatsappHelpUrl,
 }: {
   slug: string;
   googleEnabled: boolean;
   publicTitle: string | null;
+  whatsappHelpUrl?: string | null;
 }) {
   const pathname = useLocation({ select: (location) => location.pathname });
   const pathRef = useRef(pathname);
@@ -847,7 +850,7 @@ export function ApplicationPage({
                     {step === 5 && (
                       <>
                         <div className="application-task">
-                          {data.job.task_brief}
+                          <HiringRichText text={data.job.task_brief ?? ''}/>
                           <p>
                             Due within {data.job.task_due_days ?? 3} days after you are shortlisted.
                           </p>
@@ -900,13 +903,13 @@ export function ApplicationPage({
                             }}
                           >
                             {data.template
-                              ? fillAgreement(
+                              ? <HiringRichText text={fillAgreement(
                                   data.template.body,
                                   candidate.full_name,
                                   data.job.title,
                                   application?.public_code ?? "",
                                   today ?? new Date(data.job.created_at),
-                                )
+                                )} />
                               : "The agreement is not available yet."}
                           </div>
                           <p className="application-hint">
@@ -1144,6 +1147,7 @@ export function ApplicationPage({
             <h3>{title}</h3>
             <p>Saves automatically</p>
             {application && <p>{application.public_code}</p>}
+            {whatsappHelpUrl && /^https:\/\/(wa\.me|api\.whatsapp\.com|chat\.whatsapp\.com)\//.test(whatsappHelpUrl) && <a href={whatsappHelpUrl} target="_blank" rel="noopener noreferrer">WhatsApp help</a>}
           </aside>
         </div>
       </div>

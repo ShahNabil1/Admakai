@@ -7,6 +7,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { careerDetailOptions, internshipVideoOptions } from "@/lib/careers-query";
 import { showInternshipVideo } from '@/lib/internship-video';
 import { InternshipVideo } from './InternshipVideo';
+import { HiringRichText } from './HiringRichText';
 import { ApplyLink, CareerUnavailable, Deadline, DraftBanner, JobBadges } from "./CareerShared";
 import { useCareersIdentity } from "./useCareersIdentity";
 import "@/components/public/pages.css";
@@ -85,7 +86,7 @@ export function JobDetailsPage({ slug }: { slug: string }) {
             <Reveal>
               <h2>About this role</h2>
               <p>{job.summary}</p>
-              {job.description && <p className="career-description">{job.description}</p>}
+              {job.description && <HiringRichText text={job.description}/>}
             </Reveal>
           </section>
           {showInternshipVideo(job.type) && <InternshipVideo key={videoSettings.internship_video_url} settings={videoSettings} compact />}

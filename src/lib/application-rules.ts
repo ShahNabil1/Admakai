@@ -99,6 +99,7 @@ export function fillAgreement(body: string, name: string, title: string, code: s
     candidate_name: name,
     job_title: title,
     application_id: code,
+    start_date: 'To be confirmed',
     date: new Intl.DateTimeFormat("en-GB", {
       timeZone: "Asia/Dhaka",
       day: "numeric",
@@ -107,7 +108,7 @@ export function fillAgreement(body: string, name: string, title: string, code: s
     }).format(date),
   };
   return body.replace(
-    /{{\s*(candidate_name|job_title|application_id|date)\s*}}/g,
+    /{{\s*(candidate_name|job_title|application_id|date|start_date)\s*}}/g,
     (_, key: string) => values[key] ?? "",
   );
 }

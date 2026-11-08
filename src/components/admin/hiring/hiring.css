@@ -1,0 +1,339 @@
+.hiring-content {
+  --hiring-success: oklch(0.78 0.15 150);
+  --hiring-warning: oklch(0.82 0.13 85);
+  min-width: 0;
+}
+.hiring-content h1 {
+  letter-spacing: 0;
+}
+.hiring-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 1.5rem;
+}
+.hiring-side-links {
+  padding-left: 0.5rem;
+}
+.hiring-side-links a {
+  display: block;
+  padding: 0.45rem 0.7rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.hiring-side-links a[aria-current="page"] {
+  color: var(--foreground);
+}
+.hiring-table-wrap {
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+}
+.hiring-table {
+  width: 100%;
+  font-size: 0.8rem;
+  text-align: left;
+  border-collapse: collapse;
+}
+.hiring-table th {
+  color: var(--muted);
+  font-weight: 400;
+  white-space: nowrap;
+  background: var(--card);
+}
+.hiring-table th,
+.hiring-table td {
+  padding: 0.85rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.hiring-table td:first-child {
+  min-width: 12rem;
+  max-width: 22rem;
+  overflow-wrap: anywhere;
+}
+.hiring-table .admin-actions {
+  gap: 0.25rem;
+  flex-direction: row;
+}
+.hiring-table .admin-btn-ghost {
+  min-height: 2rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+}
+.hiring-content .is-open {
+  color: var(--hiring-success);
+  border-color: var(--hiring-success);
+}
+.hiring-content .is-closed {
+  color: var(--destructive);
+  border-color: var(--destructive);
+}
+.hiring-content .is-draft {
+  color: var(--muted);
+}
+.hiring-filters {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.hiring-filters select {
+  width: auto;
+  min-width: 8rem;
+}
+.hiring-edit-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+.hiring-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.hiring-list > div {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.hiring-list > div input {
+  flex: 1;
+}
+.hiring-list .admin-btn-ghost {
+  padding: 0.4rem;
+  min-height: 2rem;
+  border-radius: 0.5rem;
+}
+.hiring-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.hiring-toolbar .admin-btn-ghost {
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.5rem;
+  min-height: 2rem;
+  font-size: 0.75rem;
+}
+.hiring-check {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.6rem !important;
+}
+.hiring-check input[type="checkbox"] {
+  width: 1rem !important;
+  height: 1rem;
+  padding: 0;
+  accent-color: var(--primary);
+}
+.hiring-question-card {
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin: 0.65rem 0;
+  background: var(--card);
+}
+.hiring-question-card > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+}
+.hiring-question-card small {
+  color: var(--muted);
+}
+.hiring-pipeline {
+  display: flex;
+  overflow: auto;
+  gap: 0.5rem;
+  margin: 0.75rem 0 1.5rem;
+}
+.hiring-pipeline > div {
+  flex: 0 0 9rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  font-size: 0.8rem;
+}
+.hiring-pipeline small {
+  display: block;
+  color: var(--muted);
+}
+.hiring-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.hiring-upload img {
+  max-height: 10rem;
+  width: 100%;
+  object-fit: contain;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+}
+.hiring-rich {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+.hiring-rich p {
+  margin: 0.7rem 0;
+}
+.hiring-rich h1,
+.hiring-rich h2,
+.hiring-rich h3 {
+  font-weight: 600;
+  margin: 1rem 0 0.5rem;
+}
+.hiring-rich ul {
+  list-style: disc;
+  padding-left: 1.3rem;
+}
+.hiring-rich ol {
+  list-style: decimal;
+  padding-left: 1.3rem;
+}
+.hiring-rich a {
+  text-decoration: underline;
+}
+.hiring-rich img {
+  max-width: 100%;
+}
+.hiring-preview {
+  border-left: 1px solid var(--line);
+  padding-left: 1.5rem;
+  min-width: 0;
+}
+.hiring-preview .application-field {
+  margin-bottom: 1rem;
+}
+.hiring-settings-section {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.hiring-settings-section h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.hiring-preview .career-video {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--card);
+}
+.hiring-preview .career-video-poster,
+.hiring-preview .career-video video,
+.hiring-preview .career-video iframe {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hiring-preview .career-video-poster {
+  position: absolute;
+  inset: 0;
+}
+.hiring-preview .career-video-play {
+  position: absolute;
+  top: 40%;
+  left: 45%;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--background);
+  width: 3rem;
+  height: 3rem;
+}
+.hiring-preview .career-video-caption {
+  position: absolute;
+  bottom: 0;
+  padding: 1rem;
+  width: 100%;
+  background: var(--background);
+}
+.hiring-preview .career-video-caption p {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.hiring-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.hiring-tags > span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+}
+.hiring-tags .admin-btn-ghost {
+  padding: 0;
+  border: 0;
+  min-height: 1.5rem;
+}
+.hiring-back {
+  margin-bottom: 1rem;
+}
+.hiring-errors {
+  margin: 1rem 0;
+}
+.hiring-errors li {
+  list-style: disc;
+  margin-left: 1rem;
+}
+.hiring-bank-pick {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.85rem;
+}
+.hiring-bank-pick input {
+  width: 1rem !important;
+}
+.hiring-bank-pick small {
+  display: block;
+  color: var(--muted);
+}
+.hiring-content .admin-actions {
+  flex-direction: row;
+}
+.hiring-content .admin-actions > * {
+  width: auto;
+}
+@media (max-width: 900px) {
+  .hiring-edit-layout {
+    grid-template-columns: 1fr;
+  }
+  .hiring-preview {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding: 1rem 0 0;
+  }
+  .hiring-side-links {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .admin-tabbar:has(.hiring-mobile-entry) {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+  .hiring-content .admin-head h1 {
+    font-size: 1.6rem;
+  }
+  .hiring-filters > * {
+    flex: 1;
+  }
+  .hiring-list > div {
+    flex-wrap: wrap;
+  }
+  .hiring-list > div input {
+    flex-basis: 65%;
+  }
+}

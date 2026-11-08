@@ -19,6 +19,7 @@ export const Route = createFileRoute("/_site/careers/$slug/apply/")({
         slug={slug}
         googleEnabled={settings.google_login_enabled}
         publicTitle={title}
+        whatsappHelpUrl={'whatsapp_help_url' in settings ? settings.whatsapp_help_url : null}
       />
     );
   },

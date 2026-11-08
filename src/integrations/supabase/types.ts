@@ -813,6 +813,88 @@ export type Database = {
         }
         Relationships: []
       }
+      hiring_agreement_reviews: {
+        Row: {
+          legal_review_pending: boolean
+          template_id: string
+          updated_at: string
+        }
+        Insert: {
+          legal_review_pending?: boolean
+          template_id: string
+          updated_at?: string
+        }
+        Update: {
+          legal_review_pending?: boolean
+          template_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hiring_agreement_reviews_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: true
+            referencedRelation: "agreement_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hiring_question_snapshots: {
+        Row: {
+          created_at: string
+          question_id: string
+        }
+        Insert: {
+          created_at?: string
+          question_id: string
+        }
+        Update: {
+          created_at?: string
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hiring_question_snapshots_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: true
+            referencedRelation: "question_bank"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hiring_question_sources: {
+        Row: {
+          bank_question_id: string
+          created_at: string
+          job_question_id: string
+        }
+        Insert: {
+          bank_question_id: string
+          created_at?: string
+          job_question_id: string
+        }
+        Update: {
+          bank_question_id?: string
+          created_at?: string
+          job_question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hiring_question_sources_bank_question_id_fkey"
+            columns: ["bank_question_id"]
+            isOneToOne: false
+            referencedRelation: "question_bank"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hiring_question_sources_job_question_id_fkey"
+            columns: ["job_question_id"]
+            isOneToOne: true
+            referencedRelation: "job_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hiring_settings: {
         Row: {
           authorised_signature_url: string | null
@@ -828,6 +910,7 @@ export type Database = {
           pdf_logo_url: string | null
           reply_to: string | null
           updated_at: string
+          whatsapp_help_url: string | null
         }
         Insert: {
           authorised_signature_url?: string | null
@@ -843,6 +926,7 @@ export type Database = {
           pdf_logo_url?: string | null
           reply_to?: string | null
           updated_at?: string
+          whatsapp_help_url?: string | null
         }
         Update: {
           authorised_signature_url?: string | null
@@ -858,6 +942,7 @@ export type Database = {
           pdf_logo_url?: string | null
           reply_to?: string | null
           updated_at?: string
+          whatsapp_help_url?: string | null
         }
         Relationships: []
       }
@@ -2295,6 +2380,20 @@ export type Database = {
         }
         Returns: boolean
       }
+      hiring_admin_agreement_version: {
+        Args: { _template: Json }
+        Returns: string
+      }
+      hiring_admin_duplicate_job: { Args: { _id: string }; Returns: string }
+      hiring_admin_freeze_bank: { Args: { _id: string }; Returns: undefined }
+      hiring_admin_save_job: {
+        Args: { _job: Json; _questions: Json }
+        Returns: string
+      }
+      hiring_admin_update_drafts: {
+        Args: { _bank_id: string }
+        Returns: number
+      }
       hiring_application_agreement: {
         Args: { _job_id: string }
         Returns: {
@@ -2347,11 +2446,16 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      hiring_job_publish_errors: {
+        Args: { _job_id: string }
+        Returns: string[]
+      }
       hiring_owns_application: {
         Args: { _application_id: string; _draft_only?: boolean }
         Returns: boolean
       }
       hiring_owns_journey: { Args: { _journey_id: string }; Returns: boolean }
+      hiring_public_help: { Args: never; Returns: string }
       hiring_public_internship_video: {
         Args: never
         Returns: {

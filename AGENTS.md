@@ -50,6 +50,7 @@
 - All public work thumbnails use VideoPreviewCard and a page-wide lazy preview controller to enforce one muted active player and three paused players; reduced motion and data saving prevent mounting. Service cards retain their lightbox action and dimensions.
 - Missing-thumbnail admin recovery uses cached oEmbed and RLS-scoped conditional writes matching the original empty field, so concurrent frame edits are not overwritten.
 - Hiring access uses protected hiring_user_roles/app_role; approved SQL owner sync grants/revokes admin, preserving legacy roles.
+- Hiring CRUD uses role-checked functions, SQL snapshots and HTML-free Markdown.
 - Hiring statuses change only through checked SQL RPCs; candidate_interviews is an invoker view over the private ownership-checked safe reader, never a raw assessment projection.
 - Hiring templates/audits/submitted signatures are immutable; only own unfinished draft signatures can be replaced. Resolve the latest current version.
 - Careers primes public RLS reads during SSR, then uses a separate authenticated no-store read for draft previews and own-application links; never place protected reads in public loaders or emit draft JobPosting data.
