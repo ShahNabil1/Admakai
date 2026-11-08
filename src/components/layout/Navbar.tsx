@@ -15,6 +15,7 @@ const links = [
   { label: 'Our Work', to: '/work' },
   { label: 'About', to: '/about' },
   { label: 'Blog', to: '/blog' },
+  { label: 'Careers', to: '/careers' },
 ] as const;
 
 export function Navbar({ hero = false }: { hero?: boolean }) {

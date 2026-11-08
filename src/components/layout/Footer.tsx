@@ -13,7 +13,7 @@ import "./footer.css";
 const columns = [
   { label: "Services", links: [["AI Commercials", "/services/ai-commercial-30s"], ["AI UGC Ads", "/services/ai-ugc-ads"], ["Product Photoshoot", "/services/ai-product-photoshoot"], ["Brand Models and Clones", "/services/ai-brand-model"], ["Voice and Dubbing", "/services/ai-voiceover"], ["All services", "/services"]] },
   { label: "Work", links: [["Portfolio", "/work"], ["Case studies", "/work"], ["Formats", "/#formats"], ["Pricing", "/pricing"]] },
-  { label: "Company", links: [["About", "/about"], ["Our AI policy", "/about#ai-policy"], ["Book a call", "/book"]] },
+  { label: "Company", links: [["About", "/about"], ["Careers", "/careers"], ["Our AI policy", "/about#ai-policy"], ["Book a call", "/book"]] },
   { label: "Legal", links: [["Privacy policy", "/privacy"], ["Terms", "/terms"], ["Refund policy", "/refund"], ["AI disclosure", "/about#ai-policy"]] },
 ];
 const socialIcons = { facebook: Facebook, instagram: Instagram, linkedin: Linkedin, youtube: Youtube, tiktok: Music2 };

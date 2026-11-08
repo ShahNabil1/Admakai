@@ -52,3 +52,5 @@
 - Hiring authorization uses separate protected hiring_user_roles and app_role, never legacy user_roles; incompatible legacy roles must not silently grant hiring access.
 - Hiring statuses change only through checked SQL RPCs; candidate_interviews is an invoker view over the private ownership-checked safe reader, never a raw assessment projection.
 - Hiring agreement versions and signed/audit records are immutable; the latest marked-current version is resolved without rewriting older template rows.
+- Careers primes public RLS reads during SSR, then uses a separate authenticated no-store read for draft previews and own-application links; never place protected reads in public loaders or emit draft JobPosting data.
+- Talent-pool submissions use the public publishable client and a normalized-email transactional trigger; staff-only read policies keep applicant contact details private.

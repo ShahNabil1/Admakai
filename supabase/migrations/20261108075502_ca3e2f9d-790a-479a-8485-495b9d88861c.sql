@@ -1,0 +1,1 @@
+DELETE FROM public.talent_pool WHERE email='careers-browser-check-20261108@example.invalid' AND full_name='Careers verification fixture';

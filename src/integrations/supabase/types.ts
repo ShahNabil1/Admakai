@@ -1988,6 +1988,39 @@ export type Database = {
           },
         ]
       }
+      talent_pool: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          interested_in: string[]
+          message: string | null
+          phone: string | null
+          portfolio_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          interested_in?: string[]
+          message?: string | null
+          phone?: string | null
+          portfolio_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          interested_in?: string[]
+          message?: string | null
+          phone?: string | null
+          portfolio_url?: string | null
+        }
+        Relationships: []
+      }
       tasks: {
         Row: {
           assignee_id: string | null

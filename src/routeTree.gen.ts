@@ -17,6 +17,7 @@ import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated.ap
 import { Route as SiteIndexRouteImport } from './routes/_site.index'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
 import { Route as SiteBookRouteImport } from './routes/_site.book'
+import { Route as SiteMeRouteImport } from './routes/_site.me'
 import { Route as SitePricingRouteImport } from './routes/_site.pricing'
 import { Route as SitePrivacyRouteImport } from './routes/_site.privacy'
 import { Route as SiteRefundRouteImport } from './routes/_site.refund'
@@ -31,10 +32,13 @@ import { Route as AuthenticatedAppReviewsRouteImport } from './routes/_authentic
 import { Route as SiteBlogIndexRouteImport } from './routes/_site.blog.index'
 import { Route as SiteBlogSazdahTvcRouteImport } from './routes/_site.blog.sazdah-tvc'
 import { Route as SiteBlogVideoLightingGuideRouteImport } from './routes/_site.blog.video-lighting-guide'
+import { Route as SiteCareersIndexRouteImport } from './routes/_site.careers.index'
 import { Route as SiteServicesSlugRouteImport } from './routes/_site.services_.$slug'
 import { Route as SiteWorkIndexRouteImport } from './routes/_site.work.index'
 import { Route as SiteWorkSlugRouteImport } from './routes/_site.work.$slug'
 import { Route as AuthSsoCallbackRouteImport } from './routes/auth.sso.callback'
+import { Route as SiteCareersSlugIndexRouteImport } from './routes/_site.careers.$slug.index'
+import { Route as SiteCareersSlugApplyRouteImport } from './routes/_site.careers.$slug.apply'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
@@ -72,6 +76,11 @@ const SiteAboutRoute = SiteAboutRouteImport.update({
 const SiteBookRoute = SiteBookRouteImport.update({
   id: '/book',
   path: '/book',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteMeRoute = SiteMeRouteImport.update({
+  id: '/me',
+  path: '/me',
   getParentRoute: () => SiteRoute,
 } as any)
 const SitePricingRoute = SitePricingRouteImport.update({
@@ -146,6 +155,11 @@ const SiteBlogVideoLightingGuideRoute =
     path: '/blog/video-lighting-guide',
     getParentRoute: () => SiteRoute,
   } as any)
+const SiteCareersIndexRoute = SiteCareersIndexRouteImport.update({
+  id: '/careers/',
+  path: '/careers/',
+  getParentRoute: () => SiteRoute,
+} as any)
 const SiteServicesSlugRoute = SiteServicesSlugRouteImport.update({
   id: '/services_/$slug',
   path: '/services/$slug',
@@ -166,6 +180,16 @@ const AuthSsoCallbackRoute = AuthSsoCallbackRouteImport.update({
   path: '/auth/sso/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SiteCareersSlugIndexRoute = SiteCareersSlugIndexRouteImport.update({
+  id: '/careers/$slug/',
+  path: '/careers/$slug/',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteCareersSlugApplyRoute = SiteCareersSlugApplyRouteImport.update({
+  id: '/careers/$slug/apply',
+  path: '/careers/$slug/apply',
+  getParentRoute: () => SiteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
@@ -174,6 +198,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/about': typeof SiteAboutRoute
   '/book': typeof SiteBookRoute
+  '/me': typeof SiteMeRoute
   '/pricing': typeof SitePricingRoute
   '/privacy': typeof SitePrivacyRoute
   '/refund': typeof SiteRefundRoute
@@ -191,7 +216,10 @@ export interface FileRoutesByFullPath {
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/blog/': typeof SiteBlogIndexRoute
+  '/careers/': typeof SiteCareersIndexRoute
   '/work/': typeof SiteWorkIndexRoute
+  '/careers/$slug/apply': typeof SiteCareersSlugApplyRoute
+  '/careers/$slug/': typeof SiteCareersSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof SiteIndexRoute
@@ -199,6 +227,7 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/about': typeof SiteAboutRoute
   '/book': typeof SiteBookRoute
+  '/me': typeof SiteMeRoute
   '/pricing': typeof SitePricingRoute
   '/privacy': typeof SitePrivacyRoute
   '/refund': typeof SiteRefundRoute
@@ -216,7 +245,10 @@ export interface FileRoutesByTo {
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/blog': typeof SiteBlogIndexRoute
+  '/careers': typeof SiteCareersIndexRoute
   '/work': typeof SiteWorkIndexRoute
+  '/careers/$slug/apply': typeof SiteCareersSlugApplyRoute
+  '/careers/$slug': typeof SiteCareersSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -227,6 +259,7 @@ export interface FileRoutesById {
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/_site/about': typeof SiteAboutRoute
   '/_site/book': typeof SiteBookRoute
+  '/_site/me': typeof SiteMeRoute
   '/_site/pricing': typeof SitePricingRoute
   '/_site/privacy': typeof SitePrivacyRoute
   '/_site/refund': typeof SiteRefundRoute
@@ -245,7 +278,10 @@ export interface FileRoutesById {
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_site/blog/': typeof SiteBlogIndexRoute
+  '/_site/careers/': typeof SiteCareersIndexRoute
   '/_site/work/': typeof SiteWorkIndexRoute
+  '/_site/careers/$slug/apply': typeof SiteCareersSlugApplyRoute
+  '/_site/careers/$slug/': typeof SiteCareersSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -256,6 +292,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/about'
     | '/book'
+    | '/me'
     | '/pricing'
     | '/privacy'
     | '/refund'
@@ -273,7 +310,10 @@ export interface FileRouteTypes {
     | '/auth/sso/callback'
     | '/app/'
     | '/blog/'
+    | '/careers/'
     | '/work/'
+    | '/careers/$slug/apply'
+    | '/careers/$slug/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -281,6 +321,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/about'
     | '/book'
+    | '/me'
     | '/pricing'
     | '/privacy'
     | '/refund'
@@ -298,7 +339,10 @@ export interface FileRouteTypes {
     | '/auth/sso/callback'
     | '/app'
     | '/blog'
+    | '/careers'
     | '/work'
+    | '/careers/$slug/apply'
+    | '/careers/$slug'
   id:
     | '__root__'
     | '/_authenticated'
@@ -308,6 +352,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app'
     | '/_site/about'
     | '/_site/book'
+    | '/_site/me'
     | '/_site/pricing'
     | '/_site/privacy'
     | '/_site/refund'
@@ -326,7 +371,10 @@ export interface FileRouteTypes {
     | '/auth/sso/callback'
     | '/_authenticated/app/'
     | '/_site/blog/'
+    | '/_site/careers/'
     | '/_site/work/'
+    | '/_site/careers/$slug/apply'
+    | '/_site/careers/$slug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -393,6 +441,13 @@ declare module '@tanstack/react-router' {
       path: '/book'
       fullPath: '/book'
       preLoaderRoute: typeof SiteBookRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/me': {
+      id: '/_site/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof SiteMeRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/pricing': {
@@ -493,6 +548,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteBlogVideoLightingGuideRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_site/careers/': {
+      id: '/_site/careers/'
+      path: '/careers'
+      fullPath: '/careers/'
+      preLoaderRoute: typeof SiteCareersIndexRouteImport
+      parentRoute: typeof SiteRoute
+    }
     '/_site/services_/$slug': {
       id: '/_site/services_/$slug'
       path: '/services/$slug'
@@ -520,6 +582,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/sso/callback'
       preLoaderRoute: typeof AuthSsoCallbackRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_site/careers/$slug/': {
+      id: '/_site/careers/$slug/'
+      path: '/careers/$slug'
+      fullPath: '/careers/$slug/'
+      preLoaderRoute: typeof SiteCareersSlugIndexRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/careers/$slug/apply': {
+      id: '/_site/careers/$slug/apply'
+      path: '/careers/$slug/apply'
+      fullPath: '/careers/$slug/apply'
+      preLoaderRoute: typeof SiteCareersSlugApplyRouteImport
+      parentRoute: typeof SiteRoute
     }
   }
 }
@@ -560,6 +636,7 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 interface SiteRouteChildren {
   SiteAboutRoute: typeof SiteAboutRoute
   SiteBookRoute: typeof SiteBookRoute
+  SiteMeRoute: typeof SiteMeRoute
   SitePricingRoute: typeof SitePricingRoute
   SitePrivacyRoute: typeof SitePrivacyRoute
   SiteRefundRoute: typeof SiteRefundRoute
@@ -571,12 +648,16 @@ interface SiteRouteChildren {
   SiteServicesSlugRoute: typeof SiteServicesSlugRoute
   SiteWorkSlugRoute: typeof SiteWorkSlugRoute
   SiteBlogIndexRoute: typeof SiteBlogIndexRoute
+  SiteCareersIndexRoute: typeof SiteCareersIndexRoute
   SiteWorkIndexRoute: typeof SiteWorkIndexRoute
+  SiteCareersSlugApplyRoute: typeof SiteCareersSlugApplyRoute
+  SiteCareersSlugIndexRoute: typeof SiteCareersSlugIndexRoute
 }
 
 const SiteRouteChildren: SiteRouteChildren = {
   SiteAboutRoute: SiteAboutRoute,
   SiteBookRoute: SiteBookRoute,
+  SiteMeRoute: SiteMeRoute,
   SitePricingRoute: SitePricingRoute,
   SitePrivacyRoute: SitePrivacyRoute,
   SiteRefundRoute: SiteRefundRoute,
@@ -588,7 +669,10 @@ const SiteRouteChildren: SiteRouteChildren = {
   SiteServicesSlugRoute: SiteServicesSlugRoute,
   SiteWorkSlugRoute: SiteWorkSlugRoute,
   SiteBlogIndexRoute: SiteBlogIndexRoute,
+  SiteCareersIndexRoute: SiteCareersIndexRoute,
   SiteWorkIndexRoute: SiteWorkIndexRoute,
+  SiteCareersSlugApplyRoute: SiteCareersSlugApplyRoute,
+  SiteCareersSlugIndexRoute: SiteCareersSlugIndexRoute,
 }
 
 const SiteRouteWithChildren = SiteRoute._addFileChildren(SiteRouteChildren)
