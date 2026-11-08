@@ -3,7 +3,7 @@
 - Reuse global semantic tokens and Button; new CSS selectors must be service-prefixed and imported only by service components.
 - Service lightbox embeds use VimeoPlayer; work scroller previews use the shared VideoPreviewCard controller for global muted playback, with reduced motion and saveData respected.
 - Service leaf routes use serviceHead for existing SEO plus Vimeo preconnects; catalogue details reuse the current Book a call flow and preserve the service search parameter.
-- Catalogue text lives in src/data/services.ts; foundation media configuration stays in src/content. Missing media or contact data stays honestly unavailable, not invented.
+- Catalogue text lives in the services table (src/data/services.ts is the registry plus static fallback); foundation media configuration stays in src/content. Missing media or contact data stays honestly unavailable, not invented.
 - Goal filtering uses browser-safe service-goals helpers and page-local state; derive counts and visible categories from the same filtered published records to avoid mismatches.
 - ServiceFinder uses the supplied pure matcher in event handlers with published slugs and bounded ephemeral history; browser speech APIs are detected only after hydration, with no custom network calls.
 - Catalogue and related cards share ServiceCatalogueCard and the browser-safe serviceCardFigure helper; scoped grid/card CSS keeps card changes isolated from detail content and the finder.

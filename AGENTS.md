@@ -37,10 +37,10 @@
 - Entity changes are logged by the shared log_activity trigger; UIs only read public.activity, keeping audit append-only.
 - src/components/admin and src/components/home have their own AGENTS.md; read it before changing files there.
 - Clickable controls get the hand cursor from a global base rule in src/styles.css; never set cursor:default on interactive elements, so new buttons/links inherit it automatically.
-- Service catalogue, published visibility and SEO paths derive from src/data/services.ts; useServices adapts legacy consumers without database reads. Preserve shared design, isolated service CSS, serviceHead and VimeoPlayer-only embeds.
+- Services, categories and plans live in the services/service_categories/plans tables, edited at /admin/site-content through role-checked server functions; the public layout loader reads published rows with the publishable key and splices them into the src/data registries (static snapshot fallback), so existing consumers and pricing pages stay unchanged and never prerender stale content. Preserve shared design, isolated service CSS, serviceHead and VimeoPlayer-only embeds.
 - CurrencyProvider owns cached rates; ServicePrice syncs prices, not Finder requests.
 
-- Monthly plan terms and ranges live only in src/data/plans.ts; legacy pricing adapters return that static source rather than database pricing rows, so Home and Pricing cannot drift.
+- Plan-derived copy (Home pricing, FAQ, structured data) reads the live plans registry at call time, never module-level copies, so Home and Pricing cannot drift after admin edits.
 - Home featured works and exact published count use src/lib/works.ts Query reads; failed counts remain null rather than invented totals.
 
 - Booking interest helpers resolve published services and shared plans; exact interest prefixes the existing message while legacy need codes preserve SQL compatibility without schema changes.

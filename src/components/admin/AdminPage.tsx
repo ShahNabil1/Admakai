@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
 import { Toaster, toast } from 'sonner';
-import { Activity, ArrowLeft, CalendarDays, Clapperboard, FolderKanban, LayoutDashboard, LogOut, Receipt, Search, Users, BriefcaseBusiness, ChevronDown } from 'lucide-react';
+import { Activity, ArrowLeft, CalendarDays, Clapperboard, FolderKanban, LayoutDashboard, LogOut, Receipt, Search, Users, BriefcaseBusiness, ChevronDown, PanelsTopLeft } from 'lucide-react';
 import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { HiringWorkspace } from './hiring/HiringWorkspace';
 import { supabase } from '@/lib/supabase';
@@ -16,6 +16,7 @@ import type { ActivityRow } from '@/lib/activity';
 import { StaffProjects } from '@/components/delivery/ProjectsWorkspace';
 import { StaffBilling } from './Billing';
 import { WorkAdmin } from './WorkAdmin';
+import { SiteContent } from './site-content/SiteContent';
 import { ActivityLog, fetchActivity } from './ActivityLog';
 import { BookingSubmission, type BookingSubmissionData } from './BookingSubmission';
 import { Empty, Modal, Pill, Timeline, fmtDate, label, useConfirm } from './ui';
@@ -131,18 +132,22 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
   const location = useLocation();
   const navigate = useNavigate();
   const isHiring = location.pathname === '/admin/hiring' || location.pathname.startsWith('/admin/hiring/');
+  const isSiteContent = location.pathname === '/admin/site-content' || location.pathname.startsWith('/admin/site-content/');
+  const elsewhere = isHiring || isSiteContent;
   const [hiringRoles, setHiringRoles] = useState<string[]>([]);
   const [hiringExpanded, setHiringExpanded] = useState(isHiring);
   useEffect(() => { void supabase.from('hiring_user_roles').select('role').eq('user_id', userId).then(({data}) => setHiringRoles(data?.map(r => r.role) ?? [])); }, [userId]);
+  // Owners and hiring admins edit public site content; the server re-checks every read and write.
+  const canEditSite = role === 'owner' || hiringRoles.includes('admin');
   const [tab, setTabState] = useState<Tab>(readTab);
   const setTab = useCallback((t: Tab) => {
-    if (isHiring) { void navigate({to:'/admin',search: {tab:t}}); return; }
+    if (elsewhere) { void navigate({to:'/admin',search: {tab:t}}); return; }
     const url = new URL(window.location.href);
     if (t === 'today') url.searchParams.delete('tab'); else url.searchParams.set('tab', t);
     if (t !== 'work') { url.searchParams.delete('work'); url.searchParams.delete('work_id'); }
     window.history.pushState(null, '', url);
     setTabState(t);
-  }, [isHiring, navigate]);
+  }, [elsewhere, navigate]);
   const [bookings, setBookings] = useState<Booking[] | null>(null);
   const [leads, setLeads] = useState<Lead[] | null>(null);
   const [names, setNames] = useState<Record<string, string>>({});
@@ -225,11 +230,12 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
         <strong className="admin-brand">Admakai<small>Studio admin</small></strong>
         <nav>
           {NAV.map((n) => (
-            <button key={n.id} className={!isHiring && tab === n.id ? 'is-active' : ''} aria-current={!isHiring && tab === n.id ? 'page' : undefined} onClick={() => { setTab(n.id); if (openBooking) setOpenBooking(null); }}>
+            <button key={n.id} className={!elsewhere && tab === n.id ? 'is-active' : ''} aria-current={!elsewhere && tab === n.id ? 'page' : undefined} onClick={() => { setTab(n.id); if (openBooking) setOpenBooking(null); }}>
               <n.icon size={17} /><span>{n.label}</span>
               {n.id === 'bookings' && pending.length > 0 && <em>{pending.length}</em>}
             </button>
           ))}
+          {canEditSite && <Link to="/admin/site-content" className={`sc-side-link ${isSiteContent ? 'is-active' : ''}`} aria-current={isSiteContent ? 'page' : undefined}><PanelsTopLeft size={17} /><span>Site content</span></Link>}
           {hiringRoles.length > 0 && <><Button variant="ghost" className={isHiring ? 'is-active' : ''} aria-expanded={hiringExpanded} onClick={() => setHiringExpanded(!hiringExpanded)}><BriefcaseBusiness size={17}/><span>Hiring</span><ChevronDown size={14}/></Button>{hiringExpanded && <div className="hiring-side-links">{hiringRoles.some(r=>['admin','reviewer'].includes(r)) && <><Link to="/admin/hiring">Overview</Link><Link to="/admin/hiring/applications">Applications</Link></>}<Link to="/admin/hiring/interviews">Interviews</Link><Link to="/admin/hiring/jobs" aria-current={location.pathname.includes('/hiring/jobs')?'page':undefined}>Jobs</Link><Link to="/admin/hiring/questions" aria-current={location.pathname.endsWith('/questions')?'page':undefined}>Question bank</Link>{hiringRoles.includes('admin') && <><Link to="/admin/hiring/journey">Team journey</Link><Link to="/admin/hiring/emails">Emails</Link><Link to="/admin/hiring/agreements">Agreements</Link><Link to="/admin/hiring/settings">Settings</Link></>}</div>}</>}
         </nav>
         <div className="admin-me"><span className="truncate">{email}</span><small>{role}</small>
@@ -243,7 +249,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
       </header>
 
       <main className="admin-main" key={openBooking ? `booking-${openBooking}` : tab}>
-        {isHiring ? <HiringWorkspace/> : openBooking ? (
+        {isHiring ? <HiringWorkspace/> : isSiteContent ? <SiteContent /> : openBooking ? (
           <section className="booking-page">
             <button className="admin-btn-ghost booking-page-back" onClick={() => { setTab('bookings'); setOpenBooking(null); }}><ArrowLeft size={16} />Back to bookings</button>
             {booking ? <>
@@ -278,10 +284,11 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
 
       <nav className="admin-tabbar" aria-label="Admin sections">
         {NAV.map((n) => (
-          <button key={n.id} className={tab === n.id ? 'is-active' : ''} aria-current={tab === n.id ? 'page' : undefined} onClick={() => { setTab(n.id); if (openBooking) setOpenBooking(null); }}>
+          <button key={n.id} className={!elsewhere && tab === n.id ? 'is-active' : ''} aria-current={!elsewhere && tab === n.id ? 'page' : undefined} onClick={() => { setTab(n.id); if (openBooking) setOpenBooking(null); }}>
             <n.icon size={19} /><span>{n.label}</span>
           </button>
         ))}
+        {canEditSite && <Link to="/admin/site-content" className={`sc-mobile-entry ${isSiteContent ? 'is-active' : ''}`} aria-current={isSiteContent ? 'page' : undefined}><PanelsTopLeft size={19} /><span>Content</span></Link>}
         {hiringRoles.length > 0 && <Button variant="ghost" className={`hiring-mobile-entry ${isHiring?'is-active':''}`} onClick={() => void navigate({to:'/admin/hiring/jobs'})}><BriefcaseBusiness size={19}/><span>Hiring</span></Button>}
       </nav>
 

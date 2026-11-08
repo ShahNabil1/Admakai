@@ -4,7 +4,7 @@ import { useBlocker } from '@tanstack/react-router';
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { moveItem } from '@/lib/site-content-rules';
 
-export function Field({ label, hint, error, children, counter }: { label: string; hint?: string; error?: string | undefined; children: ReactNode; counter?: { value: number; max: number } }) {
+export function Field({ label, hint, error, children, counter }: { label: string; hint?: string | undefined; error?: string | undefined; children: ReactNode; counter?: { value: number; max: number } }) {
   return <label className="sc-field">
     <span className="sc-field-label">{label}{counter && <small className={counter.value > counter.max ? 'is-over' : ''}>{counter.value}/{counter.max}</small>}</span>
     {children}
@@ -18,7 +18,7 @@ export function Toggle({ label, checked, onChange }: { label: string; checked: b
 }
 
 /** Add, remove and reorder a list of short text lines. */
-export function ListEditor({ label, items, onChange, placeholder, hint, error }: { label: string; items: string[]; onChange: (items: string[]) => void; placeholder?: string; hint?: string; error?: string | undefined }) {
+export function ListEditor({ label, items, onChange, placeholder, hint, error }: { label: string; items: string[]; onChange: (items: string[]) => void; placeholder?: string; hint?: string | undefined; error?: string | undefined }) {
   const [draft, setDraft] = useState('');
   const add = () => { const v = draft.trim(); if (!v) return; onChange([...items, v]); setDraft(''); };
   return <div className="sc-field">

@@ -10,6 +10,9 @@ import { WorkEditor } from './WorkEditor';
 import { WorkCategories } from './WorkCategories';
 import { WorkServices } from './WorkServices';
 import { WorkImport } from './WorkImport';
+import { useQuery } from '@tanstack/react-query';
+import { siteCatalogueQueryOptions } from '@/lib/site-catalogue-query';
+import { applyCatalogue } from '@/lib/site-content';
 import './work-admin.css';
 
 export type WorkView =
@@ -40,6 +43,9 @@ function readView(): WorkView {
 }
 
 export function WorkAdmin() {
+  // Service choices follow the live published catalogue (admin sits outside the public layout that applies it).
+  const catalogue = useQuery(siteCatalogueQueryOptions);
+  if (catalogue.data) applyCatalogue(catalogue.data);
   const [view, setViewState] = useState<WorkView>(readView);
   const [works, setWorks] = useState<WorkWithLinks[] | null>(null);
   const [categories, setCategories] = useState<WorkCategory[] | null>(null);

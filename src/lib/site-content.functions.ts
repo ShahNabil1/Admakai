@@ -20,6 +20,10 @@ function ok<T>(result: { data: T; error: DbError }): T {
   }
   return result.data;
 }
+function saved<T>(row: T | null): T {
+  if (!row) throw new Error('This change could not be saved. Please refresh and try again.');
+  return row;
+}
 async function requireEditor(context: { supabase: SupabaseClient<Database> }) {
   const allowed = ok(await context.supabase.rpc('can_edit_site_content'));
   if (allowed !== true) throw new Error('Only owners and hiring admins can edit site content.');
@@ -64,7 +68,7 @@ export const saveSiteService = createServerFn({ method: 'POST' })
     const query = data.id
       ? db.from('services').update(data.values).eq('id', data.id).select('*').single()
       : db.from('services').insert({ ...data.values, sort_order: 10_000 }).select('*').single();
-    return ok(await query);
+    return saved(ok(await query));
   });
 
 export const saveSitePlan = createServerFn({ method: 'POST' })
@@ -77,7 +81,7 @@ export const saveSitePlan = createServerFn({ method: 'POST' })
     const query = data.id
       ? db.from('plans').update(data.values).eq('id', data.id).select('*').single()
       : db.from('plans').insert({ ...data.values, sort_order: 10_000 }).select('*').single();
-    return ok(await query);
+    return saved(ok(await query));
   });
 
 export const saveSiteCategory = createServerFn({ method: 'POST' })
@@ -90,7 +94,7 @@ export const saveSiteCategory = createServerFn({ method: 'POST' })
     const query = data.id
       ? db.from('service_categories').update(data.values).eq('id', data.id).select('*').single()
       : db.from('service_categories').insert({ ...data.values, sort_order: 10_000 }).select('*').single();
-    return ok(await query);
+    return saved(ok(await query));
   });
 
 export const deleteSiteCategory = createServerFn({ method: 'POST' })

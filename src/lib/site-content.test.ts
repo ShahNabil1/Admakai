@@ -93,3 +93,11 @@ describe('Editor rules', () => {
     expect(slugify('AI Commercial, 30s')).toBe('ai-commercial-30s');
   });
 });
+
+describe('Site content history', () => {
+  it('describes a price edit in plain words', async () => {
+    const { describeActivity } = await import('./activity');
+    expect(describeActivity({ entity_type: 'services', verb: 'updated', from_value: '290.00 to 440.00', to_value: '290.00 to 445.00', meta: { title: 'AI Commercial, 30s', fields: ['price_max'] } }))
+      .toBe('Service “AI Commercial, 30s” updated: price $290 to $440 → $290 to $445 (price max)');
+  });
+});
