@@ -49,3 +49,6 @@
 - About uses the approved browser-safe team list rather than database fallback identities, ensuring supplied order and initials-only presentation.
 - All public work thumbnails use VideoPreviewCard and a page-wide lazy preview controller to enforce one muted active player and three paused players; reduced motion and data saving prevent mounting. Service cards retain their lightbox action and dimensions.
 - Missing-thumbnail admin recovery uses cached oEmbed and RLS-scoped conditional writes matching the original empty field, so concurrent frame edits are not overwritten.
+- Hiring authorization uses separate protected hiring_user_roles and app_role, never legacy user_roles; incompatible legacy roles must not silently grant hiring access.
+- Hiring statuses change only through checked SQL RPCs; candidate_interviews is an invoker view over the private ownership-checked safe reader, never a raw assessment projection.
+- Hiring agreement versions and signed/audit records are immutable; the latest marked-current version is resolved without rewriting older template rows.

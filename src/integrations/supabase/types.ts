@@ -58,6 +58,259 @@ export type Database = {
           },
         ]
       }
+      agreement_templates: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          is_current: boolean
+          job_type: string
+          key_terms: Json
+          name: string
+          version: number
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          is_current?: boolean
+          job_type: string
+          key_terms?: Json
+          name: string
+          version: number
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          is_current?: boolean
+          job_type?: string
+          key_terms?: Json
+          name?: string
+          version?: number
+        }
+        Relationships: []
+      }
+      application_answers: {
+        Row: {
+          answer: Json | null
+          application_id: string
+          created_at: string
+          file_url: string | null
+          id: string
+          job_question_id: string
+          updated_at: string
+        }
+        Insert: {
+          answer?: Json | null
+          application_id: string
+          created_at?: string
+          file_url?: string | null
+          id?: string
+          job_question_id: string
+          updated_at?: string
+        }
+        Update: {
+          answer?: Json | null
+          application_id?: string
+          created_at?: string
+          file_url?: string | null
+          id?: string
+          job_question_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_answers_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "application_answers_job_question_id_fkey"
+            columns: ["job_question_id"]
+            isOneToOne: false
+            referencedRelation: "job_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      application_events: {
+        Row: {
+          application_id: string
+          created_at: string
+          created_by: string | null
+          from_status: string | null
+          id: string
+          message_to_candidate: string | null
+          reason: string | null
+          to_status: string
+          visible_to_candidate: boolean
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          created_by?: string | null
+          from_status?: string | null
+          id?: string
+          message_to_candidate?: string | null
+          reason?: string | null
+          to_status: string
+          visible_to_candidate?: boolean
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          created_by?: string | null
+          from_status?: string | null
+          id?: string
+          message_to_candidate?: string | null
+          reason?: string | null
+          to_status?: string
+          visible_to_candidate?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_events_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "application_events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      application_reviews: {
+        Row: {
+          application_id: string
+          assigned_reviewer_id: string | null
+          commitment_score: number | null
+          created_at: string
+          id: string
+          knockout_flags: Json
+          reviewer_id: string
+          skill_score: number | null
+          thinking_score: number | null
+          updated_at: string
+        }
+        Insert: {
+          application_id: string
+          assigned_reviewer_id?: string | null
+          commitment_score?: number | null
+          created_at?: string
+          id?: string
+          knockout_flags?: Json
+          reviewer_id: string
+          skill_score?: number | null
+          thinking_score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          application_id?: string
+          assigned_reviewer_id?: string | null
+          commitment_score?: number | null
+          created_at?: string
+          id?: string
+          knockout_flags?: Json
+          reviewer_id?: string
+          skill_score?: number | null
+          thinking_score?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_reviews_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "application_reviews_assigned_reviewer_id_fkey"
+            columns: ["assigned_reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "application_reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      applications: {
+        Row: {
+          candidate_id: string
+          created_at: string
+          current_step: number
+          id: string
+          is_draft: boolean
+          job_id: string
+          public_code: string
+          status_key: string
+          submitted_at: string | null
+          task_submission_url: string | null
+          task_submitted_at: string | null
+          updated_at: string
+          withdrawn_at: string | null
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string
+          current_step?: number
+          id?: string
+          is_draft?: boolean
+          job_id: string
+          public_code: string
+          status_key?: string
+          submitted_at?: string | null
+          task_submission_url?: string | null
+          task_submitted_at?: string | null
+          updated_at?: string
+          withdrawn_at?: string | null
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string
+          current_step?: number
+          id?: string
+          is_draft?: boolean
+          job_id?: string
+          public_code?: string
+          status_key?: string
+          submitted_at?: string | null
+          task_submission_url?: string | null
+          task_submitted_at?: string | null
+          updated_at?: string
+          withdrawn_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       availability: {
         Row: {
           created_at: string
@@ -271,6 +524,59 @@ export type Database = {
           },
         ]
       }
+      candidates: {
+        Row: {
+          area: string | null
+          created_at: string
+          current_occupation: string | null
+          education: string | null
+          email_notifications: boolean
+          full_name: string
+          id: string
+          phone: string | null
+          photo_url: string | null
+          portfolio_url: string | null
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          area?: string | null
+          created_at?: string
+          current_occupation?: string | null
+          education?: string | null
+          email_notifications?: boolean
+          full_name?: string
+          id: string
+          phone?: string | null
+          photo_url?: string | null
+          portfolio_url?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          area?: string | null
+          created_at?: string
+          current_occupation?: string | null
+          education?: string | null
+          email_notifications?: boolean
+          full_name?: string
+          id?: string
+          phone?: string | null
+          photo_url?: string | null
+          portfolio_url?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidates_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           brand_name: string | null
@@ -388,6 +694,284 @@ export type Database = {
           },
         ]
       }
+      documents: {
+        Row: {
+          candidate_id: string
+          created_at: string
+          file_path: string
+          id: string
+          kind: string
+          title: string
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string
+          file_path: string
+          id?: string
+          kind: string
+          title: string
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string
+          file_path?: string
+          id?: string
+          kind?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_log: {
+        Row: {
+          application_id: string | null
+          created_at: string
+          error: string | null
+          id: string
+          provider_id: string | null
+          status: string
+          to_email: string
+          trigger_key: string
+        }
+        Insert: {
+          application_id?: string | null
+          created_at?: string
+          error?: string | null
+          id?: string
+          provider_id?: string | null
+          status: string
+          to_email: string
+          trigger_key: string
+        }
+        Update: {
+          application_id?: string | null
+          created_at?: string
+          error?: string | null
+          id?: string
+          provider_id?: string | null
+          status?: string
+          to_email?: string
+          trigger_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_log_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_log_trigger_key_fkey"
+            columns: ["trigger_key"]
+            isOneToOne: false
+            referencedRelation: "email_templates"
+            referencedColumns: ["trigger_key"]
+          },
+        ]
+      }
+      email_templates: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          is_enabled: boolean
+          subject: string
+          trigger_key: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          subject: string
+          trigger_key: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          subject?: string
+          trigger_key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      hiring_settings: {
+        Row: {
+          authorised_signature_url: string | null
+          company_address: string | null
+          created_at: string
+          from_email: string
+          id: boolean
+          notify_admin_emails: string[]
+          pdf_logo_url: string | null
+          reply_to: string | null
+          updated_at: string
+        }
+        Insert: {
+          authorised_signature_url?: string | null
+          company_address?: string | null
+          created_at?: string
+          from_email?: string
+          id?: boolean
+          notify_admin_emails?: string[]
+          pdf_logo_url?: string | null
+          reply_to?: string | null
+          updated_at?: string
+        }
+        Update: {
+          authorised_signature_url?: string | null
+          company_address?: string | null
+          created_at?: string
+          from_email?: string
+          id?: boolean
+          notify_admin_emails?: string[]
+          pdf_logo_url?: string | null
+          reply_to?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      hiring_user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      internal_notes: {
+        Row: {
+          application_id: string
+          author_id: string
+          body: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          application_id: string
+          author_id: string
+          body: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          application_id?: string
+          author_id?: string
+          body?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "internal_notes_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "internal_notes_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      interviews: {
+        Row: {
+          application_id: string
+          concerns: string | null
+          created_at: string
+          duration_minutes: number
+          id: string
+          interviewer_id: string
+          meet_link: string | null
+          mode: string
+          office_address: string | null
+          recommendation: string | null
+          result_score: number | null
+          scheduled_at: string
+          status: string
+          strengths: string | null
+          updated_at: string
+        }
+        Insert: {
+          application_id: string
+          concerns?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          interviewer_id: string
+          meet_link?: string | null
+          mode: string
+          office_address?: string | null
+          recommendation?: string | null
+          result_score?: number | null
+          scheduled_at: string
+          status?: string
+          strengths?: string | null
+          updated_at?: string
+        }
+        Update: {
+          application_id?: string
+          concerns?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          interviewer_id?: string
+          meet_link?: string | null
+          mode?: string
+          office_address?: string | null
+          recommendation?: string | null
+          result_score?: number | null
+          scheduled_at?: string
+          status?: string
+          strengths?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interviews_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "interviews_interviewer_id_fkey"
+            columns: ["interviewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       invoice_items: {
         Row: {
           created_at: string
@@ -489,6 +1073,330 @@ export type Database = {
           },
         ]
       }
+      job_questions: {
+        Row: {
+          created_at: string
+          id: string
+          job_id: string
+          knockout_rule: Json | null
+          label_override: string | null
+          options: Json | null
+          question_id: string | null
+          required: boolean
+          section: string | null
+          sort_order: number
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          job_id: string
+          knockout_rule?: Json | null
+          label_override?: string | null
+          options?: Json | null
+          question_id?: string | null
+          required?: boolean
+          section?: string | null
+          sort_order?: number
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          job_id?: string
+          knockout_rule?: Json | null
+          label_override?: string | null
+          options?: Json | null
+          question_id?: string | null
+          required?: boolean
+          section?: string | null
+          sort_order?: number
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_questions_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_questions_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "question_bank"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jobs: {
+        Row: {
+          agreement_template_id: string | null
+          application_pipeline_id: string
+          benefits: string[]
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          deadline: string | null
+          description: string | null
+          id: string
+          journey_pipeline_id: string | null
+          nice_to_have: string[]
+          requirements: string[]
+          responsibilities: string[]
+          schedule_text: string | null
+          seats: number | null
+          slug: string
+          status: string
+          summary: string | null
+          task_brief: string | null
+          task_due_days: number | null
+          task_enabled: boolean
+          task_submission_type: string | null
+          title: string
+          tools: string[]
+          type: string
+          updated_at: string
+          work_mode: string
+        }
+        Insert: {
+          agreement_template_id?: string | null
+          application_pipeline_id: string
+          benefits?: string[]
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          journey_pipeline_id?: string | null
+          nice_to_have?: string[]
+          requirements?: string[]
+          responsibilities?: string[]
+          schedule_text?: string | null
+          seats?: number | null
+          slug: string
+          status?: string
+          summary?: string | null
+          task_brief?: string | null
+          task_due_days?: number | null
+          task_enabled?: boolean
+          task_submission_type?: string | null
+          title: string
+          tools?: string[]
+          type: string
+          updated_at?: string
+          work_mode: string
+        }
+        Update: {
+          agreement_template_id?: string | null
+          application_pipeline_id?: string
+          benefits?: string[]
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          journey_pipeline_id?: string | null
+          nice_to_have?: string[]
+          requirements?: string[]
+          responsibilities?: string[]
+          schedule_text?: string | null
+          seats?: number | null
+          slug?: string
+          status?: string
+          summary?: string | null
+          task_brief?: string | null
+          task_due_days?: number | null
+          task_enabled?: boolean
+          task_submission_type?: string | null
+          title?: string
+          tools?: string[]
+          type?: string
+          updated_at?: string
+          work_mode?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_agreement_template_id_fkey"
+            columns: ["agreement_template_id"]
+            isOneToOne: false
+            referencedRelation: "agreement_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobs_application_pipeline_id_fkey"
+            columns: ["application_pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "pipelines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobs_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "jobs_journey_pipeline_id_fkey"
+            columns: ["journey_pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "pipelines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journey_events: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          from_stage: string | null
+          id: string
+          journey_id: string
+          letter_path: string | null
+          note: string | null
+          to_stage: string
+          visible_to_candidate: boolean
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          from_stage?: string | null
+          id?: string
+          journey_id: string
+          letter_path?: string | null
+          note?: string | null
+          to_stage: string
+          visible_to_candidate?: boolean
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          from_stage?: string | null
+          id?: string
+          journey_id?: string
+          letter_path?: string | null
+          note?: string | null
+          to_stage?: string
+          visible_to_candidate?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "journey_events_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "member_journeys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journey_milestones: {
+        Row: {
+          created_at: string
+          done_at: string | null
+          id: string
+          is_done: boolean
+          journey_id: string
+          sort_order: number
+          stage_key: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          done_at?: string | null
+          id?: string
+          is_done?: boolean
+          journey_id: string
+          sort_order?: number
+          stage_key: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          done_at?: string | null
+          id?: string
+          is_done?: boolean
+          journey_id?: string
+          sort_order?: number
+          stage_key?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_milestones_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "member_journeys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journey_projects: {
+        Row: {
+          amount: number | null
+          created_at: string
+          finished_at: string | null
+          id: string
+          is_client_work: boolean
+          is_paid: boolean
+          journey_id: string
+          note: string | null
+          started_at: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          finished_at?: string | null
+          id?: string
+          is_client_work?: boolean
+          is_paid?: boolean
+          journey_id: string
+          note?: string | null
+          started_at?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          finished_at?: string | null
+          id?: string
+          is_client_work?: boolean
+          is_paid?: boolean
+          journey_id?: string
+          note?: string | null
+          started_at?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_projects_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "member_journeys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           booking_id: string | null
@@ -569,6 +1477,97 @@ export type Database = {
           },
         ]
       }
+      member_journeys: {
+        Row: {
+          application_id: string
+          candidate_id: string
+          created_at: string
+          end_reason: string | null
+          ended_at: string | null
+          id: string
+          job_id: string
+          mentor_id: string | null
+          pipeline_id: string
+          stage_key: string
+          stage_started_at: string
+          started_at: string
+          updated_at: string
+        }
+        Insert: {
+          application_id: string
+          candidate_id: string
+          created_at?: string
+          end_reason?: string | null
+          ended_at?: string | null
+          id?: string
+          job_id: string
+          mentor_id?: string | null
+          pipeline_id: string
+          stage_key: string
+          stage_started_at?: string
+          started_at?: string
+          updated_at?: string
+        }
+        Update: {
+          application_id?: string
+          candidate_id?: string
+          created_at?: string
+          end_reason?: string | null
+          ended_at?: string | null
+          id?: string
+          job_id?: string
+          mentor_id?: string | null
+          pipeline_id?: string
+          stage_key?: string
+          stage_started_at?: string
+          started_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_journeys_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: true
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_journeys_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_journeys_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_journeys_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "member_journeys_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "pipelines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_journeys_pipeline_id_stage_key_fkey"
+            columns: ["pipeline_id", "stage_key"]
+            isOneToOne: false
+            referencedRelation: "pipeline_stages"
+            referencedColumns: ["pipeline_id", "key"]
+          },
+        ]
+      }
       payments: {
         Row: {
           amount: number
@@ -609,6 +1608,92 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pipeline_stages: {
+        Row: {
+          admin_label: string
+          candidate_description: string | null
+          candidate_label: string
+          color: string
+          created_at: string
+          expected_days: number | null
+          id: string
+          is_negative: boolean
+          is_terminal: boolean
+          key: string
+          pipeline_id: string
+          sends_email: boolean
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          admin_label: string
+          candidate_description?: string | null
+          candidate_label: string
+          color?: string
+          created_at?: string
+          expected_days?: number | null
+          id?: string
+          is_negative?: boolean
+          is_terminal?: boolean
+          key: string
+          pipeline_id: string
+          sends_email?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          admin_label?: string
+          candidate_description?: string | null
+          candidate_label?: string
+          color?: string
+          created_at?: string
+          expected_days?: number | null
+          id?: string
+          is_negative?: boolean
+          is_terminal?: boolean
+          key?: string
+          pipeline_id?: string
+          sends_email?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pipeline_stages_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "pipelines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pipelines: {
+        Row: {
+          created_at: string
+          id: string
+          is_default: boolean
+          kind: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          kind: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          kind?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -743,6 +1828,48 @@ export type Database = {
           },
         ]
       }
+      question_bank: {
+        Row: {
+          category: string
+          created_at: string
+          help_text: string | null
+          id: string
+          is_active: boolean
+          knockout_rule: Json | null
+          label: string
+          max_length: number | null
+          options: Json | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          help_text?: string | null
+          id?: string
+          is_active?: boolean
+          knockout_rule?: Json | null
+          label: string
+          max_length?: number | null
+          options?: Json | null
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          help_text?: string | null
+          id?: string
+          is_active?: boolean
+          knockout_rule?: Json | null
+          label?: string
+          max_length?: number | null
+          options?: Json | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       review_comments: {
         Row: {
           author_id: string
@@ -794,6 +1921,69 @@ export type Database = {
             columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "review_comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      signed_agreements: {
+        Row: {
+          accepted_terms: Json
+          application_id: string
+          created_at: string
+          id: string
+          ip_address: unknown
+          pdf_path: string
+          pdf_sha256: string
+          signature_path: string
+          signed_at: string
+          signer_full_name: string
+          template_id: string
+          template_version: number
+          user_agent: string | null
+        }
+        Insert: {
+          accepted_terms: Json
+          application_id: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown
+          pdf_path: string
+          pdf_sha256: string
+          signature_path: string
+          signed_at?: string
+          signer_full_name: string
+          template_id: string
+          template_version: number
+          user_agent?: string | null
+        }
+        Update: {
+          accepted_terms?: Json
+          application_id?: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown
+          pdf_path?: string
+          pdf_sha256?: string
+          signature_path?: string
+          signed_at?: string
+          signer_full_name?: string
+          template_id?: string
+          template_version?: number
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "signed_agreements_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: true
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "signed_agreements_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "agreement_templates"
             referencedColumns: ["id"]
           },
         ]
@@ -999,9 +2189,39 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      candidate_interviews: {
+        Row: {
+          application_id: string | null
+          duration_minutes: number | null
+          id: string | null
+          meet_link: string | null
+          mode: string | null
+          office_address: string | null
+          scheduled_at: string | null
+          status: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      change_application_status: {
+        Args: {
+          _application_id: string
+          _message: string
+          _reason: string
+          _to_status: string
+        }
+        Returns: string
+      }
+      change_journey_stage: {
+        Args: {
+          _journey_id: string
+          _note: string
+          _to_stage: string
+          _visible: boolean
+        }
+        Returns: string
+      }
       client_call_host: { Args: { p_booking_id: string }; Returns: string }
       create_booking: {
         Args: {
@@ -1017,6 +2237,21 @@ export type Database = {
         }
         Returns: string
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      hiring_owns_application: {
+        Args: { _application_id: string; _draft_only?: boolean }
+        Returns: boolean
+      }
+      hiring_owns_journey: { Args: { _journey_id: string }; Returns: boolean }
+      hiring_storage_path_owned: { Args: { _name: string }; Returns: boolean }
+      hiring_template_is_latest: { Args: { _id: string }; Returns: boolean }
+      is_hiring_staff: { Args: { _user_id: string }; Returns: boolean }
       open_slots: {
         Args: { p_from?: string; p_to?: string }
         Returns: {
@@ -1029,8 +2264,10 @@ export type Database = {
         Args: { p_password: string }
         Returns: boolean
       }
+      submit_application: { Args: { _application_id: string }; Returns: string }
     }
     Enums: {
+      app_role: "admin" | "reviewer" | "interviewer"
       booking_status:
         | "requested"
         | "in_review"
@@ -1195,6 +2432,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "reviewer", "interviewer"],
       booking_status: [
         "requested",
         "in_review",
