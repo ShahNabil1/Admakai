@@ -55,5 +55,5 @@
 - Hiring templates/audits/submitted signatures are immutable; only own unfinished draft signatures can be replaced. Resolve the latest current version.
 - Careers primes public RLS reads during SSR, then uses a separate authenticated no-store read for draft previews and own-application links; never place protected reads in public loaders or emit draft JobPosting data.
 - Talent-pool submissions use the public publishable client and a normalized-email transactional trigger; staff-only read policies keep applicant contact details private.
-- Enquiries go through server-only app.create_enquiry (service-role call from submitLead) with private enquiry-uploads files; booking/enquiry emails use src/lib/crm-emails.server.ts and log to email_log, and the shared reminder endpoint sends interview and booking reminders, so CRM and hiring mail share one delivery path.
-- The root html lang comes from src/lib/page-lang.ts (blog = bn) and seoHead's lang drives hreflang, keeping SSR language tags consistent.
+- Enquiries use server-only app.create_enquiry; CRM mail goes via crm-emails.server.ts and the shared reminder endpoint, one delivery path.
+- html lang comes from page-lang.ts; seoHead lang sets hreflang.
