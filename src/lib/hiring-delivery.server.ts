@@ -4,7 +4,7 @@ import { supabaseAdmin as db } from '@/integrations/supabase/client.server';
 import { latinFont, bengaliFont } from './hiring-fonts.server';
 import { dhakaDate, shouldSendHiringEmail, taskDueAt } from './candidate-rules';
 import { fillAgreement } from './application-rules';
-import emailLogo from '@/assets/brand/logo-dark-cropped.png.asset.json';
+import { hiringEmailHtml } from './hiring-email-design';
 
 function required<T>(r: {data:T;error:{message:string}|null}): NonNullable<T> { if(r.error || r.data == null) throw new Error(r.error?.message ?? 'Hiring record unavailable'); return r.data; }
 export async function hiringDeliveryContext(id: string) {
@@ -58,11 +58,10 @@ export async function generateAgreementPdf(id: string) {
   if(!existing.data){const r=await db.from('documents').insert({candidate_id:app.candidate_id,kind:'agreement',title:`Application agreement · ${job.title}`,file_path:path});if(r.error)throw r.error;}
   return path;
 }
-const escape=(s:string)=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c] ?? c));
-export async function sendHiringEmail(trigger:string,id:string,extra:Record<string,string>={},extraAttachments:Array<{filename:string;content:string}>=[]) {
+export async function sendHiringEmail(trigger:string,id:string,extra:Record<string,string>={},extraAttachments:Array<{filename:string;content:string}>=[],recipient?:string) {
   const {app,candidate,job,profile,settings}=await hiringDeliveryContext(id);
   const template=required(await db.from('email_templates').select('*').eq('trigger_key',trigger).single());
-  const admin=trigger==='admin_new_application';const recipients=admin?settings.notify_admin_emails:[profile.email];
+  const admin=trigger==='admin_new_application';const recipients=recipient?[recipient]:admin?settings.notify_admin_emails:[profile.email];
   const tracker=`https://admakai.com/me/applications/${app.id}`;
   const values:Record<string,string>={...extra,candidate_name:candidate.full_name,job_title:job.title,application_code:app.public_code,tracker_link:tracker,status_message:extra['status_message'] ?? ''};
   const fill=(s:string)=>s.replace(/{{\s*([a-z_]+)\s*}}/g,(_,key:string)=>values[key] ?? '');
@@ -71,7 +70,7 @@ export async function sendHiringEmail(trigger:string,id:string,extra:Record<stri
     if(shouldSendHiringEmail(trigger,template.is_enabled,candidate.email_notifications)&&process.env['RESEND_API_KEY']){
       try{let content=fill(template.body);if(extra['interview_details']&&!content.includes(extra['interview_details']))content+=`\n${extra['interview_details']}`;if(admin)content+=`\nCandidate: ${candidate.full_name}\nJob: ${job.title}\nKnockout flags: ${extra['knockout_flags'] ?? 'None'}\nhttps://admakai.com/admin/hiring/jobs`;
         const button=admin?'https://admakai.com/admin/hiring/jobs':tracker;
-        const html=`<!doctype html><html><body style="background:#f6f6f6;color:#111;font-family:Arial,sans-serif;margin:0;padding:32px"><div style="max-width:560px;margin:auto"><img src="https://admakai.com${emailLogo.url}" alt="Admakai" width="160"><h1 style="font-size:24px">${escape(fill(template.subject))}</h1><p style="line-height:1.7;white-space:pre-line">${escape(content)}</p><a href="${button}" style="display:inline-block;background:#111;color:#fff;padding:14px 22px;text-decoration:none">${admin?'Review applications':'Track your application'}</a><p style="font-size:12px;color:#666;margin-top:32px">Admakai<br>${escape(settings.company_address ?? '')}</p></div></body></html>`;
+        const html=hiringEmailHtml(fill(template.subject),content,button,settings.company_address ?? '',admin);
         const attachments:Array<{filename:string;content:string}>=[...extraAttachments];
         if(trigger==='application_submitted'){
           const agreement=await db.from('signed_agreements').select('pdf_path').eq('application_id',id).maybeSingle();
@@ -91,7 +90,7 @@ export async function deliverSubmittedApplication(id:string){
   return outcome;
 }
 export async function deliverStatusEmail(id:string,status:string,message:string,reason:string){
-  const {job}=await hiringDeliveryContext(id);const {data:stage}=await db.from('pipeline_stages').select('sends_email').eq('pipeline_id',job.application_pipeline_id).eq('key',status).single();
+  const {job}=await hiringDeliveryContext(id);let attachments:Array<{filename:string;content:string}>=[];if(status==='offer'){const {generateHiringLetter}=await import('./hiring-letters.server');attachments=[(await generateHiringLetter(id,'offer')).attachment];}const {data:stage}=await db.from('pipeline_stages').select('sends_email').eq('pipeline_id',job.application_pipeline_id).eq('key',status).single();
   if(!stage?.sends_email||!['in_review','shortlisted','rejected','selected','offer','hired','interview_scheduled'].includes(status))return;
-  const extra:Record<string,string>={status_message:status==='rejected'?`${message}\n${reason}`:message,reason};if(status==='shortlisted'){extra['task_brief']=job.task_brief ?? '';extra['task_due_date']=dhakaDate(taskDueAt(new Date().toISOString(),job.task_due_days ?? 3),true);extra['status_message']=`${message}\n${extra['task_brief']}\nDue: ${extra['task_due_date']}`;}await sendHiringEmail(status,id,extra);
+  const extra:Record<string,string>={status_message:status==='rejected'?`${message}\n${reason}`:message,reason};if(status==='shortlisted'){extra['task_brief']=job.task_brief ?? '';extra['task_due_date']=dhakaDate(taskDueAt(new Date().toISOString(),job.task_due_days ?? 3),true);extra['status_message']=`${message}\n${extra['task_brief']}\nDue: ${extra['task_due_date']}`;}await sendHiringEmail(status,id,extra,attachments);
 }

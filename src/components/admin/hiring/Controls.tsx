@@ -103,12 +103,14 @@ export function RichEditor({
   onChange,
   disabled = false,
   variables = false,
+  variableNames = ["candidate_name", "job_title", "application_id", "date", "start_date"],
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   disabled?: boolean;
   variables?: boolean;
+  variableNames?: string[];
 }) {
   const ref = useRef<HTMLTextAreaElement>(null);
   const insert = (before: string, after = "") => {
@@ -144,7 +146,7 @@ export function RichEditor({
       </span>
       {variables && (
         <span className="hiring-toolbar">
-          {["candidate_name", "job_title", "application_id", "date", "start_date"].map((v) => (
+          {variableNames.map((v) => (
             <Action
               key={v}
               disabled={disabled}

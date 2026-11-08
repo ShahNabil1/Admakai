@@ -3,6 +3,7 @@ import { setResponseHeader } from '@tanstack/react-start/server';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { z } from 'zod';
 import { phoneSchema } from './application-rules';
+import { documentBucket } from './hiring-journey-rules';
 const idSchema=z.object({id:z.string().uuid()});
 function checked<T>(r:{data:T;error:{message:string}|null}):T {if(r.error)throw new Error(r.error.message);return r.data;}
 export const candidateWorkspace=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).handler(async({context})=>{
@@ -18,8 +19,9 @@ export const candidateWorkspace=createServerFn({method:'POST'}).middleware([requ
   const interviews=interviewRows.flatMap(i => i.id && i.application_id && i.scheduled_at && i.duration_minutes !== null ? [{...i,id:i.id,application_id:i.application_id,scheduled_at:i.scheduled_at,duration_minutes:i.duration_minutes}] : []);
   const documents=checked(await db.from('documents').select('id,title,kind,file_path,created_at').eq('candidate_id',context.userId).order('created_at',{ascending:false})) ?? [];
   const {data:contact}=await db.rpc('hiring_candidate_contact');
+  const journeys=checked(await db.from('member_journeys').select('id,stage_key,mentor_name').eq('candidate_id',context.userId)) ?? [];
   let photoUrl:string|null=null;if(candidate?.photo_url)photoUrl=(await db.storage.from('task-files').createSignedUrl(candidate.photo_url,300)).data?.signedUrl ?? null;
-  return {candidate,applications,jobs,stages,events,interviews,documents,photoUrl,fromEmail:contact ?? null,userId:context.userId};
+  return {candidate,applications,jobs,stages,events,interviews,documents,journeys,photoUrl,fromEmail:contact ?? null,userId:context.userId};
 });
 export type CandidateWorkspace=Awaited<ReturnType<typeof candidateWorkspace>>;
 export const candidateTracker=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(idSchema).handler(async({data,context})=>{
@@ -38,7 +40,7 @@ export const candidatePdf=createServerFn({method:'POST'}).middleware([requireSup
   const result=await db.storage.from('agreements').createSignedUrl(signed.pdf_path,300);if(result.error)throw result.error;return {url:result.data.signedUrl,emailStatus:mail ?? null};
 });
 export const candidateDocument=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(idSchema).handler(async({data,context})=>{
-  setResponseHeader('Cache-Control','no-store');const d=checked(await context.supabase.from('documents').select('file_path').eq('id',data.id).eq('candidate_id',context.userId).single());if(!d)throw new Error('Document unavailable.');const r=await context.supabase.storage.from('agreements').createSignedUrl(d.file_path,300);if(r.error)throw r.error;return r.data.signedUrl;
+  setResponseHeader('Cache-Control','no-store');const d=checked(await context.supabase.from('documents').select('file_path,kind').eq('id',data.id).eq('candidate_id',context.userId).single());if(!d)throw new Error('Document unavailable.');const r=await context.supabase.storage.from(documentBucket(d.kind)).createSignedUrl(d.file_path,300);if(r.error)throw r.error;return r.data.signedUrl;
 });
 export const withdrawCandidateApplication=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(idSchema.extend({reason:z.string().max(2000)})).handler(async({data,context})=>{checked(await context.supabase.rpc('withdraw_application',{_application_id:data.id,_reason:data.reason}));return {ok:true};});
 export const submitCandidateTask=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(idSchema.extend({url:z.string().url().max(2048).refine(s=>/^https?:\/\//.test(s)),note:z.string().max(500)})).handler(async({data,context})=>{checked(await context.supabase.rpc('hiring_candidate_submit_task',{_application_id:data.id,_url:data.url,_note:data.note}));return {ok:true};});

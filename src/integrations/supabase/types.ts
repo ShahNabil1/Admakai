@@ -1409,6 +1409,51 @@ export type Database = {
           },
         ]
       }
+      journey_milestone_templates: {
+        Row: {
+          created_at: string
+          id: string
+          pipeline_id: string
+          sort_order: number
+          stage_key: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          pipeline_id: string
+          sort_order?: number
+          stage_key: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          pipeline_id?: string
+          sort_order?: number
+          stage_key?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_milestone_templates_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "pipelines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journey_milestone_templates_pipeline_id_stage_key_fkey"
+            columns: ["pipeline_id", "stage_key"]
+            isOneToOne: false
+            referencedRelation: "pipeline_stages"
+            referencedColumns: ["pipeline_id", "key"]
+          },
+        ]
+      }
       journey_milestones: {
         Row: {
           created_at: string
@@ -1446,6 +1491,51 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "journey_milestones_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "member_journeys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journey_notes: {
+        Row: {
+          author_id: string
+          body: string
+          created_at: string
+          id: string
+          journey_id: string
+          updated_at: string
+          visible_to_candidate: boolean
+        }
+        Insert: {
+          author_id: string
+          body: string
+          created_at?: string
+          id?: string
+          journey_id: string
+          updated_at?: string
+          visible_to_candidate?: boolean
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          created_at?: string
+          id?: string
+          journey_id?: string
+          updated_at?: string
+          visible_to_candidate?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_notes_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "journey_notes_journey_id_fkey"
             columns: ["journey_id"]
             isOneToOne: false
             referencedRelation: "member_journeys"
@@ -1583,6 +1673,42 @@ export type Database = {
           },
         ]
       }
+      letter_templates: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          is_current: boolean
+          kind: string
+          legal_review_pending: boolean
+          name: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          is_current?: boolean
+          kind: string
+          legal_review_pending?: boolean
+          name: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          is_current?: boolean
+          kind?: string
+          legal_review_pending?: boolean
+          name?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
       member_journeys: {
         Row: {
           application_id: string
@@ -1593,6 +1719,7 @@ export type Database = {
           id: string
           job_id: string
           mentor_id: string | null
+          mentor_name: string | null
           pipeline_id: string
           stage_key: string
           stage_started_at: string
@@ -1608,6 +1735,7 @@ export type Database = {
           id?: string
           job_id: string
           mentor_id?: string | null
+          mentor_name?: string | null
           pipeline_id: string
           stage_key: string
           stage_started_at?: string
@@ -1623,6 +1751,7 @@ export type Database = {
           id?: string
           job_id?: string
           mentor_id?: string | null
+          mentor_name?: string | null
           pipeline_id?: string
           stage_key?: string
           stage_started_at?: string
@@ -2380,6 +2509,10 @@ export type Database = {
         }
         Returns: string
       }
+      grant_hiring_role: {
+        Args: { _email: string; _role: Database["public"]["Enums"]["app_role"] }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2557,6 +2690,28 @@ export type Database = {
         Args: { _answer: Json; _question_id: string }
         Returns: undefined
       }
+      hiring7_move_journey: {
+        Args: { _id: string; _note: string; _stage: string; _visible: boolean }
+        Returns: string
+      }
+      hiring7_save_letter: {
+        Args: { _body: string; _kind: string; _name: string; _pending: boolean }
+        Returns: string
+      }
+      hiring7_set_mentor: {
+        Args: { _id: string; _mentor: string }
+        Returns: undefined
+      }
+      hiring7_staff_roles: {
+        Args: never
+        Returns: {
+          email: string
+          full_name: string
+          is_owner: boolean
+          roles: string[]
+          user_id: string
+        }[]
+      }
       is_hiring_staff: { Args: { _user_id: string }; Returns: boolean }
       list_hiring_staff: {
         Args: never
@@ -2592,6 +2747,13 @@ export type Database = {
         Args: { _interview_id: string; _message: string; _scheduled_at: string }
         Returns: string
       }
+      revoke_hiring_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: undefined
+      }
       save_interview_result: {
         Args: {
           _concerns: string
@@ -2612,6 +2774,14 @@ export type Database = {
           _mode: string
           _office_address: string
           _scheduled_at: string
+        }
+        Returns: string
+      }
+      start_journey: {
+        Args: {
+          _application_id: string
+          _mentor_id: string
+          _start_date: string
         }
         Returns: string
       }
