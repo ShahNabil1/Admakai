@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Hiring Prompt 5: agreement PDFs, optional Resend emails, checked submission/status orchestration, withdrawal, English names, candidate login/dashboard/tracker/documents/profile and focused tests.
 - [x] Hiring Step 4: Jobs/editor, Question bank, immutable Agreements, admin-only Settings, WhatsApp help, role-checked server functions, private assets and additive SQL safeguards. 537 tests; rollback job/create/publish/snapshot/duplicate/close and reviewer permissions passed. Existing admin page bodies/data unchanged; no Cloud. Inventory in supabase/HIRING_STEP_4.md.
 - [x] Hiring Step 4.1: private hiring-media and seven bucket-scoped policies; cover/poster uploads persist paths, anonymous one-hour signed URLs cached in page memory, YouTube maxres/hq fallback. 546 tests and anonymous desktop/mobile image fixtures passed; no public bucket, workspace settings or unrelated admin changes.
 - [ ] Hiring Step 4.1 real admin cover upload → logged-out job-page readback — external unmanaged Supabase/Hub has no test session; current job is draft, no cover/video set. Signing/rendering checked with browser fixtures, not a real upload.
