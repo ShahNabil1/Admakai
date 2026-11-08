@@ -10,6 +10,7 @@ import {
 import { resolveInternshipVideo } from "@/lib/internship-video";
 import { InternshipVideo } from "@/components/careers/InternshipVideo";
 import { Action, ImageUpload } from "./Controls";
+import {FinalSettings} from "./FinalSettings";
 export function Settings() {
   const read = useServerFn(readHiringSettings),
     save = useServerFn(saveHiringSettings);
@@ -225,6 +226,7 @@ export function Settings() {
           </p>
         </section>
       </div>
+      <FinalSettings/>
     </>
   );
 }

@@ -9,6 +9,8 @@ import { Agreements } from "./Agreements";
 import { Settings } from "./Settings";
 import {ApplicationBoard,ApplicantProfile,HiringOverview} from './Applications';
 import {Interviews} from './Interviews';
+import {TeamJourney} from './Journey';
+import {HiringEmails} from './Emails';
 import './review.css';
 import "./hiring.css";
 export function HiringWorkspace() {
@@ -39,7 +41,7 @@ export function HiringWorkspace() {
     );
   if (!data) return <div className="admin-skeleton" />;
   const admin = hiringCanWrite(data.roles);
-  const restricted = !admin && ["settings", "agreements"].includes(page);
+  const restricted = !admin && ["settings", "agreements", "journey", "emails"].includes(page);
   return (
     <section className="hiring-content">
       <nav className="hiring-nav" aria-label="Hiring sections">
@@ -53,6 +55,8 @@ export function HiringWorkspace() {
         </Link>
         {admin && (
           <>
+            <Link to="/admin/hiring/journey" className="admin-btn-ghost">Team journey</Link>
+            <Link to="/admin/hiring/emails" className="admin-btn-ghost">Emails</Link>
             <Link to="/admin/hiring/agreements" className="admin-btn-ghost">
               Agreements
             </Link>
@@ -77,7 +81,7 @@ export function HiringWorkspace() {
         <QuestionBank data={data} admin={admin} reload={reload} />
       ) : page === "agreements" ? (
         <Agreements data={data} reload={reload} />
-      ) : page === "settings" ? (
+      ) : page === "journey" ? <TeamJourney/> : page === "emails" ? <HiringEmails/> : page === "settings" ? (
         <Settings />
       ) : null}
     </section>

@@ -2699,7 +2699,7 @@ export type Database = {
         Returns: string
       }
       hiring7_set_mentor: {
-        Args: { _id: string; _mentor: string }
+        Args: { _id: string; _mentor?: string }
         Returns: undefined
       }
       hiring7_staff_roles: {
@@ -2780,8 +2780,8 @@ export type Database = {
       start_journey: {
         Args: {
           _application_id: string
-          _mentor_id: string
-          _start_date: string
+          _mentor_id?: string
+          _start_date?: string
         }
         Returns: string
       }

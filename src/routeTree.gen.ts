@@ -45,8 +45,10 @@ import { Route as SiteWorkSlugRouteImport } from './routes/_site.work.$slug'
 import { Route as AdminHiringIndexRouteImport } from './routes/admin_.hiring.index'
 import { Route as AdminHiringAgreementsRouteImport } from './routes/admin_.hiring.agreements'
 import { Route as AdminHiringApplicationsRouteImport } from './routes/admin_.hiring.applications'
+import { Route as AdminHiringEmailsRouteImport } from './routes/admin_.hiring.emails'
 import { Route as AdminHiringInterviewsRouteImport } from './routes/admin_.hiring.interviews'
 import { Route as AdminHiringJobsRouteImport } from './routes/admin_.hiring.jobs'
+import { Route as AdminHiringJourneyRouteImport } from './routes/admin_.hiring.journey'
 import { Route as AdminHiringQuestionsRouteImport } from './routes/admin_.hiring.questions'
 import { Route as AdminHiringSettingsRouteImport } from './routes/admin_.hiring.settings'
 import { Route as ApiPublicHiringRemindersRouteImport } from './routes/api/public/hiring-reminders'
@@ -238,6 +240,11 @@ const AdminHiringApplicationsRoute = AdminHiringApplicationsRouteImport.update({
   path: '/admin/hiring/applications',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminHiringEmailsRoute = AdminHiringEmailsRouteImport.update({
+  id: '/admin_/hiring/emails',
+  path: '/admin/hiring/emails',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminHiringInterviewsRoute = AdminHiringInterviewsRouteImport.update({
   id: '/admin_/hiring/interviews',
   path: '/admin/hiring/interviews',
@@ -246,6 +253,11 @@ const AdminHiringInterviewsRoute = AdminHiringInterviewsRouteImport.update({
 const AdminHiringJobsRoute = AdminHiringJobsRouteImport.update({
   id: '/admin_/hiring/jobs',
   path: '/admin/hiring/jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminHiringJourneyRoute = AdminHiringJourneyRouteImport.update({
+  id: '/admin_/hiring/journey',
+  path: '/admin/hiring/journey',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminHiringQuestionsRoute = AdminHiringQuestionsRouteImport.update({
@@ -337,8 +349,10 @@ export interface FileRoutesByFullPath {
   '/work/$slug': typeof SiteWorkSlugRoute
   '/admin/hiring/agreements': typeof AdminHiringAgreementsRoute
   '/admin/hiring/applications': typeof AdminHiringApplicationsRoute
+  '/admin/hiring/emails': typeof AdminHiringEmailsRoute
   '/admin/hiring/interviews': typeof AdminHiringInterviewsRoute
   '/admin/hiring/jobs': typeof AdminHiringJobsRoute
+  '/admin/hiring/journey': typeof AdminHiringJourneyRoute
   '/admin/hiring/questions': typeof AdminHiringQuestionsRoute
   '/admin/hiring/settings': typeof AdminHiringSettingsRoute
   '/api/public/hiring-reminders': typeof ApiPublicHiringRemindersRoute
@@ -383,8 +397,10 @@ export interface FileRoutesByTo {
   '/work/$slug': typeof SiteWorkSlugRoute
   '/admin/hiring/agreements': typeof AdminHiringAgreementsRoute
   '/admin/hiring/applications': typeof AdminHiringApplicationsRoute
+  '/admin/hiring/emails': typeof AdminHiringEmailsRoute
   '/admin/hiring/interviews': typeof AdminHiringInterviewsRoute
   '/admin/hiring/jobs': typeof AdminHiringJobsRoute
+  '/admin/hiring/journey': typeof AdminHiringJourneyRoute
   '/admin/hiring/questions': typeof AdminHiringQuestionsRoute
   '/admin/hiring/settings': typeof AdminHiringSettingsRoute
   '/api/public/hiring-reminders': typeof ApiPublicHiringRemindersRoute
@@ -434,8 +450,10 @@ export interface FileRoutesById {
   '/_site/work/$slug': typeof SiteWorkSlugRoute
   '/admin_/hiring/agreements': typeof AdminHiringAgreementsRoute
   '/admin_/hiring/applications': typeof AdminHiringApplicationsRoute
+  '/admin_/hiring/emails': typeof AdminHiringEmailsRoute
   '/admin_/hiring/interviews': typeof AdminHiringInterviewsRoute
   '/admin_/hiring/jobs': typeof AdminHiringJobsRoute
+  '/admin_/hiring/journey': typeof AdminHiringJourneyRoute
   '/admin_/hiring/questions': typeof AdminHiringQuestionsRoute
   '/admin_/hiring/settings': typeof AdminHiringSettingsRoute
   '/api/public/hiring-reminders': typeof ApiPublicHiringRemindersRoute
@@ -484,8 +502,10 @@ export interface FileRouteTypes {
     | '/work/$slug'
     | '/admin/hiring/agreements'
     | '/admin/hiring/applications'
+    | '/admin/hiring/emails'
     | '/admin/hiring/interviews'
     | '/admin/hiring/jobs'
+    | '/admin/hiring/journey'
     | '/admin/hiring/questions'
     | '/admin/hiring/settings'
     | '/api/public/hiring-reminders'
@@ -530,8 +550,10 @@ export interface FileRouteTypes {
     | '/work/$slug'
     | '/admin/hiring/agreements'
     | '/admin/hiring/applications'
+    | '/admin/hiring/emails'
     | '/admin/hiring/interviews'
     | '/admin/hiring/jobs'
+    | '/admin/hiring/journey'
     | '/admin/hiring/questions'
     | '/admin/hiring/settings'
     | '/api/public/hiring-reminders'
@@ -580,8 +602,10 @@ export interface FileRouteTypes {
     | '/_site/work/$slug'
     | '/admin_/hiring/agreements'
     | '/admin_/hiring/applications'
+    | '/admin_/hiring/emails'
     | '/admin_/hiring/interviews'
     | '/admin_/hiring/jobs'
+    | '/admin_/hiring/journey'
     | '/admin_/hiring/questions'
     | '/admin_/hiring/settings'
     | '/api/public/hiring-reminders'
@@ -609,8 +633,10 @@ export interface RootRouteChildren {
   SigninRoute: typeof SigninRoute
   AdminHiringAgreementsRoute: typeof AdminHiringAgreementsRoute
   AdminHiringApplicationsRoute: typeof AdminHiringApplicationsRoute
+  AdminHiringEmailsRoute: typeof AdminHiringEmailsRoute
   AdminHiringInterviewsRoute: typeof AdminHiringInterviewsRoute
   AdminHiringJobsRoute: typeof AdminHiringJobsRoute
+  AdminHiringJourneyRoute: typeof AdminHiringJourneyRoute
   AdminHiringQuestionsRoute: typeof AdminHiringQuestionsRoute
   AdminHiringSettingsRoute: typeof AdminHiringSettingsRoute
   ApiPublicHiringRemindersRoute: typeof ApiPublicHiringRemindersRoute
@@ -874,6 +900,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminHiringApplicationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin_/hiring/emails': {
+      id: '/admin_/hiring/emails'
+      path: '/admin/hiring/emails'
+      fullPath: '/admin/hiring/emails'
+      preLoaderRoute: typeof AdminHiringEmailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin_/hiring/interviews': {
       id: '/admin_/hiring/interviews'
       path: '/admin/hiring/interviews'
@@ -886,6 +919,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/hiring/jobs'
       fullPath: '/admin/hiring/jobs'
       preLoaderRoute: typeof AdminHiringJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin_/hiring/journey': {
+      id: '/admin_/hiring/journey'
+      path: '/admin/hiring/journey'
+      fullPath: '/admin/hiring/journey'
+      preLoaderRoute: typeof AdminHiringJourneyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin_/hiring/questions': {
@@ -1098,8 +1138,10 @@ const rootRouteChildren: RootRouteChildren = {
   SigninRoute: SigninRoute,
   AdminHiringAgreementsRoute: AdminHiringAgreementsRoute,
   AdminHiringApplicationsRoute: AdminHiringApplicationsRoute,
+  AdminHiringEmailsRoute: AdminHiringEmailsRoute,
   AdminHiringInterviewsRoute: AdminHiringInterviewsRoute,
   AdminHiringJobsRoute: AdminHiringJobsRoute,
+  AdminHiringJourneyRoute: AdminHiringJourneyRoute,
   AdminHiringQuestionsRoute: AdminHiringQuestionsRoute,
   AdminHiringSettingsRoute: AdminHiringSettingsRoute,
   ApiPublicHiringRemindersRoute: ApiPublicHiringRemindersRoute,

@@ -1,0 +1,28 @@
+DO $test$ DECLARE ca uuid:='e7000000-0000-4000-8000-000000000001'; cb uuid:='e7000000-0000-4000-8000-000000000002'; adm uuid:='e7000000-0000-4000-8000-000000000003'; reviewer uuid:='e7000000-0000-4000-8000-000000000004'; jid uuid:='e7000000-0000-4000-8000-000000000005'; aid uuid:='e7000000-0000-4000-8000-000000000006'; tid uuid; pid uuid; jpid uuid; journey uuid; letter uuid; BEGIN BEGIN
+INSERT INTO auth.users(id,email,raw_user_meta_data) VALUES(ca,'step7-a@example.invalid','{}'),(cb,'step7-b@example.invalid','{}'),(adm,'step7-admin@example.invalid','{}'),(reviewer,'step7-reviewer@example.invalid','{}');
+INSERT INTO public.hiring_user_roles(user_id,role) VALUES(adm,'admin');
+INSERT INTO public.candidates(id,full_name,phone,area) VALUES(ca,'Test Applicant','01712345678','Dhaka'),(cb,'Other Applicant','01712345679','Dhaka');
+SELECT id INTO tid FROM public.agreement_templates LIMIT 1;SELECT id INTO pid FROM public.pipelines WHERE kind='application' AND is_default LIMIT 1;SELECT id INTO jpid FROM public.pipelines WHERE name='Admakai Internship Program' AND kind='journey' LIMIT 1;
+INSERT INTO public.jobs(id,slug,title,type,work_mode,status,application_pipeline_id,journey_pipeline_id,agreement_template_id) VALUES(jid,'step7-rollback','Step Seven Test','internship','remote','draft',pid,jpid,tid);
+INSERT INTO public.applications(id,job_id,candidate_id) VALUES(aid,jid,ca);UPDATE public.applications SET is_draft=false,status_key='submitted',submitted_at=now() WHERE id=aid;
+PERFORM set_config('request.jwt.claim.sub',adm::text,true);PERFORM set_config('request.jwt.claims',jsonb_build_object('sub',adm,'role','authenticated')::text,true);SET LOCAL ROLE authenticated;
+BEGIN PERFORM public.start_journey(aid,adm,CURRENT_DATE);RAISE EXCEPTION 'Non-hired journey allowed';EXCEPTION WHEN raise_exception THEN IF SQLERRM='Non-hired journey allowed' THEN RAISE;END IF;END;
+PERFORM public.change_application_status(aid,'hired','Welcome','');journey:=public.start_journey(aid,adm,CURRENT_DATE);
+IF (SELECT count(*) FROM public.journey_milestones WHERE journey_id=journey AND stage_key='onboarding')<>3 THEN RAISE EXCEPTION 'Onboarding seed mismatch';END IF;
+UPDATE public.journey_milestones SET is_done=true WHERE journey_id=journey AND title='Meet your mentor';
+INSERT INTO public.journey_projects(journey_id,title,is_client_work,is_paid,amount) VALUES(journey,'Paid project',true,true,5000);
+INSERT INTO public.journey_notes(journey_id,body,visible_to_candidate,author_id) VALUES(journey,'Private mentor note',false,adm),(journey,'Welcome member',true,adm);
+PERFORM public.hiring7_move_journey(journey,'learner','Moving up',true);IF (SELECT count(*) FROM public.journey_milestones WHERE journey_id=journey AND stage_key='learner')<>4 THEN RAISE EXCEPTION 'Learner seed mismatch';END IF;
+PERFORM public.hiring7_move_journey(journey,'project','Ready for client work',true);IF (SELECT count(*) FROM public.journey_milestones WHERE journey_id=journey AND stage_key='project')<>3 THEN RAISE EXCEPTION 'Project seed mismatch';END IF;
+BEGIN PERFORM public.hiring7_move_journey(journey,'paused','',false);RAISE EXCEPTION 'Empty pause allowed';EXCEPTION WHEN raise_exception THEN IF SQLERRM='Empty pause allowed' THEN RAISE;END IF;END;
+PERFORM public.hiring7_move_journey(journey,'paused','Taking a break',false);IF (SELECT end_reason FROM public.member_journeys WHERE id=journey)<>'Taking a break' THEN RAISE EXCEPTION 'Pause reason lost';END IF;
+PERFORM public.grant_hiring_role('step7-reviewer@example.invalid','reviewer');PERFORM public.revoke_hiring_role(reviewer,'reviewer');
+BEGIN PERFORM public.grant_hiring_role('missing-step7@example.invalid','reviewer');RAISE EXCEPTION 'Unknown role recipient allowed';EXCEPTION WHEN raise_exception THEN IF SQLERRM<>'This person must sign in once at /me/login first' THEN RAISE;END IF;END;
+letter:=public.hiring7_save_letter('offer','Test offer','Hello {{candidate_name}}',false);IF NOT EXISTS(SELECT 1 FROM public.letter_templates WHERE id=letter AND version=2 AND NOT legal_review_pending) OR NOT EXISTS(SELECT 1 FROM public.letter_templates WHERE kind='offer' AND version=1 AND NOT is_current) THEN RAISE EXCEPTION 'Letter version failed';END IF;
+RESET ROLE;PERFORM set_config('request.jwt.claim.sub',ca::text,true);PERFORM set_config('request.jwt.claims',jsonb_build_object('sub',ca,'role','authenticated')::text,true);SET LOCAL ROLE authenticated;
+IF (SELECT count(*) FROM public.journey_notes WHERE journey_id=journey)<>1 OR NOT EXISTS(SELECT 1 FROM public.journey_milestones WHERE journey_id=journey AND title='Meet your mentor' AND is_done) OR (SELECT sum(amount) FROM public.journey_projects WHERE journey_id=journey AND is_paid)<>5000 THEN RAISE EXCEPTION 'Member visibility failed';END IF;
+BEGIN PERFORM public.hiring7_move_journey(journey,'salary','',false);RAISE EXCEPTION 'Candidate stage move allowed';EXCEPTION WHEN insufficient_privilege THEN NULL;END;
+RESET ROLE;PERFORM set_config('request.jwt.claim.sub',cb::text,true);PERFORM set_config('request.jwt.claims',jsonb_build_object('sub',cb,'role','authenticated')::text,true);SET LOCAL ROLE authenticated;
+IF EXISTS(SELECT 1 FROM public.member_journeys WHERE id=journey) OR EXISTS(SELECT 1 FROM public.journey_notes WHERE journey_id=journey) OR EXISTS(SELECT 1 FROM public.journey_milestones WHERE journey_id=journey) OR EXISTS(SELECT 1 FROM public.journey_projects WHERE journey_id=journey) THEN RAISE EXCEPTION 'Other candidate privacy failed';END IF;
+RESET ROLE;RAISE EXCEPTION 'step7_rollback' USING ERRCODE='Z0001';EXCEPTION WHEN SQLSTATE 'Z0001' THEN NULL;END;
+IF EXISTS(SELECT 1 FROM auth.users WHERE id IN(ca,cb,adm,reviewer)) THEN RAISE EXCEPTION 'Fixtures not rolled back';END IF;END $test$;

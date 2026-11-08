@@ -119,6 +119,7 @@
   --finder-chip-border: #E5E7EB;
   --finder-chip-ink: #374151;
   --finder-success: oklch(.58 .15 150);
+  --journey-warning: oklch(.75 .16 65);
   --finder-font: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
   --finder-hero-fill: radial-gradient(ellipse 450px 380px at 50% 28%, color-mix(in srgb,var(--finder-accent) 8%,transparent), transparent), radial-gradient(ellipse 600px 250px at 50% 100%, color-mix(in srgb,var(--finder-blue) 6%,transparent), transparent), var(--finder-page);
   --finder-input-border: linear-gradient(105deg,var(--finder-blue),var(--finder-accent));
