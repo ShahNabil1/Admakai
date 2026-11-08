@@ -62,6 +62,7 @@
   --apply-story: linear-gradient(140deg, oklch(.98 .006 95), oklch(.91 .055 95));
   --apply-rail: oklch(.962 0 0);
   --apply-shadow: 0 24px 90px oklch(0 0 0 / .16);
+  --dashboard-cover: linear-gradient(115deg, oklch(.18 0 0), oklch(.4 .045 95) 40%, oklch(.88 .164 91));
   --service-landing-bg: oklch(1 0 0);
   --service-landing-soft: oklch(.975 .003 106);
   --service-landing-ink: oklch(.145 0 0);

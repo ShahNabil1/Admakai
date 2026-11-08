@@ -1,0 +1,4 @@
+export type DashboardItem={id:string;kind:'application'|'call'|'document';title:string;detail:string;at:string;target:string};
+export function searchDashboard(items:DashboardItem[],query:string){const q=query.trim().toLowerCase();return q?items.filter(i=>`${i.title} ${i.detail}`.toLowerCase().includes(q)):items;}
+export function dashboardUnread(items:DashboardItem[],seen:string[]){return items.filter(i=>!seen.includes(i.id));}
+export function dhakaClock(now:number){return now?new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',hour12:false}).format(now):'—:—';}

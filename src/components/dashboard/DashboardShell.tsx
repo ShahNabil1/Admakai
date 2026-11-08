@@ -1,34 +1,46 @@
-import { Link, Outlet } from '@tanstack/react-router';
-import { BriefcaseBusiness, CalendarDays, FileText, Home, Route as RouteIcon, UserRound } from 'lucide-react';
-import { Navbar } from '@/components/layout/Navbar';
-import { Footer } from '@/components/layout/Footer';
-import { useCandidateWorkspace } from '@/components/careers/CandidateDashboard';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, Outlet, useNavigate } from '@tanstack/react-router';
+import { Bell, CalendarDays, FileText, Home, Route as RouteIcon, Settings, BriefcaseBusiness, Search, PanelLeftClose, PanelLeftOpen, Menu, ArrowUpRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { useAccount } from '@/components/account/useAccount';
+import { dashboardUnread, dhakaClock, searchDashboard, type DashboardItem } from '@/lib/dashboard-rules';
+import { dhakaDate } from '@/lib/candidate-rules';
+import { useNow } from '@/components/account/useAccount';
+import logo from '@/assets/brand/logo-dark-cropped.png.asset.json';
 import '@/components/careers/application.css';
 import '@/components/careers/candidate.css';
 import '@/components/client/client-area.css';
 import './dashboard.css';
-
-const base = [
-  { to: '/dashboard', label: 'Home', Icon: Home },
-  { to: '/dashboard/calls', label: 'Calls', Icon: CalendarDays },
-  { to: '/dashboard/careers', label: 'Careers', Icon: BriefcaseBusiness },
-  { to: '/dashboard/documents', label: 'Documents', Icon: FileText },
-  { to: '/dashboard/profile', label: 'Profile', Icon: UserRound },
-] as const;
-
-/** One account shell for every signed-in visitor: left menu on desktop, bottom tabs on mobile. */
-export function DashboardShell() {
-  const { data } = useCandidateWorkspace();
-  const items = data?.journeys?.length ? [...base, { to: '/dashboard/journey' as const, label: 'Journey', Icon: RouteIcon }] : base;
-  return <>
-    <Navbar hero />
-    <main className="candidate-page dashboard-page">
-      <div className="candidate-wrap">
-        <nav className="candidate-menu" aria-label="Dashboard menu">{items.map(({ to, label, Icon }) => <Link to={to} key={to} activeOptions={{ exact: to === '/dashboard' }}><Icon size={17} />{label}</Link>)}</nav>
-        <div className="candidate-content"><Outlet /></div>
-      </div>
-      <nav className="candidate-mobile-tabs dashboard-tabs" style={{ gridTemplateColumns: `repeat(${items.length},minmax(0,1fr))` }} aria-label="Dashboard tabs">{items.map(({ to, label, Icon }) => <Link to={to} key={to} activeOptions={{ exact: to === '/dashboard' }}><Icon size={20} />{label}</Link>)}</nav>
-    </main>
-    <Footer />
-  </>;
+const base=[{to:'/dashboard',label:'Home',Icon:Home},{to:'/dashboard/calls',label:'Calls',Icon:CalendarDays},{to:'/dashboard/careers',label:'Careers',Icon:BriefcaseBusiness},{to:'/dashboard/documents',label:'Documents',Icon:FileText}] as const;
+export function DashboardShell(){
+  const a=useAccount(),now=useNow(1000),navigate=useNavigate();
+  const [collapsed,setCollapsed]=useState(false),[drawer,setDrawer]=useState(false),[searchOpen,setSearchOpen]=useState(false),[updatesOpen,setUpdatesOpen]=useState(false),[query,setQuery]=useState(''),[seen,setSeen]=useState<string[]>([]);
+  const items=useMemo<DashboardItem[]>(()=>[
+    ...(a.candidate?.applications??[]).map(app=>({id:`app-${app.id}-${app.updated_at}`,kind:'application' as const,title:a.candidate?.jobs.find(j=>j.id===app.job_id)?.title??'Application',detail:app.is_draft?'Draft':a.candidate?.stages.find(s=>s.key===app.status_key)?.candidate_label??app.status_key,at:app.updated_at,target:`/dashboard/applications/${app.id}`})),
+    ...(a.client?.bookings??[]).map(call=>({id:`call-${call.id}-${call.status}`,kind:'call' as const,title:'Call with Admakai',detail:`${call.status} · ${dhakaDate(call.slot_at,true)}`,at:call.slot_at,target:'/dashboard/calls'})),
+    ...(a.candidate?.documents??[]).map(d=>({id:`doc-${d.id}`,kind:'document' as const,title:d.title,detail:'Document ready',at:d.created_at,target:'/dashboard/documents'})),
+    ...(a.candidate?.interviews??[]).filter(i=>i.status!=='cancelled').map(i=>({id:`interview-${i.id}-${i.scheduled_at}`,kind:'application' as const,title:'Interview scheduled',detail:dhakaDate(i.scheduled_at,true),at:i.scheduled_at,target:`/dashboard/applications/${i.application_id}`})),
+  ],[a.candidate,a.client]);
+  useEffect(()=>{if(!a.user)return;try{setSeen(JSON.parse(localStorage.getItem(`dashboard-seen-${a.user.id}`)??'[]'));}catch{setSeen([]);}},[a.user?.id]);
+  useEffect(()=>{const key=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();setSearchOpen(true);}};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[]);
+  const unread=dashboardUnread(items,seen),results=searchDashboard(items,query);
+  const markRead=()=>{const next=items.map(i=>i.id);setSeen(next);if(a.user)localStorage.setItem(`dashboard-seen-${a.user.id}`,JSON.stringify(next));};
+  const go=(item:DashboardItem)=>{setSearchOpen(false);setUpdatesOpen(false);setDrawer(false);void navigate({to:item.target});};
+  const initial=a.name?.split(' ').map(s=>s[0]).slice(0,2).join('')||'A';
+  const stage=a.journey?.label??(a.latest?`Applicant · ${a.latestStage?.candidate_label??a.latest.status_key}`:'');
+  const allTabs=[...base,{to:'/dashboard/profile' as const,label:'Profile',Icon:Settings},...(a.hasJourney?[{to:'/dashboard/journey' as const,label:'Journey',Icon:RouteIcon}]:[])];
+  const sidebar=<><div className="dash-brand"><Link to="/dashboard" aria-label="Admakai dashboard"><img src={logo.url} alt="Admakai"/></Link><Button variant="ghost" size="icon" title={collapsed?'Expand sidebar':'Collapse sidebar'} aria-label={collapsed?'Expand sidebar':'Collapse sidebar'} onClick={()=>setCollapsed(!collapsed)}>{collapsed?<PanelLeftOpen size={17}/>:<PanelLeftClose size={17}/>}</Button></div>
+    <Button variant="outline" className="dash-side-search" onClick={()=>setSearchOpen(true)}><Search size={15}/><span>Search</span><kbd>⌘K</kbd></Button>
+    <p className="dash-group-label">General</p><nav aria-label="Dashboard menu">{base.map(({to,label,Icon})=>{const count=to==='/dashboard/calls'?(a.client?.bookings.filter(c=>Date.parse(c.slot_at)>a.now&&['confirmed','requested','rescheduled'].includes(c.status)).length??0):to==='/dashboard/careers'?unread.filter(i=>i.kind==='application').length:to==='/dashboard/documents'?unread.filter(i=>i.kind==='document').length:0;return <Link to={to} key={to} title={label} activeOptions={{exact:to==='/dashboard'}} onClick={()=>setDrawer(false)}><Icon size={18}/><span>{label}</span>{count>0&&<small>{count}</small>}</Link>;})}</nav>
+    {a.hasJourney&&<><p className="dash-group-label">My journey</p><nav><Link to="/dashboard/journey" title="Journey" onClick={()=>setDrawer(false)}><RouteIcon size={18}/><span>Journey</span><small>{a.journey?.label??'Active'}</small></Link></nav></>}
+    <p className="dash-group-label">Quick links</p><nav className="dash-quick-links"><Link to="/dashboard/calls" search={{book:true}} onClick={()=>setDrawer(false)}><CalendarDays size={16}/><span>Book a call</span><ArrowUpRight size={13}/></Link><Link to="/dashboard/careers" search={{tab:'roles'}} onClick={()=>setDrawer(false)}><BriefcaseBusiness size={16}/><span>See open roles</span><ArrowUpRight size={13}/></Link><a href="https://discord.gg/GEpQUmhrV" target="_blank" rel="noreferrer"><ArrowUpRight size={16}/><span>Join our Discord</span></a><a href="https://chat.whatsapp.com/KNPhJo9DkGvKgCoRO2nH53" target="_blank" rel="noreferrer"><ArrowUpRight size={16}/><span>WhatsApp community</span></a></nav>
+    <div className="dash-side-bottom"><Button variant="ghost" onClick={()=>setUpdatesOpen(true)} title="Notifications"><Bell size={18}/><span>Notifications</span>{unread.length>0&&<small>{unread.length}</small>}</Button><Button asChild variant="ghost" title="Settings"><Link to="/dashboard/profile" onClick={()=>setDrawer(false)}><Settings size={18}/><span>Settings</span></Link></Button></div></>;
+  return <main className={`dashboard-page dash-light${collapsed?' dash-collapsed':''}`}><div className="dash-panel"><aside className="dash-sidebar">{sidebar}</aside><div className="dash-main"><header className="dash-topbar"><Button variant="ghost" size="icon" className="dash-menu-toggle" aria-label="Open dashboard menu" onClick={()=>setDrawer(true)}><Menu size={20}/></Button><Button variant="ghost" className="dash-top-search" onClick={()=>setSearchOpen(true)}><Search size={17}/><span>Search…</span></Button><div className="dash-clock"><time>{dhakaClock(now)}</time><small>Hope your day is going well</small></div><div className="dash-top-account">{a.summary?.helpUrl&&<Button asChild variant="ghost" className="dash-help"><a href={a.summary.helpUrl} target="_blank" rel="noreferrer">Need help?</a></Button>}<Button variant="ghost" size="icon" className="dash-bell" aria-label="Notifications" onClick={()=>setUpdatesOpen(true)}><Bell size={19}/>{unread.length>0&&<i/>}</Button><Link to="/dashboard/profile" className="dash-identity"><span className="dash-avatar">{a.avatar?<img src={a.avatar} alt=""/>:initial}</span><span><strong>{a.name??'Your account'}</strong>{stage&&<small>{stage}</small>}</span></Link></div></header><div className="candidate-content dash-page-content"><Outlet/></div></div></div>
+    <nav className="candidate-mobile-tabs dashboard-tabs" aria-label="Dashboard tabs">{allTabs.map(({to,label,Icon})=><Link to={to} key={to} activeOptions={{exact:to==='/dashboard'}}><Icon size={19}/>{label}</Link>)}</nav>
+    <Sheet open={drawer} onOpenChange={setDrawer}><SheetContent side="left" className="dash-drawer" data-lenis-prevent><SheetTitle className="sr-only">Dashboard navigation</SheetTitle><SheetDescription className="sr-only">Your dashboard pages and quick links</SheetDescription>{sidebar}</SheetContent></Sheet>
+    <Dialog open={searchOpen} onOpenChange={setSearchOpen}><DialogContent className="dash-dialog" data-lenis-prevent><DialogTitle>Search your dashboard</DialogTitle><DialogDescription>Applications, calls and documents</DialogDescription><label className="dash-search-input"><Search size={18}/><input autoFocus placeholder="Search…" value={query} onChange={e=>setQuery(e.target.value)}/></label><div className="dash-result-list">{results.map(i=><Button variant="ghost" key={i.id} onClick={()=>go(i)}><span><strong>{i.title}</strong><small>{i.detail}</small></span><ArrowUpRight size={16}/></Button>)}{!results.length&&<p>No matching items</p>}</div></DialogContent></Dialog>
+    <Dialog open={updatesOpen} onOpenChange={setUpdatesOpen}><DialogContent className="dash-dialog"><DialogTitle>Latest updates</DialogTitle><DialogDescription>{unread.length} unread updates</DialogDescription><div className="dash-result-list">{[...items].sort((x,y)=>y.at.localeCompare(x.at)).slice(0,10).map(i=><Button variant="ghost" key={i.id} onClick={()=>go(i)}><span><strong>{i.title}</strong><small>{i.detail}</small></span>{!seen.includes(i.id)&&<i className="dash-unread"/>}</Button>)}{!items.length&&<p>You’re all caught up</p>}</div><Button variant="outline" onClick={markRead}>Mark all as read</Button></DialogContent></Dialog>
+  </main>;
 }

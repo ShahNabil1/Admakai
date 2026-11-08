@@ -1,0 +1,2 @@
+- Dashboard appearance remains scoped to dashboard.css; reuse existing authenticated account/workspace reads and mutations rather than introducing parallel data flows.
+- Search and updates derive only from the signed-in user's existing data; read receipts and WhatsApp preference are per-user browser presentation state, never authorization decisions.

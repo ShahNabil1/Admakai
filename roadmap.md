@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Dashboard redesign: light shell/search/updates/sidebar/drawer and settings; preserve existing pages; focused tests and all-page smoke.
 - [x] Careers-only job board: URL search/filter sidebar/mobile sheet, role cards/video promo, preserved lower content; additive job fields/admin Details. 31 focused tests and build OK; real Careers/job/Apply navigation and URL reload/mobile sheet verified. Reference 3 absent; followed written layout. Video modal checked with temporary browser fixture since current video is unset.
 - [ ] Careers admin filter save and own-application link readback — real signed-in external Supabase session unavailable; current internship video must be supplied for real playback verification.
 - [x] Application declaration: new immutable template, signatory settings, formal PDF/status history; 61 focused tests, Submitted/In Review PDF visual QA and signed-out apply/dashboard smoke passed. Fixed word wrapping and missing footers during QA.
