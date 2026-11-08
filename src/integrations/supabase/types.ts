@@ -91,6 +91,63 @@ export type Database = {
         }
         Relationships: []
       }
+      analytics_events: {
+        Row: {
+          browser: string | null
+          created_at: string
+          device: string | null
+          id: number
+          is_new: boolean | null
+          kind: string
+          label: string | null
+          path: string
+          ref_host: string | null
+          session_id: string
+          tz: string | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          value: number | null
+          visitor_id: string
+        }
+        Insert: {
+          browser?: string | null
+          created_at?: string
+          device?: string | null
+          id?: number
+          is_new?: boolean | null
+          kind: string
+          label?: string | null
+          path?: string
+          ref_host?: string | null
+          session_id: string
+          tz?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          value?: number | null
+          visitor_id: string
+        }
+        Update: {
+          browser?: string | null
+          created_at?: string
+          device?: string | null
+          id?: number
+          is_new?: boolean | null
+          kind?: string
+          label?: string | null
+          path?: string
+          ref_host?: string | null
+          session_id?: string
+          tz?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          value?: number | null
+          visitor_id?: string
+        }
+        Relationships: []
+      }
       application_answers: {
         Row: {
           answer: Json | null
@@ -458,6 +515,51 @@ export type Database = {
           date_to?: string
           id?: string
           reason?: string | null
+        }
+        Relationships: []
+      }
+      booking_drafts: {
+        Row: {
+          brand: string | null
+          created_at: string
+          email: string | null
+          id: string
+          interest: string | null
+          name: string | null
+          session_id: string | null
+          status: string
+          step: number
+          updated_at: string
+          visitor_id: string
+          whatsapp: string | null
+        }
+        Insert: {
+          brand?: string | null
+          created_at?: string
+          email?: string | null
+          id: string
+          interest?: string | null
+          name?: string | null
+          session_id?: string | null
+          status?: string
+          step?: number
+          updated_at?: string
+          visitor_id: string
+          whatsapp?: string | null
+        }
+        Update: {
+          brand?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          interest?: string | null
+          name?: string | null
+          session_id?: string | null
+          status?: string
+          step?: number
+          updated_at?: string
+          visitor_id?: string
+          whatsapp?: string | null
         }
         Relationships: []
       }
@@ -3186,6 +3288,8 @@ export type Database = {
       }
     }
     Functions: {
+      analytics_is_staff: { Args: never; Returns: boolean }
+      analytics_report: { Args: { _from: string; _to: string }; Returns: Json }
       can_edit_site_content: { Args: never; Returns: boolean }
       cancel_interview: {
         Args: { _interview_id: string; _reason: string }
@@ -3237,6 +3341,10 @@ export type Database = {
         }
       }
       client_call_host: { Args: { p_booking_id: string }; Returns: string }
+      complete_booking_draft: {
+        Args: { _id: string; _visitor: string }
+        Returns: boolean
+      }
       create_booking: {
         Args: {
           p_brand: string
@@ -3536,6 +3644,20 @@ export type Database = {
         }
         Returns: undefined
       }
+      save_booking_draft: {
+        Args: {
+          _brand: string
+          _email: string
+          _id: string
+          _interest: string
+          _name: string
+          _session: string
+          _step: number
+          _visitor: string
+          _whatsapp: string
+        }
+        Returns: boolean
+      }
       save_interview_result: {
         Args: {
           _concerns: string
@@ -3576,6 +3698,7 @@ export type Database = {
         Args: { _application_id: string; _url: string }
         Returns: string
       }
+      track_events: { Args: { _events: Json }; Returns: number }
       withdraw_application: {
         Args: { _application_id: string; _reason?: string }
         Returns: string

@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
+import { completeBookingDraft, saveBookingDraft, track } from '@/lib/analytics-tracker';
+import { draftWorthSaving } from '@/lib/analytics-rules';
 import { useHydrated } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { CalendarDays, ArrowLeft, Check, RotateCcw, MessageCircle, LoaderCircle, ArrowRight } from 'lucide-react';
@@ -82,6 +84,13 @@ export function SlotBookingPage({ search = {}, prefill, onBooked, embedded = fal
   const displayMonth = month || firstMonth;
   useEffect(() => { setToday(new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Dhaka', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date())); }, []);
   useEffect(() => { if (step > 1) titleRef.current?.focus({ preventScroll: true }); }, [step]);
+  const draftId = useRef('');
+  useEffect(() => { if (!embedded && step > 1) track('booking_step', { value: step }); }, [step, embedded]);
+  useEffect(() => {
+    if (embedded || step !== 4 || !draftWorthSaving(fields)) return;
+    const timer = window.setTimeout(() => { draftId.current ||= crypto.randomUUID(); saveBookingDraft(draftId.current, fields, interestName(interest), step); }, 1200);
+    return () => window.clearTimeout(timer);
+  }, [embedded, step, fields.name, fields.email, fields.whatsapp, fields.brand]);
   const parsed = bookingFormSchema.safeParse(fields);
   const errors: Record<string, string> = {};
   if (!parsed.success) for (const issue of parsed.error.issues) errors[String(issue.path[0])] = issue.message;
@@ -101,6 +110,7 @@ export function SlotBookingPage({ search = {}, prefill, onBooked, embedded = fal
       const id = await createPublicBooking(selectedSlot.slot_at, parsed.data, source.current, interestName(interest));
       void notifyBookingRequested({ data: { id } }).catch(() => undefined);
       setBookingId(id);
+      if (draftId.current) completeBookingDraft(draftId.current);
       try { await sendBookingLink(parsed.data.email); setEmailSent(true); }
       catch (reason) { setEmailError(reason instanceof Error ? reason.message : 'The email could not be sent.'); }
       setConfirmation(selectedSlot); setStep(5); onBooked?.();
@@ -134,7 +144,7 @@ export function SlotBookingPage({ search = {}, prefill, onBooked, embedded = fal
 
         {step === 2 && <><p className="book-zone">Dhaka time, GMT+6</p>{availability || <BookingCalendar days={groups.map(([key]) => key)} month={displayMonth} selected={day} today={today} onMonth={setMonth} onSelect={value => { setDay(value); setTime(''); setError(''); setStep(3); }} />}</>}
         {step === 3 && <>{availability || (daySlots.length ? <><ChipRow label="Pick a time" columns={3} items={daySlots.map(slot => ({ value: slot.slot_at, label: clock(slot.local_time) }))} value={time} onChange={value => { setTime(value); setError(''); setStep(4); }} /><p className="book-zone book-time-zone">All times are Asia/Dhaka (GMT+6)</p></> : <div className="book-empty"><p>No times remain on this date.</p><Button type="button" className="book-chip" onClick={() => setStep(2)}>Choose another date</Button></div>)}</>}
-        {step === 4 && <><div className="book-summary"><div><strong>{selectionName}</strong><span>{day && dateTitle(day)} · {selectedSlot && clock(selectedSlot.local_time)}</span></div><Button type="button" variant="link" className="book-change" onClick={() => { setError(''); setStep(1); }}>change</Button></div><div className="book-fields">{field('name', 'Your name', 'text', 'name')}{field('whatsapp', 'WhatsApp number', 'tel', 'tel')}{field('email', 'Email', 'email', 'email')}{field('brand', 'Brand or page name', 'text', 'organization')}<div className="booking-field"><label htmlFor="book-message">What is the problem <span>· optional</span></label><textarea id="book-message" name="message" rows={3} maxLength={Math.max(0, 2000 - interestedMessage(selectionName, '').length - 1)} placeholder="Two lines is enough. What are you selling and what is not working right now." value={fields.message} onChange={event => change('message', event.target.value)} /></div></div><p className="book-budget-label">Budget range</p><ChipRow label="Budget range" items={[...budgets]} value={fields.budget} onChange={value => change('budget', value)} /><Button type="submit" className="book-submit" disabled={busy || !serviceChosen || !selectedSlot || !parsed.success}>{busy ? <><LoaderCircle className="book-spinner" />Confirming…</> : 'Confirm this time'}</Button></>}
+        {step === 4 && <><div className="book-summary"><div><strong>{selectionName}</strong><span>{day && dateTitle(day)} · {selectedSlot && clock(selectedSlot.local_time)}</span></div><Button type="button" variant="link" className="book-change" onClick={() => { setError(''); setStep(1); }}>change</Button></div><div className="book-fields">{field('name', 'Your name', 'text', 'name')}{field('whatsapp', 'WhatsApp number', 'tel', 'tel')}{field('email', 'Email', 'email', 'email')}{field('brand', 'Brand or page name', 'text', 'organization')}<div className="booking-field"><label htmlFor="book-message">What is the problem <span>· optional</span></label><textarea id="book-message" name="message" rows={3} maxLength={Math.max(0, 2000 - interestedMessage(selectionName, '').length - 1)} placeholder="Two lines is enough. What are you selling and what is not working right now." value={fields.message} onChange={event => change('message', event.target.value)} /></div></div>{!embedded && <p className="book-small">We save what you type so we can help if you don’t finish.</p>}<p className="book-budget-label">Budget range</p><ChipRow label="Budget range" items={[...budgets]} value={fields.budget} onChange={value => change('budget', value)} /><Button type="submit" className="book-submit" disabled={busy || !serviceChosen || !selectedSlot || !parsed.success}>{busy ? <><LoaderCircle className="book-spinner" />Confirming…</> : 'Confirm this time'}</Button></>}
         {step === 5 && confirmation && <div className="book-confirmation" role="status"><p className="book-confirmed-service">{selectionName}</p><p>{dayLabel(confirmation.local_day, true)} · {clock(confirmation.local_time)}</p><p className="book-zone">Asia/Dhaka (GMT+6)</p>{emailSent ? <><p>We have emailed you a no-password sign-in link for your booking. Dashboard access and product-photo uploads are coming next.</p><p className="book-small">No email in a minute? Check spam{whatsapp ? ', or message us on WhatsApp.' : '.'}</p>{whatsapp && <a className="book-contact" href={whatsapp}>Message us on WhatsApp</a>}</> : <><p>Your booking is saved, but we couldn’t email your sign-in link.</p><p className="book-error" role="alert">{emailError}</p><Button type="button" className="book-submit" onClick={() => void sendEmail()} disabled={busy}><RotateCcw />{busy ? 'Sending link…' : 'Retry email'}</Button></>}{bookingId && <span className="sr-only">Booking saved</span>}</div>}
         {error && <div className="book-error" role="alert"><p>{error}</p>{!error.includes('Someone just took') && !error.includes('bookings pending') && <Button type="submit" variant="link" className="book-change" disabled={busy || !selectedSlot || !parsed.success}><RotateCcw />Retry</Button>}</div>}
         </motion.div></AnimatePresence><input className="book-honeypot" name="company_website" ref={honeypot} tabIndex={-1} aria-hidden="true" autoComplete="off" />

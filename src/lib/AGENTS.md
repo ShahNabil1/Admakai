@@ -1,2 +1,3 @@
 - Declaration PDFs render frozen signed template, applicant values and image bytes from the delivery outbox; status editions use unique paths without overwriting original signed PDF metadata.
 - Declaration footer IDs identify hashed document content; the complete file SHA-256 is stored separately because a PDF cannot embed its own final byte hash.- Work feedback is public only via the work_public_stats RPC and approved-comment RLS; views insert only through deduped record_work_view, preventing inflation.
+- Site analytics: visitors write only via track_events/save_booking_draft RPCs (staff skipped in SQL); admin reads via can_edit_site_content-gated analytics_report and RLS, so visitors can never read tracking data.

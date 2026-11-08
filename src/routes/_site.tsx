@@ -10,6 +10,8 @@ import { applyCatalogue } from "@/lib/site-content";
 import { liveOffersQueryOptions } from "@/lib/offers-query";
 import { OfferProvider } from "@/components/offers/OfferContext";
 import { OfferBar } from "@/components/offers/OfferBar";
+import { useEffect, useRef } from "react";
+import { startTracking } from "@/lib/analytics-tracker";
 
 
 export const Route = createFileRoute("/_site")({
@@ -27,7 +29,10 @@ function Layout() {
   // Applied during render (idempotent) so hydration and later refetches use the same lists as the server render.
   applyCatalogue(useSuspenseQuery(siteCatalogueQueryOptions).data);
   const offers = useSuspenseQuery(liveOffersQueryOptions).data;
-  const isHome = useLocation({ select: location => location.pathname === '/' });
+  const pathname = useLocation({ select: location => location.pathname });
+  const isHome = pathname === '/';
+  const onPage = useRef<((path: string) => void) | null>(null);
+  useEffect(() => { onPage.current ??= startTracking(); onPage.current(pathname); }, [pathname]);
   const isApplication = useLocation({ select: location => /^\/careers\/[^/]+\/apply(?:\/done)?\/?$/.test(location.pathname) });
   return (
     <OfferProvider offers={offers.offers} serverNow={offers.serverNow}>

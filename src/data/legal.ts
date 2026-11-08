@@ -20,6 +20,7 @@ export const legalDocuments: Record<'privacy' | 'terms', LegalDocument> = {
       ] },
       { title: '3. Information collected during use', paragraphs: [
         'A booking includes referral information, the page pathname, campaign tags in the URL (UTM parameters) and your browser user-agent string. We use this information to understand the source of an enquiry and troubleshoot booking problems.',
+        'To understand how the website is used, we record which pages are opened, roughly how long they stay open, how far they are scrolled, which buttons are clicked, the referring site, device type, browser and time zone. These records are linked to a random identifier stored in your browser, not to your name, and are deleted after 13 months. If you type contact details into the booking form but do not finish, we keep those details so we can offer help.',
         'Our hosting and service providers may process technical connection information, such as IP addresses and request logs, to deliver and secure the service. The website also requests fonts from Google Fonts, which receives the connection information needed to serve those files.',
       ] },
       { title: '4. Why we use your information', paragraphs: [

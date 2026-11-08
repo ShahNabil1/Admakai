@@ -23,6 +23,7 @@ import { Route as SitePrivacyRouteImport } from './routes/_site.privacy'
 import { Route as SiteRefundRouteImport } from './routes/_site.refund'
 import { Route as SiteServicesRouteImport } from './routes/_site.services'
 import { Route as SiteTermsRouteImport } from './routes/_site.terms'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin_.analytics'
 import { Route as AdminFeedbackRouteImport } from './routes/admin_.feedback'
 import { Route as AdminOffersRouteImport } from './routes/admin_.offers'
 import { Route as AdminSiteContentRouteImport } from './routes/admin_.site-content'
@@ -129,6 +130,11 @@ const SiteTermsRoute = SiteTermsRouteImport.update({
   id: '/terms',
   path: '/terms',
   getParentRoute: () => SiteRoute,
+} as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/admin_/analytics',
+  path: '/admin/analytics',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminFeedbackRoute = AdminFeedbackRouteImport.update({
   id: '/admin_/feedback',
@@ -335,6 +341,7 @@ export interface FileRoutesByFullPath {
   '/refund': typeof SiteRefundRoute
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/feedback': typeof AdminFeedbackRoute
   '/admin/offers': typeof AdminOffersRoute
   '/admin/site-content': typeof AdminSiteContentRouteWithChildren
@@ -385,6 +392,7 @@ export interface FileRoutesByTo {
   '/refund': typeof SiteRefundRoute
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/feedback': typeof AdminFeedbackRoute
   '/admin/offers': typeof AdminOffersRoute
   '/admin/site-content': typeof AdminSiteContentRouteWithChildren
@@ -438,6 +446,7 @@ export interface FileRoutesById {
   '/_site/refund': typeof SiteRefundRoute
   '/_site/services': typeof SiteServicesRoute
   '/_site/terms': typeof SiteTermsRoute
+  '/admin_/analytics': typeof AdminAnalyticsRoute
   '/admin_/feedback': typeof AdminFeedbackRoute
   '/admin_/offers': typeof AdminOffersRoute
   '/admin_/site-content': typeof AdminSiteContentRouteWithChildren
@@ -493,6 +502,7 @@ export interface FileRouteTypes {
     | '/refund'
     | '/services'
     | '/terms'
+    | '/admin/analytics'
     | '/admin/feedback'
     | '/admin/offers'
     | '/admin/site-content'
@@ -543,6 +553,7 @@ export interface FileRouteTypes {
     | '/refund'
     | '/services'
     | '/terms'
+    | '/admin/analytics'
     | '/admin/feedback'
     | '/admin/offers'
     | '/admin/site-content'
@@ -595,6 +606,7 @@ export interface FileRouteTypes {
     | '/_site/refund'
     | '/_site/services'
     | '/_site/terms'
+    | '/admin_/analytics'
     | '/admin_/feedback'
     | '/admin_/offers'
     | '/admin_/site-content'
@@ -642,6 +654,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRouteWithChildren
   MeRoute: typeof MeRouteWithChildren
   SigninRoute: typeof SigninRoute
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminFeedbackRoute: typeof AdminFeedbackRoute
   AdminOffersRoute: typeof AdminOffersRoute
   AdminSiteContentRoute: typeof AdminSiteContentRouteWithChildren
@@ -759,6 +772,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/terms'
       preLoaderRoute: typeof SiteTermsRouteImport
       parentRoute: typeof SiteRoute
+    }
+    '/admin_/analytics': {
+      id: '/admin_/analytics'
+      path: '/admin/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin_/feedback': {
       id: '/admin_/feedback'
@@ -1139,6 +1159,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRouteWithChildren,
   MeRoute: MeRouteWithChildren,
   SigninRoute: SigninRoute,
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminFeedbackRoute: AdminFeedbackRoute,
   AdminOffersRoute: AdminOffersRoute,
   AdminSiteContentRoute: AdminSiteContentRouteWithChildren,
