@@ -1,0 +1,31 @@
+.dashboard-cards{display:grid;gap:18px;margin-bottom:24px;}
+@media(width>=900px){.dashboard-cards{grid-template-columns:repeat(2,minmax(0,1fr));}}
+.dashboard-shortcuts{display:grid;gap:14px;margin-top:32px;}
+@media(width>=700px){.dashboard-shortcuts{grid-template-columns:1fr 1fr;}}
+.dashboard-shortcut{display:flex;align-items:center;gap:16px;padding:22px;border:1px solid var(--line);border-radius:8px;transition:border-color .2s,background .2s;}
+.dashboard-shortcut:hover{border-color:var(--service-landing-yellow);background:var(--surface);}
+.dashboard-shortcut>svg:first-child{color:var(--service-landing-yellow);flex:none;}
+.dashboard-shortcut span{display:grid;gap:4px;flex:1;}
+.dashboard-shortcut strong{font-size:15px;font-weight:500;}
+.dashboard-shortcut small{font-size:12px;color:var(--muted);}
+.dashboard-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px;}
+.dashboard-heading h1{margin:0 !important;}
+.dashboard-tabs-row{display:inline-grid;grid-auto-flow:column;gap:4px;padding:4px;border:1px solid var(--line);border-radius:8px;margin-bottom:24px;}
+.dashboard-tabs-row button{height:36px;padding:0 16px;border-radius:6px;font-size:13px;color:var(--muted);}
+.dashboard-tabs-row button[aria-selected=true]{background:var(--surface);color:var(--fg);}
+.dashboard-booking{position:relative;margin-bottom:32px;border-radius:10px;overflow:hidden;border:1px solid var(--line);}
+.dashboard-booking-close{position:absolute;top:10px;right:10px;z-index:5;background:var(--paper);color:var(--ink);border-radius:50%;}
+.book-embedded{grid-template-columns:1fr !important;min-height:0 !important;}
+.book-embedded .book-portrait{display:none;}
+.book-embedded .book-right{height:auto;overflow:visible;}
+/* Call cards from the client area, re-themed for the site's dark dashboard. */
+.dashboard-calls{margin-bottom:32px;}
+.dashboard-calls .client-calls-list{display:grid;gap:16px;}
+.dashboard-calls .client-call{border:1px solid var(--line);border-radius:8px;padding:22px;background:transparent;color:var(--fg);}
+.dashboard-calls .client-call.confirmed{border-color:var(--finder-success);}
+.dashboard-calls .client-call p{color:var(--muted);}
+.dashboard-calls .client-call .client-note{color:var(--fg);}
+.dashboard-calls .client-status{color:var(--finder-blue);text-transform:capitalize;}
+.dashboard-calls .client-upload-section{border:1px solid var(--line);border-radius:8px;padding:22px;}
+.dashboard-calls .client-dark-button{background:var(--paper);color:var(--ink);}
+@media(width<700px){.dashboard-heading{flex-wrap:wrap;}.dashboard-tabs a{font-size:10px;}}

@@ -17,7 +17,7 @@ it('does not retry a booking business error in another schema', async () => {
 it('requests account creation and same-origin app email redirect', async () => {
   mocks.otp.mockResolvedValue({ error: null });
   await sendBookingLink('nadia@example.invalid');
-  expect(mocks.otp).toHaveBeenCalledWith({ email: 'nadia@example.invalid', options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}/app` } });
+  expect(mocks.otp).toHaveBeenCalledWith({ email: 'nadia@example.invalid', options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}/dashboard/calls` } });
 });
 it('reports OTP failure rather than pretending email delivery', async () => {
   mocks.otp.mockResolvedValue({ error: { message: 'Email rate limit exceeded' } });

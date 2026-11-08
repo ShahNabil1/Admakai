@@ -14,8 +14,7 @@ import { pageLang } from "@/lib/page-lang";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { supabase } from "../lib/supabase";
-import { safeAppPath } from "../lib/client-rules";
+import { AuthProvider } from "../lib/auth-state";
 import { initSmoothScroll } from "../lib/smooth-scroll";
 import { CurrencyProvider } from '../lib/currency';
 
@@ -132,28 +131,11 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
-  const router = useRouter();
   useEffect(() => initSmoothScroll(), []);
-  useEffect(() => {
-    const {data} = supabase.auth.onAuthStateChange(event => {
-      if (!['SIGNED_IN','SIGNED_OUT','USER_UPDATED'].includes(event)) return;
-      if (event === 'SIGNED_OUT') { void queryClient.cancelQueries().then(() => queryClient.clear()); }
-      queueMicrotask(() => {
-        void router.invalidate();
-        if (event !== 'SIGNED_OUT') void queryClient.invalidateQueries();
-        if (event === 'SIGNED_IN' && (window.location.pathname === '/app' || window.location.pathname === '/signin')) {
-          const destination = safeAppPath(sessionStorage.getItem('admakai-auth-destination'));
-          sessionStorage.removeItem('admakai-auth-destination');
-          void router.navigate({to:destination,replace:true});
-        }
-      });
-    });
-    return () => data.subscription.unsubscribe();
-  }, [router,queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CurrencyProvider><Outlet /></CurrencyProvider>
+      <AuthProvider><CurrencyProvider><Outlet /></CurrencyProvider></AuthProvider>
     </QueryClientProvider>
   );
 }

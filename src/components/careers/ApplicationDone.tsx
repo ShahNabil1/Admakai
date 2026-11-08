@@ -56,7 +56,7 @@ export function ApplicationDone({ slug }: { slug: string }) {
             {data.application && <AgreementPdf id={data.application.id} poll/>}
             <div className="application-done-actions">
               <Button asChild>
-                <Link to="/me">Go to my dashboard</Link>
+                <Link to="/dashboard/careers">Go to my dashboard</Link>
               </Button>
               <Button variant="outline" asChild>
                 <Link to="/careers">Back to careers</Link>

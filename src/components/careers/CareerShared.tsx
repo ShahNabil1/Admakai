@@ -49,7 +49,7 @@ export function ApplyLink({
   if (existing)
     return (
       <Button asChild className="page-call">
-        <Link to="/me">
+        <Link to="/dashboard/careers">
           View my application <ArrowUpRight />
         </Link>
       </Button>

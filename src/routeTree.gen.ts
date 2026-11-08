@@ -9,13 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
-import { Route as CandidateRouteImport } from './routes/_candidate'
 import { Route as SiteRouteImport } from './routes/_site'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as MeRouteImport } from './routes/me'
 import { Route as SigninRouteImport } from './routes/signin'
-import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated.app'
-import { Route as CandidateMeRouteImport } from './routes/_candidate.me'
 import { Route as SiteIndexRouteImport } from './routes/_site.index'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
 import { Route as SiteBookRouteImport } from './routes/_site.book'
@@ -24,21 +23,18 @@ import { Route as SitePrivacyRouteImport } from './routes/_site.privacy'
 import { Route as SiteRefundRouteImport } from './routes/_site.refund'
 import { Route as SiteServicesRouteImport } from './routes/_site.services'
 import { Route as SiteTermsRouteImport } from './routes/_site.terms'
-import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated.app.index'
-import { Route as AuthenticatedAppBillingRouteImport } from './routes/_authenticated.app.billing'
-import { Route as AuthenticatedAppCallsRouteImport } from './routes/_authenticated.app.calls'
-import { Route as AuthenticatedAppFilesRouteImport } from './routes/_authenticated.app.files'
-import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated.app.projects'
-import { Route as AuthenticatedAppReviewsRouteImport } from './routes/_authenticated.app.reviews'
-import { Route as CandidateMeIndexRouteImport } from './routes/_candidate.me.index'
-import { Route as CandidateMeDocumentsRouteImport } from './routes/_candidate.me.documents'
-import { Route as CandidateMeJourneyRouteImport } from './routes/_candidate.me.journey'
-import { Route as CandidateMeProfileRouteImport } from './routes/_candidate.me.profile'
+import { Route as AppSplatRouteImport } from './routes/app.$'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardCallsRouteImport } from './routes/dashboard.calls'
+import { Route as DashboardCareersRouteImport } from './routes/dashboard.careers'
+import { Route as DashboardDocumentsRouteImport } from './routes/dashboard.documents'
+import { Route as DashboardJourneyRouteImport } from './routes/dashboard.journey'
+import { Route as DashboardProfileRouteImport } from './routes/dashboard.profile'
+import { Route as MeSplatRouteImport } from './routes/me.$'
 import { Route as SiteBlogIndexRouteImport } from './routes/_site.blog.index'
 import { Route as SiteBlogSazdahTvcRouteImport } from './routes/_site.blog.sazdah-tvc'
 import { Route as SiteBlogVideoLightingGuideRouteImport } from './routes/_site.blog.video-lighting-guide'
 import { Route as SiteCareersIndexRouteImport } from './routes/_site.careers.index'
-import { Route as SiteMeLoginRouteImport } from './routes/_site.me.login'
 import { Route as SiteServicesSlugRouteImport } from './routes/_site.services_.$slug'
 import { Route as SiteWorkIndexRouteImport } from './routes/_site.work.index'
 import { Route as SiteWorkSlugRouteImport } from './routes/_site.work.$slug'
@@ -53,7 +49,7 @@ import { Route as AdminHiringQuestionsRouteImport } from './routes/admin_.hiring
 import { Route as AdminHiringSettingsRouteImport } from './routes/admin_.hiring.settings'
 import { Route as ApiPublicHiringRemindersRouteImport } from './routes/api/public/hiring-reminders'
 import { Route as AuthSsoCallbackRouteImport } from './routes/auth.sso.callback'
-import { Route as CandidateMeApplicationsIdRouteImport } from './routes/_candidate.me.applications.$id'
+import { Route as DashboardApplicationsIdRouteImport } from './routes/dashboard.applications.$id'
 import { Route as SiteCareersSlugIndexRouteImport } from './routes/_site.careers.$slug.index'
 import { Route as SiteCareersSlugApplyRouteImport } from './routes/_site.careers.$slug.apply'
 import { Route as AdminHiringApplicationsIdRouteImport } from './routes/admin_.hiring.applications_.$id'
@@ -61,14 +57,6 @@ import { Route as AdminHiringJobsIdRouteImport } from './routes/admin_.hiring.jo
 import { Route as SiteCareersSlugApplyIndexRouteImport } from './routes/_site.careers.$slug.apply.index'
 import { Route as SiteCareersSlugApplyDoneRouteImport } from './routes/_site.careers.$slug.apply.done'
 
-const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CandidateRoute = CandidateRouteImport.update({
-  id: '/_candidate',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SiteRoute = SiteRouteImport.update({
   id: '/_site',
   getParentRoute: () => rootRouteImport,
@@ -78,20 +66,25 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeRoute = MeRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SigninRoute = SigninRouteImport.update({
   id: '/signin',
   path: '/signin',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedAppRoute = AuthenticatedAppRouteImport.update({
-  id: '/app',
-  path: '/app',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const CandidateMeRoute = CandidateMeRouteImport.update({
-  id: '/me',
-  path: '/me',
-  getParentRoute: () => CandidateRoute,
 } as any)
 const SiteIndexRoute = SiteIndexRouteImport.update({
   id: '/',
@@ -133,56 +126,45 @@ const SiteTermsRoute = SiteTermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => SiteRoute,
 } as any)
-const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
+const AppSplatRoute = AppSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => AppRoute,
+} as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AuthenticatedAppRoute,
+  getParentRoute: () => DashboardRoute,
 } as any)
-const AuthenticatedAppBillingRoute = AuthenticatedAppBillingRouteImport.update({
-  id: '/billing',
-  path: '/billing',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppCallsRoute = AuthenticatedAppCallsRouteImport.update({
+const DashboardCallsRoute = DashboardCallsRouteImport.update({
   id: '/calls',
   path: '/calls',
-  getParentRoute: () => AuthenticatedAppRoute,
+  getParentRoute: () => DashboardRoute,
 } as any)
-const AuthenticatedAppFilesRoute = AuthenticatedAppFilesRouteImport.update({
-  id: '/files',
-  path: '/files',
-  getParentRoute: () => AuthenticatedAppRoute,
+const DashboardCareersRoute = DashboardCareersRouteImport.update({
+  id: '/careers',
+  path: '/careers',
+  getParentRoute: () => DashboardRoute,
 } as any)
-const AuthenticatedAppProjectsRoute =
-  AuthenticatedAppProjectsRouteImport.update({
-    id: '/projects',
-    path: '/projects',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppReviewsRoute = AuthenticatedAppReviewsRouteImport.update({
-  id: '/reviews',
-  path: '/reviews',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const CandidateMeIndexRoute = CandidateMeIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => CandidateMeRoute,
-} as any)
-const CandidateMeDocumentsRoute = CandidateMeDocumentsRouteImport.update({
+const DashboardDocumentsRoute = DashboardDocumentsRouteImport.update({
   id: '/documents',
   path: '/documents',
-  getParentRoute: () => CandidateMeRoute,
+  getParentRoute: () => DashboardRoute,
 } as any)
-const CandidateMeJourneyRoute = CandidateMeJourneyRouteImport.update({
+const DashboardJourneyRoute = DashboardJourneyRouteImport.update({
   id: '/journey',
   path: '/journey',
-  getParentRoute: () => CandidateMeRoute,
+  getParentRoute: () => DashboardRoute,
 } as any)
-const CandidateMeProfileRoute = CandidateMeProfileRouteImport.update({
+const DashboardProfileRoute = DashboardProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
-  getParentRoute: () => CandidateMeRoute,
+  getParentRoute: () => DashboardRoute,
+} as any)
+const MeSplatRoute = MeSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => MeRoute,
 } as any)
 const SiteBlogIndexRoute = SiteBlogIndexRouteImport.update({
   id: '/blog/',
@@ -203,11 +185,6 @@ const SiteBlogVideoLightingGuideRoute =
 const SiteCareersIndexRoute = SiteCareersIndexRouteImport.update({
   id: '/careers/',
   path: '/careers/',
-  getParentRoute: () => SiteRoute,
-} as any)
-const SiteMeLoginRoute = SiteMeLoginRouteImport.update({
-  id: '/me/login',
-  path: '/me/login',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteServicesSlugRoute = SiteServicesSlugRouteImport.update({
@@ -281,12 +258,11 @@ const AuthSsoCallbackRoute = AuthSsoCallbackRouteImport.update({
   path: '/auth/sso/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CandidateMeApplicationsIdRoute =
-  CandidateMeApplicationsIdRouteImport.update({
-    id: '/applications/$id',
-    path: '/applications/$id',
-    getParentRoute: () => CandidateMeRoute,
-  } as any)
+const DashboardApplicationsIdRoute = DashboardApplicationsIdRouteImport.update({
+  id: '/applications/$id',
+  path: '/applications/$id',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const SiteCareersSlugIndexRoute = SiteCareersSlugIndexRouteImport.update({
   id: '/careers/$slug/',
   path: '/careers/$slug/',
@@ -324,9 +300,10 @@ const SiteCareersSlugApplyDoneRoute =
 export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
   '/admin': typeof AdminRoute
+  '/app': typeof AppRouteWithChildren
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/me': typeof MeRouteWithChildren
   '/signin': typeof SigninRoute
-  '/app': typeof AuthenticatedAppRouteWithChildren
-  '/me': typeof CandidateMeRouteWithChildren
   '/about': typeof SiteAboutRoute
   '/book': typeof SiteBookRoute
   '/pricing': typeof SitePricingRoute
@@ -334,17 +311,16 @@ export interface FileRoutesByFullPath {
   '/refund': typeof SiteRefundRoute
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
-  '/app/billing': typeof AuthenticatedAppBillingRoute
-  '/app/calls': typeof AuthenticatedAppCallsRoute
-  '/app/files': typeof AuthenticatedAppFilesRoute
-  '/app/projects': typeof AuthenticatedAppProjectsRoute
-  '/app/reviews': typeof AuthenticatedAppReviewsRoute
-  '/me/documents': typeof CandidateMeDocumentsRoute
-  '/me/journey': typeof CandidateMeJourneyRoute
-  '/me/profile': typeof CandidateMeProfileRoute
+  '/app/$': typeof AppSplatRoute
+  '/dashboard/calls': typeof DashboardCallsRoute
+  '/dashboard/careers': typeof DashboardCareersRoute
+  '/dashboard/documents': typeof DashboardDocumentsRoute
+  '/dashboard/journey': typeof DashboardJourneyRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
+  '/me/$': typeof MeSplatRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
   '/blog/video-lighting-guide': typeof SiteBlogVideoLightingGuideRoute
-  '/me/login': typeof SiteMeLoginRoute
   '/services/$slug': typeof SiteServicesSlugRoute
   '/work/$slug': typeof SiteWorkSlugRoute
   '/admin/hiring/agreements': typeof AdminHiringAgreementsRoute
@@ -357,13 +333,11 @@ export interface FileRoutesByFullPath {
   '/admin/hiring/settings': typeof AdminHiringSettingsRoute
   '/api/public/hiring-reminders': typeof ApiPublicHiringRemindersRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
-  '/app/': typeof AuthenticatedAppIndexRoute
-  '/me/': typeof CandidateMeIndexRoute
+  '/dashboard/applications/$id': typeof DashboardApplicationsIdRoute
   '/blog/': typeof SiteBlogIndexRoute
   '/careers/': typeof SiteCareersIndexRoute
   '/work/': typeof SiteWorkIndexRoute
   '/admin/hiring/': typeof AdminHiringIndexRoute
-  '/me/applications/$id': typeof CandidateMeApplicationsIdRoute
   '/careers/$slug/apply': typeof SiteCareersSlugApplyRouteWithChildren
   '/admin/hiring/applications/$id': typeof AdminHiringApplicationsIdRoute
   '/admin/hiring/jobs/$id': typeof AdminHiringJobsIdRoute
@@ -372,8 +346,9 @@ export interface FileRoutesByFullPath {
   '/careers/$slug/apply/': typeof SiteCareersSlugApplyIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof SiteIndexRoute
   '/admin': typeof AdminRoute
+  '/app': typeof AppRouteWithChildren
+  '/me': typeof MeRouteWithChildren
   '/signin': typeof SigninRoute
   '/about': typeof SiteAboutRoute
   '/book': typeof SiteBookRoute
@@ -382,17 +357,17 @@ export interface FileRoutesByTo {
   '/refund': typeof SiteRefundRoute
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
-  '/app/billing': typeof AuthenticatedAppBillingRoute
-  '/app/calls': typeof AuthenticatedAppCallsRoute
-  '/app/files': typeof AuthenticatedAppFilesRoute
-  '/app/projects': typeof AuthenticatedAppProjectsRoute
-  '/app/reviews': typeof AuthenticatedAppReviewsRoute
-  '/me/documents': typeof CandidateMeDocumentsRoute
-  '/me/journey': typeof CandidateMeJourneyRoute
-  '/me/profile': typeof CandidateMeProfileRoute
+  '/app/$': typeof AppSplatRoute
+  '/dashboard/calls': typeof DashboardCallsRoute
+  '/dashboard/careers': typeof DashboardCareersRoute
+  '/dashboard/documents': typeof DashboardDocumentsRoute
+  '/dashboard/journey': typeof DashboardJourneyRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
+  '/me/$': typeof MeSplatRoute
+  '/': typeof SiteIndexRoute
+  '/dashboard': typeof DashboardIndexRoute
   '/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
   '/blog/video-lighting-guide': typeof SiteBlogVideoLightingGuideRoute
-  '/me/login': typeof SiteMeLoginRoute
   '/services/$slug': typeof SiteServicesSlugRoute
   '/work/$slug': typeof SiteWorkSlugRoute
   '/admin/hiring/agreements': typeof AdminHiringAgreementsRoute
@@ -405,13 +380,11 @@ export interface FileRoutesByTo {
   '/admin/hiring/settings': typeof AdminHiringSettingsRoute
   '/api/public/hiring-reminders': typeof ApiPublicHiringRemindersRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
-  '/app': typeof AuthenticatedAppIndexRoute
-  '/me': typeof CandidateMeIndexRoute
+  '/dashboard/applications/$id': typeof DashboardApplicationsIdRoute
   '/blog': typeof SiteBlogIndexRoute
   '/careers': typeof SiteCareersIndexRoute
   '/work': typeof SiteWorkIndexRoute
   '/admin/hiring': typeof AdminHiringIndexRoute
-  '/me/applications/$id': typeof CandidateMeApplicationsIdRoute
   '/admin/hiring/applications/$id': typeof AdminHiringApplicationsIdRoute
   '/admin/hiring/jobs/$id': typeof AdminHiringJobsIdRoute
   '/careers/$slug': typeof SiteCareersSlugIndexRoute
@@ -420,13 +393,12 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_authenticated': typeof AuthenticatedRouteWithChildren
-  '/_candidate': typeof CandidateRouteWithChildren
   '/_site': typeof SiteRouteWithChildren
   '/admin': typeof AdminRoute
+  '/app': typeof AppRouteWithChildren
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/me': typeof MeRouteWithChildren
   '/signin': typeof SigninRoute
-  '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
-  '/_candidate/me': typeof CandidateMeRouteWithChildren
   '/_site/about': typeof SiteAboutRoute
   '/_site/book': typeof SiteBookRoute
   '/_site/pricing': typeof SitePricingRoute
@@ -434,18 +406,17 @@ export interface FileRoutesById {
   '/_site/refund': typeof SiteRefundRoute
   '/_site/services': typeof SiteServicesRoute
   '/_site/terms': typeof SiteTermsRoute
+  '/app/$': typeof AppSplatRoute
+  '/dashboard/calls': typeof DashboardCallsRoute
+  '/dashboard/careers': typeof DashboardCareersRoute
+  '/dashboard/documents': typeof DashboardDocumentsRoute
+  '/dashboard/journey': typeof DashboardJourneyRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
+  '/me/$': typeof MeSplatRoute
   '/_site/': typeof SiteIndexRoute
-  '/_authenticated/app/billing': typeof AuthenticatedAppBillingRoute
-  '/_authenticated/app/calls': typeof AuthenticatedAppCallsRoute
-  '/_authenticated/app/files': typeof AuthenticatedAppFilesRoute
-  '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRoute
-  '/_authenticated/app/reviews': typeof AuthenticatedAppReviewsRoute
-  '/_candidate/me/documents': typeof CandidateMeDocumentsRoute
-  '/_candidate/me/journey': typeof CandidateMeJourneyRoute
-  '/_candidate/me/profile': typeof CandidateMeProfileRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/_site/blog/sazdah-tvc': typeof SiteBlogSazdahTvcRoute
   '/_site/blog/video-lighting-guide': typeof SiteBlogVideoLightingGuideRoute
-  '/_site/me/login': typeof SiteMeLoginRoute
   '/_site/services_/$slug': typeof SiteServicesSlugRoute
   '/_site/work/$slug': typeof SiteWorkSlugRoute
   '/admin_/hiring/agreements': typeof AdminHiringAgreementsRoute
@@ -458,13 +429,11 @@ export interface FileRoutesById {
   '/admin_/hiring/settings': typeof AdminHiringSettingsRoute
   '/api/public/hiring-reminders': typeof ApiPublicHiringRemindersRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
-  '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
-  '/_candidate/me/': typeof CandidateMeIndexRoute
+  '/dashboard/applications/$id': typeof DashboardApplicationsIdRoute
   '/_site/blog/': typeof SiteBlogIndexRoute
   '/_site/careers/': typeof SiteCareersIndexRoute
   '/_site/work/': typeof SiteWorkIndexRoute
   '/admin_/hiring/': typeof AdminHiringIndexRoute
-  '/_candidate/me/applications/$id': typeof CandidateMeApplicationsIdRoute
   '/_site/careers/$slug/apply': typeof SiteCareersSlugApplyRouteWithChildren
   '/admin_/hiring/applications_/$id': typeof AdminHiringApplicationsIdRoute
   '/admin_/hiring/jobs_/$id': typeof AdminHiringJobsIdRoute
@@ -477,9 +446,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
-    | '/signin'
     | '/app'
+    | '/dashboard'
     | '/me'
+    | '/signin'
     | '/about'
     | '/book'
     | '/pricing'
@@ -487,17 +457,16 @@ export interface FileRouteTypes {
     | '/refund'
     | '/services'
     | '/terms'
-    | '/app/billing'
-    | '/app/calls'
-    | '/app/files'
-    | '/app/projects'
-    | '/app/reviews'
-    | '/me/documents'
-    | '/me/journey'
-    | '/me/profile'
+    | '/app/$'
+    | '/dashboard/calls'
+    | '/dashboard/careers'
+    | '/dashboard/documents'
+    | '/dashboard/journey'
+    | '/dashboard/profile'
+    | '/me/$'
+    | '/dashboard/'
     | '/blog/sazdah-tvc'
     | '/blog/video-lighting-guide'
-    | '/me/login'
     | '/services/$slug'
     | '/work/$slug'
     | '/admin/hiring/agreements'
@@ -510,13 +479,11 @@ export interface FileRouteTypes {
     | '/admin/hiring/settings'
     | '/api/public/hiring-reminders'
     | '/auth/sso/callback'
-    | '/app/'
-    | '/me/'
+    | '/dashboard/applications/$id'
     | '/blog/'
     | '/careers/'
     | '/work/'
     | '/admin/hiring/'
-    | '/me/applications/$id'
     | '/careers/$slug/apply'
     | '/admin/hiring/applications/$id'
     | '/admin/hiring/jobs/$id'
@@ -525,8 +492,9 @@ export interface FileRouteTypes {
     | '/careers/$slug/apply/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/admin'
+    | '/app'
+    | '/me'
     | '/signin'
     | '/about'
     | '/book'
@@ -535,17 +503,17 @@ export interface FileRouteTypes {
     | '/refund'
     | '/services'
     | '/terms'
-    | '/app/billing'
-    | '/app/calls'
-    | '/app/files'
-    | '/app/projects'
-    | '/app/reviews'
-    | '/me/documents'
-    | '/me/journey'
-    | '/me/profile'
+    | '/app/$'
+    | '/dashboard/calls'
+    | '/dashboard/careers'
+    | '/dashboard/documents'
+    | '/dashboard/journey'
+    | '/dashboard/profile'
+    | '/me/$'
+    | '/'
+    | '/dashboard'
     | '/blog/sazdah-tvc'
     | '/blog/video-lighting-guide'
-    | '/me/login'
     | '/services/$slug'
     | '/work/$slug'
     | '/admin/hiring/agreements'
@@ -558,13 +526,11 @@ export interface FileRouteTypes {
     | '/admin/hiring/settings'
     | '/api/public/hiring-reminders'
     | '/auth/sso/callback'
-    | '/app'
-    | '/me'
+    | '/dashboard/applications/$id'
     | '/blog'
     | '/careers'
     | '/work'
     | '/admin/hiring'
-    | '/me/applications/$id'
     | '/admin/hiring/applications/$id'
     | '/admin/hiring/jobs/$id'
     | '/careers/$slug'
@@ -572,13 +538,12 @@ export interface FileRouteTypes {
     | '/careers/$slug/apply'
   id:
     | '__root__'
-    | '/_authenticated'
-    | '/_candidate'
     | '/_site'
     | '/admin'
+    | '/app'
+    | '/dashboard'
+    | '/me'
     | '/signin'
-    | '/_authenticated/app'
-    | '/_candidate/me'
     | '/_site/about'
     | '/_site/book'
     | '/_site/pricing'
@@ -586,18 +551,17 @@ export interface FileRouteTypes {
     | '/_site/refund'
     | '/_site/services'
     | '/_site/terms'
+    | '/app/$'
+    | '/dashboard/calls'
+    | '/dashboard/careers'
+    | '/dashboard/documents'
+    | '/dashboard/journey'
+    | '/dashboard/profile'
+    | '/me/$'
     | '/_site/'
-    | '/_authenticated/app/billing'
-    | '/_authenticated/app/calls'
-    | '/_authenticated/app/files'
-    | '/_authenticated/app/projects'
-    | '/_authenticated/app/reviews'
-    | '/_candidate/me/documents'
-    | '/_candidate/me/journey'
-    | '/_candidate/me/profile'
+    | '/dashboard/'
     | '/_site/blog/sazdah-tvc'
     | '/_site/blog/video-lighting-guide'
-    | '/_site/me/login'
     | '/_site/services_/$slug'
     | '/_site/work/$slug'
     | '/admin_/hiring/agreements'
@@ -610,13 +574,11 @@ export interface FileRouteTypes {
     | '/admin_/hiring/settings'
     | '/api/public/hiring-reminders'
     | '/auth/sso/callback'
-    | '/_authenticated/app/'
-    | '/_candidate/me/'
+    | '/dashboard/applications/$id'
     | '/_site/blog/'
     | '/_site/careers/'
     | '/_site/work/'
     | '/admin_/hiring/'
-    | '/_candidate/me/applications/$id'
     | '/_site/careers/$slug/apply'
     | '/admin_/hiring/applications_/$id'
     | '/admin_/hiring/jobs_/$id'
@@ -626,10 +588,11 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
-  CandidateRoute: typeof CandidateRouteWithChildren
   SiteRoute: typeof SiteRouteWithChildren
   AdminRoute: typeof AdminRoute
+  AppRoute: typeof AppRouteWithChildren
+  DashboardRoute: typeof DashboardRouteWithChildren
+  MeRoute: typeof MeRouteWithChildren
   SigninRoute: typeof SigninRoute
   AdminHiringAgreementsRoute: typeof AdminHiringAgreementsRoute
   AdminHiringApplicationsRoute: typeof AdminHiringApplicationsRoute
@@ -648,20 +611,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_candidate': {
-      id: '/_candidate'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof CandidateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_site': {
       id: '/_site'
       path: ''
@@ -676,26 +625,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/me': {
+      id: '/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signin': {
       id: '/signin'
       path: '/signin'
       fullPath: '/signin'
       preLoaderRoute: typeof SigninRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/app': {
-      id: '/_authenticated/app'
-      path: '/app'
-      fullPath: '/app'
-      preLoaderRoute: typeof AuthenticatedAppRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_candidate/me': {
-      id: '/_candidate/me'
-      path: '/me'
-      fullPath: '/me'
-      preLoaderRoute: typeof CandidateMeRouteImport
-      parentRoute: typeof CandidateRoute
     }
     '/_site/': {
       id: '/_site/'
@@ -753,75 +709,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteTermsRouteImport
       parentRoute: typeof SiteRoute
     }
-    '/_authenticated/app/': {
-      id: '/_authenticated/app/'
+    '/app/$': {
+      id: '/app/$'
+      path: '/$'
+      fullPath: '/app/$'
+      preLoaderRoute: typeof AppSplatRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
       path: '/'
-      fullPath: '/app/'
-      preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/_authenticated/app/billing': {
-      id: '/_authenticated/app/billing'
-      path: '/billing'
-      fullPath: '/app/billing'
-      preLoaderRoute: typeof AuthenticatedAppBillingRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/calls': {
-      id: '/_authenticated/app/calls'
+    '/dashboard/calls': {
+      id: '/dashboard/calls'
       path: '/calls'
-      fullPath: '/app/calls'
-      preLoaderRoute: typeof AuthenticatedAppCallsRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
+      fullPath: '/dashboard/calls'
+      preLoaderRoute: typeof DashboardCallsRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/_authenticated/app/files': {
-      id: '/_authenticated/app/files'
-      path: '/files'
-      fullPath: '/app/files'
-      preLoaderRoute: typeof AuthenticatedAppFilesRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
+    '/dashboard/careers': {
+      id: '/dashboard/careers'
+      path: '/careers'
+      fullPath: '/dashboard/careers'
+      preLoaderRoute: typeof DashboardCareersRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/_authenticated/app/projects': {
-      id: '/_authenticated/app/projects'
-      path: '/projects'
-      fullPath: '/app/projects'
-      preLoaderRoute: typeof AuthenticatedAppProjectsRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/reviews': {
-      id: '/_authenticated/app/reviews'
-      path: '/reviews'
-      fullPath: '/app/reviews'
-      preLoaderRoute: typeof AuthenticatedAppReviewsRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_candidate/me/': {
-      id: '/_candidate/me/'
-      path: '/'
-      fullPath: '/me/'
-      preLoaderRoute: typeof CandidateMeIndexRouteImport
-      parentRoute: typeof CandidateMeRoute
-    }
-    '/_candidate/me/documents': {
-      id: '/_candidate/me/documents'
+    '/dashboard/documents': {
+      id: '/dashboard/documents'
       path: '/documents'
-      fullPath: '/me/documents'
-      preLoaderRoute: typeof CandidateMeDocumentsRouteImport
-      parentRoute: typeof CandidateMeRoute
+      fullPath: '/dashboard/documents'
+      preLoaderRoute: typeof DashboardDocumentsRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/_candidate/me/journey': {
-      id: '/_candidate/me/journey'
+    '/dashboard/journey': {
+      id: '/dashboard/journey'
       path: '/journey'
-      fullPath: '/me/journey'
-      preLoaderRoute: typeof CandidateMeJourneyRouteImport
-      parentRoute: typeof CandidateMeRoute
+      fullPath: '/dashboard/journey'
+      preLoaderRoute: typeof DashboardJourneyRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/_candidate/me/profile': {
-      id: '/_candidate/me/profile'
+    '/dashboard/profile': {
+      id: '/dashboard/profile'
       path: '/profile'
-      fullPath: '/me/profile'
-      preLoaderRoute: typeof CandidateMeProfileRouteImport
-      parentRoute: typeof CandidateMeRoute
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof DashboardProfileRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/me/$': {
+      id: '/me/$'
+      path: '/$'
+      fullPath: '/me/$'
+      preLoaderRoute: typeof MeSplatRouteImport
+      parentRoute: typeof MeRoute
     }
     '/_site/blog/': {
       id: '/_site/blog/'
@@ -849,13 +791,6 @@ declare module '@tanstack/react-router' {
       path: '/careers'
       fullPath: '/careers/'
       preLoaderRoute: typeof SiteCareersIndexRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/me/login': {
-      id: '/_site/me/login'
-      path: '/me/login'
-      fullPath: '/me/login'
-      preLoaderRoute: typeof SiteMeLoginRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/services_/$slug': {
@@ -956,12 +891,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSsoCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_candidate/me/applications/$id': {
-      id: '/_candidate/me/applications/$id'
+    '/dashboard/applications/$id': {
+      id: '/dashboard/applications/$id'
       path: '/applications/$id'
-      fullPath: '/me/applications/$id'
-      preLoaderRoute: typeof CandidateMeApplicationsIdRouteImport
-      parentRoute: typeof CandidateMeRoute
+      fullPath: '/dashboard/applications/$id'
+      preLoaderRoute: typeof DashboardApplicationsIdRouteImport
+      parentRoute: typeof DashboardRoute
     }
     '/_site/careers/$slug/': {
       id: '/_site/careers/$slug/'
@@ -1008,71 +943,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthenticatedAppRouteChildren {
-  AuthenticatedAppBillingRoute: typeof AuthenticatedAppBillingRoute
-  AuthenticatedAppCallsRoute: typeof AuthenticatedAppCallsRoute
-  AuthenticatedAppFilesRoute: typeof AuthenticatedAppFilesRoute
-  AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRoute
-  AuthenticatedAppReviewsRoute: typeof AuthenticatedAppReviewsRoute
-  AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
-}
-
-const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
-  AuthenticatedAppBillingRoute: AuthenticatedAppBillingRoute,
-  AuthenticatedAppCallsRoute: AuthenticatedAppCallsRoute,
-  AuthenticatedAppFilesRoute: AuthenticatedAppFilesRoute,
-  AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRoute,
-  AuthenticatedAppReviewsRoute: AuthenticatedAppReviewsRoute,
-  AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
-}
-
-const AuthenticatedAppRouteWithChildren =
-  AuthenticatedAppRoute._addFileChildren(AuthenticatedAppRouteChildren)
-
-interface AuthenticatedRouteChildren {
-  AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
-}
-
-const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
-}
-
-const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
-  AuthenticatedRouteChildren,
-)
-
-interface CandidateMeRouteChildren {
-  CandidateMeDocumentsRoute: typeof CandidateMeDocumentsRoute
-  CandidateMeJourneyRoute: typeof CandidateMeJourneyRoute
-  CandidateMeProfileRoute: typeof CandidateMeProfileRoute
-  CandidateMeIndexRoute: typeof CandidateMeIndexRoute
-  CandidateMeApplicationsIdRoute: typeof CandidateMeApplicationsIdRoute
-}
-
-const CandidateMeRouteChildren: CandidateMeRouteChildren = {
-  CandidateMeDocumentsRoute: CandidateMeDocumentsRoute,
-  CandidateMeJourneyRoute: CandidateMeJourneyRoute,
-  CandidateMeProfileRoute: CandidateMeProfileRoute,
-  CandidateMeIndexRoute: CandidateMeIndexRoute,
-  CandidateMeApplicationsIdRoute: CandidateMeApplicationsIdRoute,
-}
-
-const CandidateMeRouteWithChildren = CandidateMeRoute._addFileChildren(
-  CandidateMeRouteChildren,
-)
-
-interface CandidateRouteChildren {
-  CandidateMeRoute: typeof CandidateMeRouteWithChildren
-}
-
-const CandidateRouteChildren: CandidateRouteChildren = {
-  CandidateMeRoute: CandidateMeRouteWithChildren,
-}
-
-const CandidateRouteWithChildren = CandidateRoute._addFileChildren(
-  CandidateRouteChildren,
-)
-
 interface SiteCareersSlugApplyRouteChildren {
   SiteCareersSlugApplyDoneRoute: typeof SiteCareersSlugApplyDoneRoute
   SiteCareersSlugApplyIndexRoute: typeof SiteCareersSlugApplyIndexRoute
@@ -1097,7 +967,6 @@ interface SiteRouteChildren {
   SiteIndexRoute: typeof SiteIndexRoute
   SiteBlogSazdahTvcRoute: typeof SiteBlogSazdahTvcRoute
   SiteBlogVideoLightingGuideRoute: typeof SiteBlogVideoLightingGuideRoute
-  SiteMeLoginRoute: typeof SiteMeLoginRoute
   SiteServicesSlugRoute: typeof SiteServicesSlugRoute
   SiteWorkSlugRoute: typeof SiteWorkSlugRoute
   SiteBlogIndexRoute: typeof SiteBlogIndexRoute
@@ -1118,7 +987,6 @@ const SiteRouteChildren: SiteRouteChildren = {
   SiteIndexRoute: SiteIndexRoute,
   SiteBlogSazdahTvcRoute: SiteBlogSazdahTvcRoute,
   SiteBlogVideoLightingGuideRoute: SiteBlogVideoLightingGuideRoute,
-  SiteMeLoginRoute: SiteMeLoginRoute,
   SiteServicesSlugRoute: SiteServicesSlugRoute,
   SiteWorkSlugRoute: SiteWorkSlugRoute,
   SiteBlogIndexRoute: SiteBlogIndexRoute,
@@ -1130,11 +998,56 @@ const SiteRouteChildren: SiteRouteChildren = {
 
 const SiteRouteWithChildren = SiteRoute._addFileChildren(SiteRouteChildren)
 
+interface AppRouteChildren {
+  AppSplatRoute: typeof AppSplatRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppSplatRoute: AppSplatRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
+interface DashboardRouteChildren {
+  DashboardCallsRoute: typeof DashboardCallsRoute
+  DashboardCareersRoute: typeof DashboardCareersRoute
+  DashboardDocumentsRoute: typeof DashboardDocumentsRoute
+  DashboardJourneyRoute: typeof DashboardJourneyRoute
+  DashboardProfileRoute: typeof DashboardProfileRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardApplicationsIdRoute: typeof DashboardApplicationsIdRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardCallsRoute: DashboardCallsRoute,
+  DashboardCareersRoute: DashboardCareersRoute,
+  DashboardDocumentsRoute: DashboardDocumentsRoute,
+  DashboardJourneyRoute: DashboardJourneyRoute,
+  DashboardProfileRoute: DashboardProfileRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardApplicationsIdRoute: DashboardApplicationsIdRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
+interface MeRouteChildren {
+  MeSplatRoute: typeof MeSplatRoute
+}
+
+const MeRouteChildren: MeRouteChildren = {
+  MeSplatRoute: MeSplatRoute,
+}
+
+const MeRouteWithChildren = MeRoute._addFileChildren(MeRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  AuthenticatedRoute: AuthenticatedRouteWithChildren,
-  CandidateRoute: CandidateRouteWithChildren,
   SiteRoute: SiteRouteWithChildren,
   AdminRoute: AdminRoute,
+  AppRoute: AppRouteWithChildren,
+  DashboardRoute: DashboardRouteWithChildren,
+  MeRoute: MeRouteWithChildren,
   SigninRoute: SigninRoute,
   AdminHiringAgreementsRoute: AdminHiringAgreementsRoute,
   AdminHiringApplicationsRoute: AdminHiringApplicationsRoute,

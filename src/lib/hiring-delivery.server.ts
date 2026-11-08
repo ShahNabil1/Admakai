@@ -62,8 +62,8 @@ export async function sendHiringEmail(trigger:string,id:string,extra:Record<stri
   const {app,candidate,job,profile,settings}=await hiringDeliveryContext(id);
   const template=required(await db.from('email_templates').select('*').eq('trigger_key',trigger).single());
   const admin=trigger==='admin_new_application';const recipients=recipient?[recipient]:admin?settings.notify_admin_emails:[profile.email];
-  const tracker=`https://admakai.com/me/applications/${app.id}`;
-  const values:Record<string,string>={...extra,candidate_name:candidate.full_name,job_title:job.title,application_code:app.public_code,tracker_link:tracker,status_message:extra['status_message'] ?? ''};
+  const tracker=`https://admakai.com/dashboard/applications/${app.id}`;
+  const values:Record<string,string>={...extra,candidate_name:candidate.full_name,job_title:job.title,application_code:app.public_code,tracker_link:extra['tracker_link'] ?? tracker,status_message:extra['status_message'] ?? ''};
   const fill=(s:string)=>s.replace(/{{\s*([a-z_]+)\s*}}/g,(_,key:string)=>values[key] ?? '');
   const results:Array<{status:string}>=[];
   for(const to of recipients){let status='skipped',error:string|null=null,providerId:string|null=null;

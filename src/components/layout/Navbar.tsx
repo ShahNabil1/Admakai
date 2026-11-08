@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button';
 import { getNavbarScrollState } from '@/lib/navbar-scroll';
 import { CurrencySwitcher } from '@/components/CurrencySwitcher';
 import '@/components/home/hero.css';
-import { supabase } from '@/lib/supabase';
-import { useRouterState } from '@tanstack/react-router';
+import { AccountMenu, MobileAccountSection } from '@/components/account/AccountMenu';
+import { useAuth } from '@/lib/auth-state';
 
 const links = [
   { label: 'Pricing', to: '/pricing' },
@@ -25,17 +25,7 @@ export function Navbar({ hero = false }: { hero?: boolean }) {
   const [scroll, setScroll] = useState({ scrolled: false, hidden: false });
   const previousY = useRef(0);
   const reduce = useMotionPreference();
-  const locationKey = useRouterState({ select: state => state.location.href });
-  const [candidate, setCandidate] = useState(false);
-  useEffect(() => {
-    let active = true;
-    void supabase.auth.getUser().then(async ({ data }) => {
-      if (!data.user) { if (active) setCandidate(false); return; }
-      const result = await supabase.from('candidates').select('id').eq('id', data.user.id).maybeSingle();
-      if (active) setCandidate(!!result.data);
-    });
-    return () => { active = false; };
-  }, [locationKey]);
+  const { user, ready } = useAuth();
   useEffect(() => {
     if (!hero) return;
     previousY.current = Math.max(0, window.scrollY);
@@ -58,7 +48,7 @@ export function Navbar({ hero = false }: { hero?: boolean }) {
         <div className="hero-nav-links">
           {links.map(link => <Link key={link.to} to={link.to} className="hero-nav-link">{link.label}</Link>)}
         </div>
-        <div className="navbar-currency-actions">{candidate && <Link to="/me" className="candidate-account-link">My applications</Link>}<CurrencySwitcher location="header"/><Button asChild className="hero-nav-call"><Link to="/book">Book a call</Link></Button></div>
+        <div className="navbar-currency-actions"><CurrencySwitcher location="header"/><AccountMenu /><Button asChild className="hero-nav-call"><Link to="/book">Book a call</Link></Button></div>
         <Dialog.Root open={open} onOpenChange={setOpen}>
           <Dialog.Trigger asChild><Button variant="ghost" size="icon" className="hero-menu-trigger" aria-label="Open menu"><span className="hero-menu-icon" aria-hidden="true"><span /><span /></span></Button></Dialog.Trigger>
           <Dialog.Portal>
@@ -67,12 +57,13 @@ export function Navbar({ hero = false }: { hero?: boolean }) {
               <Link to="/" onClick={() => setOpen(false)} aria-label="Admakai home"><img className="hero-logo" src="/brand/logo-white.png" alt="Admakai" width="218" height="44" /></Link>
               <Dialog.Close asChild><Button variant="ghost" size="icon" className="hero-menu-close" aria-label="Close menu"><X /></Button></Dialog.Close>
               <motion.nav className="hero-menu-items" aria-label="Mobile navigation" initial="hidden" animate="visible" transition={{ staggerChildren: reduce ? 0 : .05 }}>
-                {candidate && <Link to="/me" onClick={() => setOpen(false)}>My applications</Link>}
+                <MobileAccountSection onNavigate={() => setOpen(false)} />
                 {[...links, { label: 'Book a call', to: '/book' } as const].map(link => (
                   <motion.div key={link.to} variants={{ hidden: { opacity: reduce ? 1 : 0, y: reduce ? 0 : 20 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: reduce ? 0 : .4 }}>
                     <Link to={link.to} onClick={() => setOpen(false)}>{link.label}</Link>
                   </motion.div>
                 ))}
+                {ready && !user && <Link to="/signin" className="account-mobile-signin" onClick={() => setOpen(false)}>Sign in</Link>}
               </motion.nav>
             </Dialog.Content>
           </Dialog.Portal>

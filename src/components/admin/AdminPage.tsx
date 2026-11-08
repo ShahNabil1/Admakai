@@ -9,6 +9,7 @@ import { notifyBookingStatus } from '@/lib/crm-emails.functions';
 import { bookingStatusTrigger } from '@/lib/crm-email-rules';
 import { LeadEnquiries, NewEnquiries } from './Enquiries';
 import { adminAccessAllowed } from '@/lib/application-rules';
+import { useAuth } from '@/lib/auth-state';
 import { cancelHubPopupSignIn, isStaffRole, startHubPopupSignIn, startHubSignIn, type StaffRole } from '@/lib/sso';
 import { Button } from '@/components/ui/button';
 import type { ActivityRow } from '@/lib/activity';
@@ -61,16 +62,20 @@ export function AdminPage() {
       if (active.current && version === checkVersion.current) { setState('signed-out'); setNote('Could not check your account. Please try again.'); }
     }
   }, []);
+  // Shared app auth state replaces this page's own listener; re-check whenever the signed-in user changes.
+  const { user: authUser, ready: authReady } = useAuth();
+  const authUserId = authUser?.id ?? null;
   useEffect(() => {
     active.current = true;
-    void checkAccess();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      // Defer auth calls until Supabase releases its auth-event lock.
-      if (event === 'SIGNED_IN') window.setTimeout(() => { if (active.current) void checkAccess(); }, 0);
-      if (event === 'SIGNED_OUT') { ++checkVersion.current; setState('signed-out'); }
-    });
-    return () => { active.current = false; ++checkVersion.current; subscription.unsubscribe(); cancelHubPopupSignIn(); };
-  }, [checkAccess]);
+    return () => { active.current = false; ++checkVersion.current; cancelHubPopupSignIn(); };
+  }, []);
+  useEffect(() => {
+    if (!authReady) return;
+    if (!authUserId) { ++checkVersion.current; setState('signed-out'); return; }
+    // Defer auth calls until Supabase releases its auth-event lock.
+    const t = window.setTimeout(() => { if (active.current) void checkAccess(); }, 0);
+    return () => window.clearTimeout(t);
+  }, [authReady, authUserId, checkAccess]);
   const signIn = () => {
     // Embedded previews partition storage from popups, so use the same-tab flow there.
     let embedded = true;

@@ -151,7 +151,7 @@ export function ApplicationPage({
       if (!active.current) return;
       if (result.application && !result.application.is_draft) {
         if (!gate.current && !pathRef.current.endsWith("/done"))
-          await navigate({ to: "/me", replace: true });
+          await navigate({ to: "/dashboard/careers", replace: true });
         return;
       }
       setData(result);

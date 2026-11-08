@@ -1,22 +1,24 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState, type FormEvent } from 'react';
-import { ArrowUpRight, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, UserRound } from 'lucide-react';
+import { ArrowUpRight, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { InternationalPhoneField } from '@/components/public/InternationalPhoneField';
+import { EmailCodeForm } from '@/components/careers/EmailCodeForm';
+import { GoogleButton } from '@/components/account/GoogleButton';
 import { supabase } from '@/lib/supabase';
-import { safeAppPath } from '@/lib/client-rules';
-import { internationalPhone } from '@/lib/international-phone';
+import { safeReturnPath, signedInHome } from '@/lib/account-rules';
+import { isStaffAccount, useAuth } from '@/lib/auth-state';
 import { isOtp, normalizeOtp, passwordError, PASSWORD_MAX, PASSWORD_MIN } from '@/lib/auth-rules';
 import { seoHead } from '@/lib/seo';
 import '@/components/client/client-area.css';
+import '@/components/careers/application.css';
 
 export const Route = createFileRoute('/signin')({
-  validateSearch: (search: Record<string, unknown>) => ({ redirect: safeAppPath(search['redirect']) }),
-  head: () => seoHead({ title: 'Sign In | Admakai', description: 'Sign in or create your Admakai client account.', path: '/signin', noindex: true }),
+  validateSearch: (search: Record<string, unknown>): { redirect?: string } => { const r = safeReturnPath(search['redirect']); return r ? { redirect: r } : {}; },
+  head: () => seoHead({ title: 'Sign In | Admakai', description: 'Sign in to Admakai with Google or a one-time email code.', path: '/signin', noindex: true }),
   component: SignIn,
 });
 
-type Mode = 'signin' | 'signup' | 'verify' | 'forgot' | 'reset';
+type Mode = 'code' | 'signin' | 'verify' | 'forgot' | 'reset';
 
 const friendly = (reason: unknown, fallback: string) => {
   const msg = reason instanceof Error ? reason.message : '';
@@ -36,36 +38,32 @@ function PasswordInput({ id, value, onChange, autoComplete }: { id: string; valu
   </div>;
 }
 
-function GoogleMark() {
-  return <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>;
-}
-
 function SignIn() {
   const { redirect } = Route.useSearch();
   const navigate = useNavigate();
-  const [mode, setMode] = useState<Mode>('signin');
-  const [name, setName] = useState('');
+  const [mode, setMode] = useState<Mode>('code');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [code, setCode] = useState('');
-  const [phoneError, setPhoneError] = useState('');
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [resetVerified, setResetVerified] = useState(false);
 
-  const destination = safeAppPath(redirect);
   const cleanEmail = email.trim().toLowerCase();
+  const { user, ready } = useAuth();
+  const userId = user?.id;
+  const leave = async (id: string) => { const staff = redirect ? false : await isStaffAccount(id).catch(() => false); await navigate({ href: signedInHome(staff, redirect), replace: true }); };
 
+  // Shared auth state: once a session exists (Google return, email code, password), go on.
   useEffect(() => {
-    void supabase.auth.getUser().then(({ data }) => { if (data.user && mode !== 'reset') void navigate({ to: destination, replace: true }); });
-    const { data } = supabase.auth.onAuthStateChange(event => {
-      if (event === 'SIGNED_IN' && mode !== 'reset') void navigate({ to: destination, replace: true });
-    });
-    return () => data.subscription.unsubscribe();
-  }, [navigate, destination, mode]);
+    if (!ready || !userId || mode === 'reset') return;
+    let active = true;
+    void (async () => { if (active) await leave(userId); })();
+    return () => { active = false; };
+  }, [ready, userId, mode]);
   useEffect(() => { if (!seconds) return; const t = setTimeout(() => setSeconds(n => Math.max(n - 1, 0)), 1000); return () => clearTimeout(t); }, [seconds]);
 
   const go = (next: Mode) => { setMode(next); setError(''); setNotice(''); setCode(''); setPassword(''); setConfirm(''); setResetVerified(false); };
@@ -80,23 +78,9 @@ function SignIn() {
   }, 'Sign-in failed. Please try again.'); };
 
   const google = () => void run(async () => {
-    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/signin?redirect=${encodeURIComponent(destination)}` } });
+    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/signin${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ''}` } });
     if (error) throw error;
   }, 'Google sign-in could not start.');
-
-  const signUp = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); const form = new FormData(e.currentTarget); void run(async () => {
-    const whatsappRaw = String(form.get('whatsapp') ?? '');
-    const phone = internationalPhone(whatsappRaw);
-    if (name.trim().length < 2) throw new Error('Please enter your full name.');
-    if (!phone) { setPhoneError('Enter a valid WhatsApp number.'); throw new Error('Enter a valid WhatsApp number.'); }
-    const pe = passwordError(password); if (pe) throw new Error(pe);
-    if (password !== confirm) throw new Error('Passwords don’t match.');
-    const { data, error } = await supabase.auth.signUp({ email: cleanEmail, password, options: { data: { full_name: name.trim(), whatsapp: phone.number } } });
-    if (error) throw error;
-    if (data.user && data.user.identities?.length === 0) throw new Error('An account with this email already exists. Please sign in.');
-    if (data.session) return; // auto-confirmed projects sign in immediately
-    setMode('verify'); setCode(''); setSeconds(60); setNotice(`We sent a 6-digit code to ${cleanEmail}.`);
-  }, 'Sign-up failed. Please try again.'); };
 
   const verifySignup = (e: FormEvent) => { e.preventDefault(); void run(async () => {
     if (!isOtp(code)) throw new Error('Enter the 6-digit code from your email.');
@@ -129,11 +113,11 @@ function SignIn() {
     if (used) throw new Error('You can’t reuse your current or a previous password. Choose a new one.');
     const { error } = await supabase.auth.updateUser({ password });
     if (error) throw error;
-    void navigate({ to: destination, replace: true });
+    if (user) await leave(user.id);
   }, 'Password could not be changed.'); };
 
-  const title = { signin: 'Sign in to Admakai', signup: 'Create your account', verify: 'Confirm your email', forgot: 'Forgot password', reset: resetVerified ? 'Set a new password' : 'Enter your code' }[mode];
-  const Icon = mode === 'signup' ? UserRound : mode === 'verify' ? Mail : mode === 'signin' ? LockKeyhole : ShieldCheck;
+  const title = { code: 'Sign in to Admakai', signin: 'Sign in with password', verify: 'Confirm your email', forgot: 'Forgot password', reset: resetVerified ? 'Set a new password' : 'Enter your code' }[mode];
+  const Icon = mode === 'code' ? LogIn : mode === 'verify' ? Mail : mode === 'signin' ? LockKeyhole : ShieldCheck;
   const lengthHint = <p className="client-small auth-hint">{PASSWORD_MIN} to {PASSWORD_MAX} characters.</p>;
   const codeField = <><label htmlFor="auth-code">6-digit code</label><input id="auth-code" className="auth-otp" inputMode="numeric" autoComplete="one-time-code" placeholder="••••••" value={code} onChange={e => setCode(normalizeOtp(e.target.value))} /></>;
   const resendButton = <Button type="button" variant="link" className="client-text-button auth-resend" disabled={!!seconds || busy} onClick={resend}>{seconds ? `Resend code in ${seconds}s` : 'Resend code'}</Button>;
@@ -142,13 +126,15 @@ function SignIn() {
     <span className="client-signin-icon"><Icon /></span>
     <h1>{title}</h1>
 
-    {(mode === 'signin' || mode === 'signup') && <>
-      <div className="auth-tabs" role="tablist">
-        <button role="tab" type="button" aria-selected={mode === 'signin'} onClick={() => go('signin')}>Sign in</button>
-        <button role="tab" type="button" aria-selected={mode === 'signup'} onClick={() => go('signup')}>Sign up</button>
+    {mode === 'code' && <>
+      <p>New here? Either option creates your account.</p>
+      <GoogleButton onClick={google} disabled={busy} />
+      <div className="auth-divider"><span>or get a code by email</span></div>
+      <div className="signin-code"><EmailCodeForm returnPath={`/signin${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ''}`} onSignedIn={() => undefined} /></div>
+      <div className="signin-links">
+        <button type="button" className="auth-link" onClick={() => go('signin')}>Sign in with password instead</button>
+        <a className="auth-link" href="/admin">Team member? Sign in with Branta Console</a>
       </div>
-      <Button type="button" variant="outline" className="auth-google" onClick={google} disabled={busy}><GoogleMark />Continue with Google</Button>
-      <div className="auth-divider"><span>or with email</span></div>
     </>}
 
     {mode === 'signin' && <form onSubmit={signInPassword}>
@@ -156,23 +142,14 @@ function SignIn() {
       <div className="auth-label-row"><label htmlFor="auth-password">Password</label><button type="button" className="auth-link" onClick={() => go('forgot')}>Forgot password?</button></div>
       <PasswordInput id="auth-password" value={password} onChange={setPassword} autoComplete="current-password" />
       <Button className="client-dark-button" type="submit" disabled={busy || !cleanEmail || !password}>{busy ? 'Signing in…' : 'Sign in'}<ArrowUpRight /></Button>
-    </form>}
-
-    {mode === 'signup' && <form onSubmit={signUp} noValidate>
-      <label htmlFor="auth-name">Full name</label><input id="auth-name" autoComplete="name" required value={name} onChange={e => setName(e.target.value)} />
-      <div className="auth-phone"><InternationalPhoneField error={phoneError || undefined} onChange={() => setPhoneError('')} /></div>
-      {phoneError && <p className="client-error auth-field-error">{phoneError}</p>}
-      <label htmlFor="auth-email">Email</label><input id="auth-email" type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} />
-      <label htmlFor="auth-password">Password</label><PasswordInput id="auth-password" value={password} onChange={setPassword} autoComplete="new-password" />{lengthHint}
-      <label htmlFor="auth-confirm">Confirm password</label><PasswordInput id="auth-confirm" value={confirm} onChange={setConfirm} autoComplete="new-password" />
-      <Button className="client-dark-button" type="submit" disabled={busy}>{busy ? 'Creating account…' : 'Create account'}<ArrowUpRight /></Button>
+      <div className="auth-foot"><button type="button" className="auth-link" onClick={() => go('code')}>Use Google or an email code</button></div>
     </form>}
 
     {mode === 'verify' && <form onSubmit={verifySignup}>
       <p>Enter the 6-digit code we sent to <strong>{cleanEmail}</strong>. Check spam if it hasn’t arrived.</p>
       {codeField}
       <Button className="client-dark-button" type="submit" disabled={busy || !isOtp(code)}>{busy ? 'Checking…' : 'Confirm email'}<ArrowUpRight /></Button>
-      <div className="auth-foot">{resendButton}<button type="button" className="auth-link" onClick={() => go('signup')}>Change email</button></div>
+      <div className="auth-foot">{resendButton}<button type="button" className="auth-link" onClick={() => go('signin')}>Change email</button></div>
     </form>}
 
     {mode === 'forgot' && <form onSubmit={sendReset}>

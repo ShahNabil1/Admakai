@@ -18,6 +18,6 @@ export async function createPublicBooking(slotAt: string, details: BookingDetail
   return z.string().uuid().parse(id);
 }
 export async function sendBookingLink(email: string) {
-  const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}/app` } });
+  const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}/dashboard/calls` } });
   if (error) throw new Error(error.message);
 }

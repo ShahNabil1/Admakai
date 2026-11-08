@@ -49,7 +49,7 @@ export async function deliverBookingRequested(id: string) {
   if (booking.status !== 'requested' || Date.now() - Date.parse(booking.created_at) > 15 * 60000) return { sent: 0 };
   if (await alreadyLogged(id, 'booking_requested')) return { sent: 0 };
   const s = await settings();
-  const a = await sendCrmEmail('booking_requested', [email], values, { bookingId: id, button: 'https://admakai.com/app', buttonLabel: 'View your booking' });
+  const a = await sendCrmEmail('booking_requested', [email], values, { bookingId: id, button: 'https://admakai.com/dashboard/calls', buttonLabel: 'View your booking' });
   const b = await sendCrmEmail('booking_new_admin', s.notify_admin_emails ?? [], values, { bookingId: id, button: `https://admakai.com/admin?tab=bookings&booking=${id}`, buttonLabel: 'Open booking' });
   return { sent: [...a, ...b].filter(r => r.status === 'sent').length };
 }
@@ -57,7 +57,7 @@ export async function deliverBookingStatus(id: string, trigger: string) {
   const { booking, email, values } = await bookingContext(id);
   const attachments = trigger === 'booking_confirmed' ? [{ filename: 'admakai-call.ics', content: btoa(bookingIcs(booking)) }] : [];
   if (trigger === 'booking_cancelled' && values.reason) values.reason = `Reason: ${values.reason}`;
-  return sendCrmEmail(trigger, [email], values, { bookingId: id, button: trigger === 'booking_cancelled' ? 'https://admakai.com/book' : 'https://admakai.com/app', buttonLabel: trigger === 'booking_cancelled' ? 'Book a new time' : 'View your booking', attachments });
+  return sendCrmEmail(trigger, [email], values, { bookingId: id, button: trigger === 'booking_cancelled' ? 'https://admakai.com/book' : 'https://admakai.com/dashboard/calls', buttonLabel: trigger === 'booking_cancelled' ? 'Book a new time' : 'View your booking', attachments });
 }
 export async function sendBookingReminders() {
   const w = reminderWindow(Date.now());

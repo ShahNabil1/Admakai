@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
-import { getRouteApi, useHydrated } from '@tanstack/react-router';
+import { useHydrated } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { CalendarDays, ArrowLeft, Check, RotateCcw, MessageCircle, LoaderCircle, ArrowRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -20,7 +20,7 @@ import { useCurrency } from '@/lib/currency';
 import { emptyInterest, interestFromSearch, interestName, legacyBookingNeed, interestedMessage, categoryServices, type BookingInterest } from '@/lib/booking-interest';
 import './slot-booking.css';
 
-const route = getRouteApi('/_site/book');
+export type BookingPrefill = { name?: string; email?: string; whatsapp?: string };
 const choices = [...serviceCategories.map(category => ({value: category.id, title: category.name, description: category.intro})), {value: 'monthly', title: 'Monthly plan', description: 'Choose the monthly plan that fits your brand.'}, {value: 'unsure', title: 'Not sure yet', description: 'Tell us the problem and we will say what fits.'}];
 function ChipRow({ label, items, value, onChange, columns = 1 }: { label: string; items: { value: string; label: string }[]; value: string; onChange: (value: string) => void; columns?: number }) {
   const keyboard = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -37,9 +37,8 @@ function ChipRow({ label, items, value, onChange, columns = 1 }: { label: string
 const dateTitle = (day: string) => new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Asia/Dhaka' }).format(new Date(`${day}T12:00:00+06:00`));
 const clock = (time: string) => { const hour = Number(time.slice(0, 2)); return `${hour % 12 || 12}:${time.slice(3, 5)} ${hour >= 12 ? 'pm' : 'am'}`; };
 
-export function SlotBookingPage() {
+export function SlotBookingPage({ search = {}, prefill, onBooked, embedded = false }: { search?: { service?: string; plan?: string }; prefill?: BookingPrefill; onBooked?: () => void; embedded?: boolean } = {}) {
   const hydrated = useHydrated();
-  const search = route.useSearch();
   const { formatRange } = useCurrency();
   const [interest, setInterest] = useState<BookingInterest>(emptyInterest);
   const reduce = useMotionPreference();
@@ -54,7 +53,7 @@ export function SlotBookingPage() {
   const whatsapp = whatsappUrl(site.WHATSAPP, 'Hi Admakai, I would like to book a call.');
   const [day, setDay] = useState('');
   const [time, setTime] = useState('');
-  const [fields, setFields] = useState<BookingFields>({ name: '', email: '', whatsapp: '', brand: '', need: 'unsure', message: '', budget: 'not_decided' });
+  const [fields, setFields] = useState<BookingFields>({ name: prefill?.name ?? '', email: prefill?.email ?? '', whatsapp: prefill?.whatsapp ?? '', brand: '', need: 'unsure', message: '', budget: 'not_decided' });
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -105,7 +104,7 @@ export function SlotBookingPage() {
       setBookingId(id);
       try { await sendBookingLink(parsed.data.email); setEmailSent(true); }
       catch (reason) { setEmailError(reason instanceof Error ? reason.message : 'The email could not be sent.'); }
-      setConfirmation(selectedSlot); setStep(5);
+      setConfirmation(selectedSlot); setStep(5); onBooked?.();
     } catch (reason) {
       const message = reason instanceof Error ? reason.message : 'Your booking could not be saved. Please try again.';
       if (message.includes('slot_unavailable')) { setError('Someone just took that time. Please pick another available time.'); setTime(''); setStep(3); await slots.refetch(); }
@@ -120,7 +119,7 @@ export function SlotBookingPage() {
   const secondChoices = categoryServices(interest.category);
   const title = step === 1 ? 'What do you need' : step === 2 ? 'Select a date' : step === 3 ? (day ? dateTitle(day) : 'Pick a time') : step === 4 ? 'Your details' : 'You are booked';
   const availability = !hydrated || slots.isPending ? <div className="book-skeleton" aria-label="Loading available dates" role="status"><div className="book-skeleton-times">{Array.from({ length: 21 }, (_, i) => <span key={i} />)}</div></div> : slots.isError ? <div className="book-empty" role="alert"><CalendarDays /><h3>Available times couldn’t load.</h3><p>Please try again in a moment.</p><Button type="button" className="book-chip" onClick={() => void slots.refetch()}><RotateCcw />Retry</Button></div> : !groups.length ? <div className="book-empty"><CalendarDays /><h3>No open times right now.</h3><p>New times will appear when they become available.</p>{whatsapp ? <Button asChild className="book-submit"><a href={whatsapp}><MessageCircle />Chat on WhatsApp</a></Button> : <p>WhatsApp contact is not available yet.</p>}<Button type="button" className="book-chip" onClick={() => void slots.refetch()}>Check again</Button></div> : null;
-  return <div className="book-page">
+  return <div className={`book-page${embedded ? ' book-embedded' : ''}`}>
     <aside className="book-portrait"><img src={panel.url} alt="A seated creative professional" /><div className="book-portrait-shade" /><p className="book-display">Let's make the ad<br />your brand<br />actually needs</p></aside>
     <div className="book-right" data-lenis-prevent><div className="book-column">
       <header className="book-heading"><h1>Book a call and tell us<br />what you are selling.</h1><p>Whether you are launching a product, running ads that are not working, or you just need content every month, this call is where we figure out what is actually worth making. Thirty minutes, no charge.</p></header>

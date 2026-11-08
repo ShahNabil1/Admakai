@@ -1,10 +1,5 @@
 export const maxUploadBytes = 10 * 1024 * 1024;
 export const maxBookingFiles = 5;
-export function safeAppPath(value: unknown) {
-  if (typeof value !== 'string') return '/app';
-  const allowed = ['/app', '/app/calls', '/app/projects', '/app/reviews', '/app/files', '/app/billing'];
-  return allowed.includes(value) ? value : '/app';
-}
 export type ClientBooking = { id: string; client_id: string; slot_at: string; duration_minutes: number; status: string; owner_id: string | null; meet_link: string | null; notes_shared: string | null };
 export function nextCall(bookings: ClientBooking[], now: number) {
   return bookings.filter(b => ['requested','in_review','confirmed','rescheduled'].includes(b.status) && Date.parse(b.slot_at) > now).sort((a,b) => Date.parse(a.slot_at)-Date.parse(b.slot_at))[0];

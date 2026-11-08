@@ -4,9 +4,6 @@ export const IMPORTANT_EMAILS = ['interview_scheduled', 'rejected', 'selected', 
 export function shouldSendHiringEmail(trigger: string, enabled: boolean, notifications: boolean) {
   return enabled && (trigger === 'admin_new_application' || notifications || IMPORTANT_EMAILS.includes(trigger));
 }
-export function safeCandidatePath(value: unknown) {
-  return typeof value === 'string' && /^\/me(?:\/(?:applications\/[a-f0-9-]{36}|documents|profile|journey))?$/.test(value) ? value : '/me';
-}
 export const interviewJoinEnabled = (scheduled: string, now = Date.now()) => now >= new Date(scheduled).getTime() - 10 * 60000;
 export const taskDueAt = (shortlisted: string, days: number) => new Date(new Date(shortlisted).getTime() + days * 86400000).toISOString();
 export function daysRemaining(date: string, now = Date.now()) { return Math.ceil((new Date(date).getTime() - now) / 86400000); }

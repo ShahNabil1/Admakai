@@ -5,4 +5,4 @@ export function needsJourneyReason(stage:string){return ['paused','ended'].inclu
 export function letterKind(stage:string):'offer'|'promotion'|null{return stage==='offer'?'offer':['project','salary'].includes(stage)?'promotion':null;}
 export function paidProjectTotal(projects:Array<{is_paid:boolean;amount:number|null}>){return projects.reduce((sum,p)=>sum+(p.is_paid?(p.amount??0):0),0);}
 export function documentBucket(kind:string){return ['offer_letter','promotion_letter'].includes(kind)?'letters':'agreements';}
-export const previewValues={candidate_name:'Sample Applicant',job_title:'Video Artist',stage_name:'Project Stage',start_date:'15 November 2026',date:'8 November 2026',application_code:'ADM-SAMPLE',tracker_link:'https://admakai.com/me',status_message:'Your next chapter at Admakai is ready.'};
+export const previewValues={candidate_name:'Sample Applicant',job_title:'Video Artist',stage_name:'Project Stage',start_date:'15 November 2026',date:'8 November 2026',application_code:'ADM-SAMPLE',tracker_link:'https://admakai.com/dashboard',status_message:'Your next chapter at Admakai is ready.'};
