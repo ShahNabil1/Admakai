@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
 import { Toaster, toast } from 'sonner';
-import { Activity, ArrowLeft, CalendarDays, Clapperboard, FolderKanban, LayoutDashboard, LogOut, Receipt, Search, Users, BriefcaseBusiness, ChevronDown, PanelsTopLeft, BadgePercent } from 'lucide-react';
+import { Activity, ArrowLeft, CalendarDays, Clapperboard, FolderKanban, LayoutDashboard, LogOut, Receipt, Search, Users, BriefcaseBusiness, ChevronDown, PanelsTopLeft, BadgePercent, MessageSquareHeart } from 'lucide-react';
 import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { HiringWorkspace } from './hiring/HiringWorkspace';
 import { supabase } from '@/lib/supabase';
@@ -18,6 +18,7 @@ import { StaffBilling } from './Billing';
 import { WorkAdmin } from './WorkAdmin';
 import { SiteContent } from './site-content/SiteContent';
 import { OffersAdmin } from './offers/OffersAdmin';
+import { FeedbackAdmin } from './feedback/FeedbackAdmin';
 import { readableOn } from '@/lib/offer-rules';
 import { ActivityLog, fetchActivity } from './ActivityLog';
 import { BookingSubmission, type BookingSubmissionData } from './BookingSubmission';
@@ -143,7 +144,8 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
   const isHiring = location.pathname === '/admin/hiring' || location.pathname.startsWith('/admin/hiring/');
   const isSiteContent = location.pathname === '/admin/site-content' || location.pathname.startsWith('/admin/site-content/');
   const isOffers = location.pathname === '/admin/offers' || location.pathname.startsWith('/admin/offers/');
-  const elsewhere = isHiring || isSiteContent || isOffers;
+  const isFeedback = location.pathname === '/admin/feedback';
+  const elsewhere = isHiring || isSiteContent || isOffers || isFeedback;
   const [hiringRoles, setHiringRoles] = useState<string[]>([]);
   const [hiringExpanded, setHiringExpanded] = useState(isHiring);
   useEffect(() => { void supabase.from('hiring_user_roles').select('role').eq('user_id', userId).then(({data}) => setHiringRoles(data?.map(r => r.role) ?? [])); }, [userId]);
@@ -263,6 +265,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
           ))}
           {canEditSite && <Link to="/admin/site-content" className={`sc-side-link ${isSiteContent ? 'is-active' : ''}`} aria-current={isSiteContent ? 'page' : undefined}><PanelsTopLeft size={17} /><span>Site content</span></Link>}
           {canEditSite && <Link to="/admin/offers" className={`sc-side-link ${isOffers ? 'is-active' : ''}`} aria-current={isOffers ? 'page' : undefined}><BadgePercent size={17} /><span>Offers</span></Link>}
+          {canEditSite && <Link to="/admin/feedback" className={`sc-side-link ${isFeedback ? 'is-active' : ''}`} aria-current={isFeedback ? 'page' : undefined}><MessageSquareHeart size={17} /><span>Portfolio feedback</span></Link>}
           {hiringRoles.length > 0 && <><Button variant="ghost" className={isHiring ? 'is-active' : ''} aria-expanded={hiringExpanded} onClick={() => setHiringExpanded(!hiringExpanded)}><BriefcaseBusiness size={17}/><span>Hiring</span><ChevronDown size={14}/></Button>{hiringExpanded && <div className="hiring-side-links">{hiringRoles.some(r=>['admin','reviewer'].includes(r)) && <><Link to="/admin/hiring">Overview</Link><Link to="/admin/hiring/applications">Applications</Link></>}<Link to="/admin/hiring/interviews">Interviews</Link><Link to="/admin/hiring/jobs" aria-current={location.pathname.includes('/hiring/jobs')?'page':undefined}>Jobs</Link><Link to="/admin/hiring/questions" aria-current={location.pathname.endsWith('/questions')?'page':undefined}>Question bank</Link>{hiringRoles.includes('admin') && <><Link to="/admin/hiring/journey">Team journey</Link><Link to="/admin/hiring/emails">Emails</Link><Link to="/admin/hiring/agreements">Agreements</Link><Link to="/admin/hiring/settings">Settings</Link></>}</div>}</>}
         </nav>
         <div className="admin-me"><span className="truncate">{email}</span><small>{role}</small>
@@ -276,7 +279,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
       </header>
 
       <main className="admin-main" key={openBooking ? `booking-${openBooking}` : tab}>
-        {isHiring ? <HiringWorkspace/> : isSiteContent ? <SiteContent /> : isOffers ? <OffersAdmin /> : openBooking ? (
+        {isHiring ? <HiringWorkspace/> : isSiteContent ? <SiteContent /> : isOffers ? <OffersAdmin /> : isFeedback ? <FeedbackAdmin /> : openBooking ? (
           <section className="booking-page">
             <button className="admin-btn-ghost booking-page-back" onClick={() => { setTab('bookings'); setOpenBooking(null); }}><ArrowLeft size={16} />Back to bookings</button>
             {booking ? <>

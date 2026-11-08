@@ -53,3 +53,4 @@
 - Enquiries use server-only app.create_enquiry; CRM mail goes via crm-emails.server.ts and the shared reminder endpoint, one delivery path.
 - html lang comes from page-lang.ts; seoHead lang sets hreflang.
 - Every email, agreement PDF and letter goes through public.delivery_outbox (src/lib/outbox.server.ts): enqueue a full snapshot first, then process; retries and the reminders endpoint/button resend only from the stored snapshot, and the (event, kind, trigger) key prevents double sends.
+- Portfolio feedback (work_views/work_reactions/work_comments) is read publicly only via the work_public_stats aggregate RPC plus approved-comment RLS; views are recorded only through record_work_view with a 24h per-visitor dedupe, so counts can't be inflated by direct inserts.

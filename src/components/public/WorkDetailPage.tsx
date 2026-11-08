@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, Check, Pencil, Share2 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { VIEW_AFTER_SECONDS, recordView } from '@/lib/work-feedback';
+import { WorkComments, WorkStatsBar, workStatsKey } from './WorkFeedback';
+import { ArrowRight, Check, Pencil, Play, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
 import { formatDuration } from '@/lib/vimeo';
@@ -18,6 +20,8 @@ export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
   const [expanded, setExpanded] = useState(false);
   const [needsUnmute, setNeedsUnmute] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [blocked, setBlocked] = useState(false);
+  const queryClient = useQueryClient();
   const stageRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<import('@vimeo/player').default | null>(null);
 
@@ -60,17 +64,27 @@ export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
       player = instance;
       playerRef.current = instance;
       setNeedsUnmute(true);
+      let counted = false;
+      instance.on('playing', () => { if (!disposed) setBlocked(false); });
+      instance.on('timeupdate', (e: { seconds: number }) => {
+        if (!counted && e.seconds >= VIEW_AFTER_SECONDS) {
+          counted = true;
+          void recordView(work.id).then(() => queryClient.invalidateQueries({ queryKey: workStatsKey(work.id) })).catch(() => {});
+        }
+      });
       instance.play().catch(() => {
-        void instance.setMuted(true).then(() => instance.play());
+        void instance.setMuted(true).then(() => instance.play()).catch(() => { if (!disposed) setBlocked(true); });
         if (!disposed) setNeedsUnmute(true);
       });
+      // Some browsers silently refuse autoplay; offer a big Play button if nothing started.
+      setTimeout(() => { void instance.getPaused().then((paused) => { if (paused && !disposed) setBlocked(true); }).catch(() => {}); }, 2500);
     });
     return () => {
       disposed = true;
       playerRef.current = null;
       void player?.destroy();
     };
-  }, [work.vimeo_id]);
+  }, [work.vimeo_id, work.id, queryClient]);
 
   useEffect(() => {
     void supabase.auth.getUser().then(async ({ data }) => {
@@ -104,7 +118,14 @@ export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
         <div className="workpage-watch-main">
           <div className="workpage-stage" style={{ '--workpage-ratio': ratio } as React.CSSProperties}>
             <div className="workpage-stage-inner" ref={stageRef} />
-            {needsUnmute ? (
+            {blocked ? (
+              <button type="button" className="workpage-play" aria-label="Play video" onClick={() => {
+                const p = playerRef.current; if (!p) return;
+                void p.setMuted(false).then(() => p.setVolume(1)).then(() => p.play()).then(() => { setBlocked(false); setNeedsUnmute(false); })
+                  .catch(() => p.setMuted(true).then(() => p.play()).then(() => setBlocked(false)).catch(() => {}));
+              }}><span><Play size={34} fill="currentColor" aria-hidden="true" /></span></button>
+            ) : null}
+            {needsUnmute && !blocked ? (
               <button
                 type="button"
                 className="workpage-unmute"
@@ -120,6 +141,7 @@ export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
 
           <div className="workpage-watch-head">
             <h1>{work.title}</h1>
+            <WorkStatsBar workId={work.id} slug={work.slug} />
             <div className="workpage-watch-actions">
               <div className="workpage-watch-brand">
                 <img src="/brand/icon-512.png" alt="Admakai" width={40} height={40} />
@@ -158,6 +180,8 @@ export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
               {expanded ? 'Show less' : '...more'}
             </button>
           </div>
+
+          <WorkComments workId={work.id} slug={work.slug} />
 
           {hasCaseStudy && study ? (
             <div className="workpage-study">

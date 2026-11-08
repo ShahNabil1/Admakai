@@ -1,0 +1,2 @@
+UPDATE public.works SET base_views = 30000 + floor(random() * 110000)::int WHERE base_views = 0;
+UPDATE public.works SET base_reactions = floor(base_views * (0.02 + random() * 0.03))::int WHERE base_reactions = 0;

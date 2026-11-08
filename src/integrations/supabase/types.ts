@@ -2943,6 +2943,88 @@ export type Database = {
         }
         Relationships: []
       }
+      work_comments: {
+        Row: {
+          author_label: string
+          body: string
+          created_at: string
+          id: string
+          pinned: boolean
+          status: string
+          team_kind: string | null
+          updated_at: string
+          user_id: string | null
+          work_id: string
+        }
+        Insert: {
+          author_label: string
+          body: string
+          created_at?: string
+          id?: string
+          pinned?: boolean
+          status?: string
+          team_kind?: string | null
+          updated_at?: string
+          user_id?: string | null
+          work_id: string
+        }
+        Update: {
+          author_label?: string
+          body?: string
+          created_at?: string
+          id?: string
+          pinned?: boolean
+          status?: string
+          team_kind?: string | null
+          updated_at?: string
+          user_id?: string | null
+          work_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_comments_work_id_fkey"
+            columns: ["work_id"]
+            isOneToOne: false
+            referencedRelation: "works"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      work_reactions: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          updated_at: string
+          user_id: string
+          work_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          updated_at?: string
+          user_id?: string
+          work_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          updated_at?: string
+          user_id?: string
+          work_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_reactions_work_id_fkey"
+            columns: ["work_id"]
+            isOneToOne: false
+            referencedRelation: "works"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       work_services: {
         Row: {
           position: number
@@ -2969,9 +3051,43 @@ export type Database = {
           },
         ]
       }
+      work_views: {
+        Row: {
+          created_at: string
+          id: string
+          viewer_id: string | null
+          visitor_id: string
+          work_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          viewer_id?: string | null
+          visitor_id: string
+          work_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          viewer_id?: string | null
+          visitor_id?: string
+          work_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_views_work_id_fkey"
+            columns: ["work_id"]
+            isOneToOne: false
+            referencedRelation: "works"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       works: {
         Row: {
           aspect: string
+          base_reactions: number
+          base_views: number
           case_study: Json
           category_id: string | null
           client_name: string | null
@@ -2995,6 +3111,8 @@ export type Database = {
         }
         Insert: {
           aspect?: string
+          base_reactions?: number
+          base_views?: number
           case_study?: Json
           category_id?: string | null
           client_name?: string | null
@@ -3018,6 +3136,8 @@ export type Database = {
         }
         Update: {
           aspect?: string
+          base_reactions?: number
+          base_views?: number
           case_study?: Json
           category_id?: string | null
           client_name?: string | null
@@ -3397,6 +3517,10 @@ export type Database = {
         }
         Returns: string
       }
+      record_work_view: {
+        Args: { _visitor_id: string; _work_id: string }
+        Returns: boolean
+      }
       reorder_pipeline_stages: {
         Args: { _pipeline_id: string; _stage_ids: string[] }
         Returns: number
@@ -3455,6 +3579,16 @@ export type Database = {
       withdraw_application: {
         Args: { _application_id: string; _reason?: string }
         Returns: string
+      }
+      work_public_stats: {
+        Args: { _work_ids: string[] }
+        Returns: {
+          comments: number
+          reactions: number
+          top_kinds: string[]
+          views: number
+          work_id: string
+        }[]
       }
     }
     Enums: {
