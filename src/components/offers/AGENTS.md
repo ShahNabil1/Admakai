@@ -1,0 +1,4 @@
+- Offer pricing is display-only: stored base prices never change. Every public price goes through OfferRange/PlanOfferPrice/useOfferPriceText, which apply the winning offer from offer-rules (highest priority, never stacking) so all pages agree.
+- Public offers come from the no-store getLiveOffers read (publishable key, RLS returns only live offers) primed in the `_site` loader; OfferProvider anchors its clock to the server time so hydration matches and ended offers drop off without a redeploy.
+- OfferBar lives only in the `_site` layout (hidden on the apply form) and publishes its visible height as `--offer-bar-visible`, which offsets the fixed header; its inline script hides offers a visitor closed before first paint.
+- Bookings and enquiries get offer_id from a database trigger at insert time (immutable), never from the browser. Offer edits go through role-checked server functions; admin counts use the private offer_lead_counts helper.
