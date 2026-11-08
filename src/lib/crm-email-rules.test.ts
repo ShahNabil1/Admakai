@@ -1,0 +1,10 @@
+import { expect, it } from 'vitest';
+import { bookingIcs, bookingStatusTrigger, dhakaTime, emailTemplateGroup, reminderWindow } from './crm-email-rules';
+it('confirming a booking sends booking_confirmed', () => expect(bookingStatusTrigger('confirmed')).toBe('booking_confirmed'));
+it('rescheduling sends booking_rescheduled', () => expect(bookingStatusTrigger('rescheduled')).toBe('booking_rescheduled'));
+it('cancelling sends booking_cancelled', () => expect(bookingStatusTrigger('cancelled')).toBe('booking_cancelled'));
+it('completing sends no client email', () => expect(bookingStatusTrigger('completed')).toBeNull());
+it('shows times in Asia/Dhaka', () => expect(dhakaTime('2026-11-09T04:00:00Z')).toContain('10:00'));
+it('reminds about calls 23 to 25 hours ahead', () => expect(reminderWindow(0)).toEqual({ from: new Date(23 * 3600000).toISOString(), to: new Date(25 * 3600000).toISOString() }));
+it('groups booking and enquiry templates separately', () => { expect(emailTemplateGroup('booking_reminder')).toBe('Bookings and enquiries'); expect(emailTemplateGroup('enquiry_received')).toBe('Bookings and enquiries'); expect(emailTemplateGroup('offer')).toBe('Hiring'); });
+it('calendar file spans the call length', () => { const ics = bookingIcs({ id: 'b1', slot_at: '2026-11-09T04:00:00Z', duration_minutes: 30, meet_link: 'https://meet.google.com/x' }); expect(ics).toContain('DTSTART:20261109T040000Z'); expect(ics).toContain('DTEND:20261109T043000Z'); });

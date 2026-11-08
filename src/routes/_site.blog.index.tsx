@@ -4,7 +4,7 @@ import { blogPosts } from '@/data/blog';
 import { SafeImg, Section } from '@/components/blog/BlogParts';
 
 export const Route = createFileRoute("/_site/blog/")({
-  head: () => seoHead({ title: 'ব্লগ | Admakai', description: 'আমরা যে কাজগুলো করি, সেগুলো কীভাবে করি তার পুরোটা। Admakai-এর কেস স্টাডি আর এআই প্রসেস।', path: '/blog', jsonLd: [breadcrumbs([{ name: 'ব্লগ', path: '/blog' }])] }),
+  head: () => seoHead({ lang: 'bn', title: 'ব্লগ | Admakai', description: 'আমরা যে কাজগুলো করি, সেগুলো কীভাবে করি তার পুরোটা। Admakai-এর কেস স্টাডি আর এআই প্রসেস।', path: '/blog', jsonLd: [breadcrumbs([{ name: 'ব্লগ', path: '/blog' }])] }),
   component: BlogIndex,
 });
 

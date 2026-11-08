@@ -7,8 +7,10 @@ import {
   HeadContent,
   Scripts,
   type ErrorComponentProps,
+  useRouterState,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { pageLang } from "@/lib/page-lang";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -115,7 +117,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang={pageLang(useRouterState({ select: s => s.location.pathname }))} className="dark">
       <head>
         <HeadContent />
       </head>
@@ -155,3 +157,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+

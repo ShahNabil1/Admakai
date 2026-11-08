@@ -21,8 +21,8 @@ export const pageSeo = {
   call: { title: 'Book a Call | Admakai', description: 'Fifteen minutes, one photo, a plan and a price. Book a free call or message Admakai on WhatsApp.' },
 } as const;
 
-export function seoHead({ title, description, path, type = 'website', ogImage, jsonLd = [], noindex = false }: {
-  title: string; description: string; path: string; type?: string; ogImage?: string; jsonLd?: JsonLd[]; noindex?: boolean;
+export function seoHead({ title, description, path, type = 'website', ogImage, jsonLd = [], noindex = false, lang = 'en' }: {
+  title: string; description: string; path: string; type?: string; ogImage?: string; jsonLd?: JsonLd[]; noindex?: boolean; lang?: 'en' | 'bn';
 }) {
   const canonical = canonicalUrl(path);
   return {
@@ -35,7 +35,7 @@ export function seoHead({ title, description, path, type = 'website', ogImage, j
       { name: 'robots', content: noindex ? 'noindex, nofollow' : 'index, follow' },
       ...(ogImage?.startsWith('https://') ? [{ property: 'og:image', content: ogImage }, { name: 'twitter:image', content: ogImage }] : []),
     ],
-    links: [{ rel: 'canonical', href: canonical }, { rel: 'alternate', hrefLang: 'en', href: canonical }],
+    links: [{ rel: 'canonical', href: canonical }, { rel: 'alternate', hrefLang: lang, href: canonical }, { rel: 'alternate', hrefLang: 'x-default', href: canonical }],
     scripts: jsonLd.map(schema => ({ type: 'application/ld+json', children: JSON.stringify(schema).replace(/</g, '\\u003c') })),
   };
 }

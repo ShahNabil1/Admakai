@@ -4,7 +4,7 @@ import { SITE_URL } from '@/data/site';
 import { lightingPost as post } from '@/data/blog';
 import { LightingPost } from '@/components/blog/LightingPost';
 
-const head = seoHead({
+const head = seoHead({ lang: 'bn',
   title: post.seoTitle, description: post.description, path: post.path, type: 'article',
   jsonLd: [
     { '@context': 'https://schema.org', '@type': 'Article', headline: post.title, datePublished: post.datePublished, inLanguage: 'bn', mainEntityOfPage: canonicalUrl(post.path), author: { '@type': 'Organization', name: 'Admakai', url: SITE_URL }, publisher: { '@type': 'Organization', name: 'Admakai', url: SITE_URL } },

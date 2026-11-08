@@ -30,16 +30,20 @@ export async function generateSitemap() {
         auth: { persistSession: false, autoRefreshToken: false },
         global: { fetch: (input, init) => { const headers = new Headers(init?.headers); headers.set('apikey', key); if (key.startsWith('sb_')) headers.delete('Authorization'); return fetch(input, { ...init, headers, signal: AbortSignal.timeout(5000) }); } },
       });
-      const projects = await collectPublishedProjects(async offset => {
-        const { data, error } = await client.from('projects').select('slug,updated_at').eq('published', true).order('id').range(offset, offset + 999);
+      const works = await collectPublishedProjects(async offset => {
+        const { data, error } = await client.from('works').select('slug,updated_at').eq('published', true).order('id').range(offset, offset + 999);
         if (error) throw error;
         return data ?? [];
       });
-      // No /services/$slug route exists. Services link to anchors on /services;
-      // sitemap URLs must not include fragments or nonexistent detail pages.
-      entries.push(...projects);
+      const jobs = await collectPublishedProjects(async offset => {
+        const { data, error } = await client.from('jobs').select('slug,updated_at').eq('status', 'open').order('id').range(offset, offset + 999);
+        if (error) throw error;
+        return data ?? [];
+      });
+      // Published /services/:slug pages already come from publicSeoPaths.
+      entries.push(...works, ...jobs.map(j => ({ ...j, path: j.path.replace(/^\/work\//, '/careers/') })));
     } catch {
-      console.warn('Sitemap: public projects unavailable; writing static routes only. No partial project list included.');
+      console.warn('Sitemap: public works or jobs unavailable; writing static routes only. No partial list included.');
     }
   } else console.warn('Sitemap: public Supabase configuration unavailable; writing static routes only.');
   await writeFile('public/sitemap.xml', sitemapXml(entries));

@@ -738,6 +738,7 @@ export type Database = {
       email_log: {
         Row: {
           application_id: string | null
+          booking_id: string | null
           created_at: string
           error: string | null
           id: string
@@ -748,6 +749,7 @@ export type Database = {
         }
         Insert: {
           application_id?: string | null
+          booking_id?: string | null
           created_at?: string
           error?: string | null
           id?: string
@@ -758,6 +760,7 @@ export type Database = {
         }
         Update: {
           application_id?: string | null
+          booking_id?: string | null
           created_at?: string
           error?: string | null
           id?: string
@@ -772,6 +775,13 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_log_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
             referencedColumns: ["id"]
           },
           {
@@ -812,6 +822,57 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      enquiries: {
+        Row: {
+          attachment_path: string | null
+          budget_band: string | null
+          client_id: string
+          created_at: string
+          id: string
+          lead_id: string | null
+          message: string | null
+          service_interest: string | null
+          source_page: string | null
+        }
+        Insert: {
+          attachment_path?: string | null
+          budget_band?: string | null
+          client_id: string
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          message?: string | null
+          service_interest?: string | null
+          source_page?: string | null
+        }
+        Update: {
+          attachment_path?: string | null
+          budget_band?: string | null
+          client_id?: string
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          message?: string | null
+          service_interest?: string | null
+          source_page?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enquiries_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enquiries_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       hiring_agreement_reviews: {
         Row: {
@@ -2505,6 +2566,21 @@ export type Database = {
           p_need: string
           p_slot_at: string
           p_source?: Json
+          p_whatsapp: string
+        }
+        Returns: string
+      }
+      create_enquiry: {
+        Args: {
+          p_attachment_path?: string
+          p_brand_name: string
+          p_budget_band: string
+          p_email: string
+          p_message: string
+          p_name: string
+          p_service_interest: string
+          p_source_page: string
+          p_website: string
           p_whatsapp: string
         }
         Returns: string

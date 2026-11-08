@@ -4,6 +4,10 @@ import { Activity, ArrowLeft, CalendarDays, Clapperboard, FolderKanban, LayoutDa
 import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { HiringWorkspace } from './hiring/HiringWorkspace';
 import { supabase } from '@/lib/supabase';
+import { useServerFn } from '@tanstack/react-start';
+import { notifyBookingStatus } from '@/lib/crm-emails.functions';
+import { bookingStatusTrigger } from '@/lib/crm-email-rules';
+import { LeadEnquiries, NewEnquiries } from './Enquiries';
 import { adminAccessAllowed } from '@/lib/application-rules';
 import { cancelHubPopupSignIn, isStaffRole, startHubPopupSignIn, startHubSignIn, type StaffRole } from '@/lib/sso';
 import { Button } from '@/components/ui/button';
@@ -21,7 +25,7 @@ type Booking = BookingSubmissionData & { status: string; owner_id: string | null
 type Lead = { id: string; stage: string; owner_id: string | null; value_estimate: number | null; currency: string | null; lost_reason_category: string | null; lost_reason: string | null; stage_changed_at: string; clients: ClientRef };
 type Tab = 'today' | 'bookings' | 'leads' | 'projects' | 'work' | 'billing' | 'activity';
 
-const BOOKING_STATUSES = ['requested', 'in_review', 'confirmed', 'completed', 'cancelled', 'no_show'];
+const BOOKING_STATUSES = ['requested', 'in_review', 'confirmed', 'completed', 'cancelled', 'no_show', 'rescheduled'];
 const LEAD_STAGES = ['new', 'contacted', 'qualified', 'proposal_sent', 'won', 'lost'];
 const LOST_REASONS = ['budget', 'timing', 'went_elsewhere', 'no_response', 'not_a_fit', 'other'];
 const NAV: { id: Tab; label: string; icon: typeof Activity }[] = [
@@ -253,6 +257,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
             </div>
             <h2 className="admin-sub">Today's calls</h2>
             {bookings === null ? <div className="admin-skeleton" /> : todays.length ? <div className="admin-grid">{todays.map((b) => <BookingCard key={b.id} b={b} names={names} userId={userId} onOpen={() => setOpenBooking(b.id)} />)}</div> : <Empty title="No calls today" hint="New bookings show up here in real time." />}
+            <NewEnquiries onOpen={(id) => { setOpenLead(id); }} />
             <h2 className="admin-sub">Follow-ups</h2>
             {stale.length ? <div className="admin-grid">{stale.map((l) => <LeadCard key={l.id} l={l} names={names} userId={userId} onOpen={() => setOpenLead(l.id)} />)}</div> : <Empty title="Everyone is followed up" />}
           </section>
@@ -326,10 +331,16 @@ function BookingDetail({ b, manager, userId, names, update, confirm }: { b: Book
   const [link, setLink] = useState(b.meet_link ?? '');
   const [notes, setNotes] = useState(b.notes_shared ?? '');
   const activity = useEntityActivity(b.id, b.status);
+  const notify = useServerFn(notifyBookingStatus);
+  const change = async (s: string) => {
+    if (!(await update('bookings', b.id, { status: s }, `Booking ${label(s)}`)) || !bookingStatusTrigger(s)) return;
+    try { const r = await notify({ data: { id: b.id, status: s } }); const st = r.results[0]?.status; if (st === 'sent') toast.success('Client emailed'); else if (st) toast.message(`Client email ${st}`); }
+    catch { toast.error('The client email could not be sent.'); }
+  };
   const setStatus = (s: string) => {
     if (['cancelled', 'no_show', 'completed'].includes(s)) {
-      confirm({ title: `Mark booking ${label(s)}?`, description: s === 'cancelled' ? 'The time slot becomes available again for other clients.' : 'This is recorded permanently in the activity log.', confirmLabel: `Mark ${label(s)}`, danger: s !== 'completed', run: () => update('bookings', b.id, { status: s }, `Booking ${label(s)}`) });
-    } else void update('bookings', b.id, { status: s }, `Booking ${label(s)}`);
+      confirm({ title: `Mark booking ${label(s)}?`, description: s === 'cancelled' ? 'The time slot becomes available again for other clients. Shared notes are sent as the reason.' : 'This is recorded permanently in the activity log.', confirmLabel: `Mark ${label(s)}`, danger: s !== 'completed', run: () => change(s) });
+    } else void change(s);
   };
   return (
     <div className="admin-detail">
@@ -433,6 +444,7 @@ function LeadDetail({ l, manager, userId, names, update, onStage }: { l: Lead; m
           <button className="admin-btn-ghost is-danger" disabled={!reason.cat} onClick={() => update('leads', l.id, { stage: 'lost', lost_reason_category: reason.cat, lost_reason: reason.text.trim() || null }, 'Lead marked lost')}>Mark lost</button>
         </div>
       )}
+      <LeadEnquiries leadId={l.id} />
       {l.stage === 'lost' && <p className="admin-note">Lost: {label(l.lost_reason_category ?? 'no reason')}{l.lost_reason ? `: ${l.lost_reason}` : ''}</p>}
       <h3 className="admin-sub">Activity</h3>
       <Timeline rows={activity} names={names} />

@@ -12,6 +12,7 @@ import { resolveSiteSettings } from '@/data/site';
 import { whatsappUrl } from '@/lib/lead-schema';
 import { bookingFormSchema, budgets, groupSlots, captureBookingSource, skipSpam, dayLabel, normalizePhoneInput, type BookingFields, type OpenSlot } from '@/lib/booking-form';
 import { fetchOpenSlots, createPublicBooking, sendBookingLink } from '@/lib/booking-api';
+import { notifyBookingRequested } from '@/lib/crm-emails.functions';
 
 import { serviceCategories, findPublishedService } from '@/data/services';
 import { plans } from '@/data/plans';
@@ -100,6 +101,7 @@ export function SlotBookingPage() {
     submitLock.current = true; setBusy(true); setError('');
     try {
       const id = await createPublicBooking(selectedSlot.slot_at, parsed.data, source.current, interestName(interest));
+      void notifyBookingRequested({ data: { id } }).catch(() => undefined);
       setBookingId(id);
       try { await sendBookingLink(parsed.data.email); setEmailSent(true); }
       catch (reason) { setEmailError(reason instanceof Error ? reason.message : 'The email could not be sent.'); }
