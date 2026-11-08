@@ -49,7 +49,7 @@ function BookingAttachments({ bookingId }: { bookingId: string }) {
     {!files && !error ? <p className="booking-not-provided">Loading attachments…</p> : files?.length ? <ul className="booking-attachments">{files.map(file => <li key={file.id}><FileText size={18} /><div><strong>{file.original_name || 'Attachment'}</strong><small>{file.mime || 'File'}{file.bytes !== null ? ` · ${(file.bytes / 1024 / 1024).toFixed(2)} MB` : ''}</small></div><Button variant="outline" size="sm" disabled={opening !== null} onClick={() => void openFile(file)}>{opening === file.id ? 'Opening…' : 'Open'}</Button></li>)}</ul> : !error && <p className="booking-not-provided">No files attached</p>}
   </section>;
 }
-export function BookingSubmission({ booking }: { booking: BookingSubmissionData }) {
+export function BookingSubmission({ booking, offerName = null }: { booking: BookingSubmissionData; offerName?: string | null }) {
   const brief = booking.brief ?? {};
   const name = submissionText(brief['name']) || booking.clients?.contact_name || '';
   const email = submissionText(brief['email']) || booking.clients?.email || '';
@@ -72,6 +72,7 @@ export function BookingSubmission({ booking }: { booking: BookingSubmissionData 
       <Fact title="Selected service" value={savedInterest(message) || bookingServiceLabels[need] || need} /><Fact title="Budget range" value={budget} />
       <Fact title="Selected date" value={date} /><Fact title="Selected time" value={time} />
       <Fact title="Time zone" value="Asia/Dhaka (GMT+6)" /><Fact title="Call duration" value={`${booking.duration_minutes} minutes`} />
+      <Fact title="Offer showing at booking" value={offerName ?? 'No offer was live'} />
     </dl></section>
     <section className="booking-submission-section" aria-label="Client message"><h3><MessageCircle size={16} />What is the problem</h3><p className={message ? 'booking-submission-message' : 'booking-not-provided'}>{message || 'No message provided'}</p></section>
     {extra.length > 0 && <section className="booking-submission-section"><h3><FileText size={16} />Additional submitted details</h3><dl className="booking-submission-facts">{extra.map(field => <Fact key={field.key} title={label(field.key)} value={field.value} />)}</dl></section>}

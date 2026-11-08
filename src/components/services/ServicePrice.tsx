@@ -1,6 +1,6 @@
 import type { Service } from '@/data/services';
-import { useCurrency } from '@/lib/currency';
+import { OfferRange } from '@/components/offers/OfferPrice';
+/** Shared service estimate; a live offer adds its badge, struck original and discounted range on top of the stored price. */
 export function ServicePrice({ service }: { service: Service }) {
-  const { formatRange } = useCurrency();
-  return <>Estimated price: {formatRange(service.priceMinUsd, service.priceMaxUsd)}{service.priceUnit !== 'project' ? ` per ${service.priceUnit}` : ''}</>;
+  return <OfferRange kind="service" slug={service.slug} minUsd={service.priceMinUsd} maxUsd={service.priceMaxUsd} prefix="Estimated price: " suffix={service.priceUnit !== 'project' ? ` per ${service.priceUnit}` : ''} />;
 }

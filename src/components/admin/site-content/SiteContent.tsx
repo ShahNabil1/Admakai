@@ -40,6 +40,7 @@ export function SiteContent() {
       <nav className="admin-chips sc-tabs" aria-label="Site content sections">
         <Link to="/admin/site-content" className={!isPlans ? 'is-active' : ''} aria-current={!isPlans ? 'page' : undefined}>Services</Link>
         <Link to="/admin/site-content/plans" className={isPlans ? 'is-active' : ''} aria-current={isPlans ? 'page' : undefined}>Plans</Link>
+        <Link to="/admin/offers">Offers</Link>
       </nav>
     </>}
     {data.isPending ? <div className="admin-skeleton" /> : data.error ? <Empty title="Site content could not load" hint="Please refresh the page." /> : data.data && (isPlans

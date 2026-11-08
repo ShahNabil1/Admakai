@@ -7,11 +7,14 @@ import { siteQueryOptions } from "@/lib/site-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ensureCatalogue, siteCatalogueQueryOptions } from "@/lib/site-catalogue-query";
 import { applyCatalogue } from "@/lib/site-content";
+import { liveOffersQueryOptions } from "@/lib/offers-query";
+import { OfferProvider } from "@/components/offers/OfferContext";
+import { OfferBar } from "@/components/offers/OfferBar";
 
 
 export const Route = createFileRoute("/_site")({
   loader: async ({ context }) => {
-    const [details] = await Promise.all([context.queryClient.ensureQueryData(siteQueryOptions), ensureCatalogue(context.queryClient)]);
+    const [details] = await Promise.all([context.queryClient.ensureQueryData(siteQueryOptions), ensureCatalogue(context.queryClient), context.queryClient.ensureQueryData(liveOffersQueryOptions)]);
     return details;
   },
   head: ({ loaderData }) => ({ scripts: [{ type: "application/ld+json", children: JSON.stringify(organizationSchema(loaderData?.site)).replace(/</g, "\\u003c") }] }),
@@ -23,15 +26,17 @@ export const Route = createFileRoute("/_site")({
 function Layout() {
   // Applied during render (idempotent) so hydration and later refetches use the same lists as the server render.
   applyCatalogue(useSuspenseQuery(siteCatalogueQueryOptions).data);
+  const offers = useSuspenseQuery(liveOffersQueryOptions).data;
   const isHome = useLocation({ select: location => location.pathname === '/' });
   const isApplication = useLocation({ select: location => /^\/careers\/[^/]+\/apply(?:\/done)?\/?$/.test(location.pathname) });
   return (
-    <>
+    <OfferProvider offers={offers.offers} serverNow={offers.serverNow}>
+      {!isApplication && <OfferBar />}
       <Navbar hero />
       <main>
         {isHome ? <Outlet /> : <PageTransition><Outlet /></PageTransition>}
       </main>
       {!isApplication && <Footer />}
-    </>
+    </OfferProvider>
   );
 }

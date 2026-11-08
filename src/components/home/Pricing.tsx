@@ -8,13 +8,15 @@ import { Reveal } from "@/components/motion/Reveal";
 import { useMotionPreference } from "@/hooks/use-motion-preference";
 import { contentPartner, pricingInclusions } from "@/data/pricing";
 import { useCurrency } from "@/lib/currency";
+import { discountedRange, formatAmountRange } from "@/lib/offer-rules";
+import { OfferPill, useOfferPrice } from "@/components/offers/OfferPrice";
 import "./pricing.css";
 
-function MonthlyPrice() {
+function MonthlyPrice({ discountPercent = 0 }: { discountPercent?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const visible = useInView(ref, { once: true });
   const reduce = useMotionPreference();
-  const { formatRange } = useCurrency();
+  const { formatRange, currency, rate } = useCurrency();
   const [progress, setProgress] = useState(0);
   useEffect(() => {
     if (!visible || reduce) return;
@@ -23,13 +25,16 @@ function MonthlyPrice() {
   }, [visible, reduce]);
   const fraction = reduce ? 1 : progress;
   const partner = contentPartner();
-  const range = formatRange(partner.priceMinUsd * fraction, partner.priceMaxUsd * fraction);
+  const range = discountPercent > 0
+    ? (() => { const d = discountedRange(partner.priceMinUsd, partner.priceMaxUsd, discountPercent, currency, rate); return formatAmountRange({ min: Math.round(d.min * fraction), max: Math.round(d.max * fraction) }, currency); })()
+    : formatRange(partner.priceMinUsd * fraction, partner.priceMaxUsd * fraction);
   return <span ref={ref}>{range.split(' to ').map((amount, i) => <Fragment key={i}>{i > 0 ? ' to ' : null}<span className="inline-block">{amount}</span></Fragment>)}</span>;
 }
 
 export function Pricing() {
   const reduce = useMotionPreference();
   const partner = contentPartner();
+  const offer = useOfferPrice("plan", partner.slug, partner.priceMinUsd, partner.priceMaxUsd);
   return (
     <section className="home-pricing" aria-labelledby="home-pricing-title">
       <div className="container-site">
@@ -37,7 +42,9 @@ export function Pricing() {
         <motion.article className="home-pricing-card" initial={reduce ? false : "hidden"} animate={reduce ? "visible" : false} whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={{ hidden: { opacity: 0, y: 32 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: reduce ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }}>
           <div>
             <h3 className="home-pricing-name">{partner.name}</h3>
-            <p className="home-pricing-price"><strong><MonthlyPrice /></strong><small>/month</small></p>
+            {offer.offer && <p className="offer-plan home-pricing-offer"><OfferPill offer={offer.offer} /><s className="offer-was"><span className="sr-only">Was </span>{offer.original}/month</s></p>}
+            <p className="home-pricing-price"><strong><MonthlyPrice discountPercent={offer.offer?.discountPercent ?? 0} /></strong><small>/month</small></p>
+            {offer.offer && <p className="offer-plan home-pricing-offer"><span className="offer-save">You save {offer.savings} a month</span><span className="offer-ends">{offer.ends}</span></p>}
             <p className="home-pricing-copy">{partner.videos} videos and {partner.statics} statics every month, any mix of the services below. Pause or cancel any month.</p>
             <div className="home-pricing-actions">
               <Magnetic><Button asChild className="home-pricing-start"><Link to="/book" search={{plan: partner.id}}>Get started</Link></Button></Magnetic>

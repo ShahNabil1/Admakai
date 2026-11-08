@@ -512,6 +512,7 @@ export type Database = {
           meet_link: string | null
           notes_internal: string | null
           notes_shared: string | null
+          offer_id: string | null
           owner_id: string | null
           recording_url: string | null
           reminder_1_sent_at: string | null
@@ -534,6 +535,7 @@ export type Database = {
           meet_link?: string | null
           notes_internal?: string | null
           notes_shared?: string | null
+          offer_id?: string | null
           owner_id?: string | null
           recording_url?: string | null
           reminder_1_sent_at?: string | null
@@ -556,6 +558,7 @@ export type Database = {
           meet_link?: string | null
           notes_internal?: string | null
           notes_shared?: string | null
+          offer_id?: string | null
           owner_id?: string | null
           recording_url?: string | null
           reminder_1_sent_at?: string | null
@@ -579,6 +582,13 @@ export type Database = {
             columns: ["lead_id"]
             isOneToOne: false
             referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "offers"
             referencedColumns: ["id"]
           },
           {
@@ -981,6 +991,7 @@ export type Database = {
           id: string
           lead_id: string | null
           message: string | null
+          offer_id: string | null
           service_interest: string | null
           source_page: string | null
         }
@@ -992,6 +1003,7 @@ export type Database = {
           id?: string
           lead_id?: string | null
           message?: string | null
+          offer_id?: string | null
           service_interest?: string | null
           source_page?: string | null
         }
@@ -1003,6 +1015,7 @@ export type Database = {
           id?: string
           lead_id?: string | null
           message?: string | null
+          offer_id?: string | null
           service_interest?: string | null
           source_page?: string | null
         }
@@ -1019,6 +1032,13 @@ export type Database = {
             columns: ["lead_id"]
             isOneToOne: false
             referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enquiries_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "offers"
             referencedColumns: ["id"]
           },
         ]
@@ -2033,6 +2053,81 @@ export type Database = {
             referencedColumns: ["pipeline_id", "key"]
           },
         ]
+      }
+      offers: {
+        Row: {
+          applies_to: string
+          created_at: string
+          created_by: string | null
+          cta_link: string
+          cta_text: string
+          discount_percent: number
+          ends_at: string | null
+          headline: string
+          id: string
+          is_active: boolean
+          name: string
+          preset: string
+          priority: number
+          selected_plan_ids: string[]
+          selected_service_ids: string[]
+          short_badge: string
+          show_bar: boolean
+          show_countdown: boolean
+          slug: string
+          starts_at: string
+          theme: Json
+          updated_at: string
+        }
+        Insert: {
+          applies_to?: string
+          created_at?: string
+          created_by?: string | null
+          cta_link?: string
+          cta_text?: string
+          discount_percent: number
+          ends_at?: string | null
+          headline: string
+          id?: string
+          is_active?: boolean
+          name: string
+          preset?: string
+          priority?: number
+          selected_plan_ids?: string[]
+          selected_service_ids?: string[]
+          short_badge: string
+          show_bar?: boolean
+          show_countdown?: boolean
+          slug: string
+          starts_at?: string
+          theme?: Json
+          updated_at?: string
+        }
+        Update: {
+          applies_to?: string
+          created_at?: string
+          created_by?: string | null
+          cta_link?: string
+          cta_text?: string
+          discount_percent?: number
+          ends_at?: string | null
+          headline?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          preset?: string
+          priority?: number
+          selected_plan_ids?: string[]
+          selected_service_ids?: string[]
+          short_badge?: string
+          show_bar?: boolean
+          show_countdown?: boolean
+          slug?: string
+          starts_at?: string
+          theme?: Json
+          updated_at?: string
+        }
+        Relationships: []
       }
       payments: {
         Row: {
@@ -3246,6 +3341,14 @@ export type Database = {
           email: string
           roles: string[]
           user_id: string
+        }[]
+      }
+      offer_lead_counts: {
+        Args: never
+        Returns: {
+          bookings: number
+          enquiries: number
+          offer_id: string
         }[]
       }
       open_slots: {

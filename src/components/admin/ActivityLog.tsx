@@ -4,7 +4,7 @@ import type { ActivityRow } from '@/lib/activity';
 import { Empty, Timeline } from './ui';
 
 const FILTERS = [['all', 'All'], ['leads', 'Leads'], ['bookings', 'Bookings'], ['projects', 'Projects'], ['tasks', 'Tasks'], ['deliverables', 'Deliverables'], ['invoices', 'Invoices'], ['payments', 'Payments'], ['site', 'Site content']] as const;
-const SITE_TYPES = ['services', 'plans', 'service_categories'];
+const SITE_TYPES = ['services', 'plans', 'service_categories', 'offers'];
 
 export async function fetchActivity(entityIds?: string[]) {
   let q = supabase.from('activity').select('id, entity_type, entity_id, actor_id, verb, from_value, to_value, meta, created_at').order('created_at', { ascending: false }).limit(entityIds ? 50 : 300);

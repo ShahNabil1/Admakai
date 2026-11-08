@@ -8,13 +8,13 @@ import { formatDuration } from '@/lib/vimeo';
 import { rankUpNext } from '@/lib/work-search';
 import { publishedWorksQueryOptions, type WorkWithLinks } from '@/lib/works';
 import { findPublishedService, type Service } from '@/data/services';
-import { useCurrency } from '@/lib/currency';
+import { useOfferPriceText } from '@/components/offers/OfferPrice';
 import { VideoPreviewCard } from '@/components/VideoPreviewCard';
 import { Reveal } from '@/components/motion/Reveal';
 
 /** Public work detail: a YouTube-style watch page with the case study below. */
 export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
-  const { formatRange } = useCurrency();
+  const priceText = useOfferPriceText();
   const [expanded, setExpanded] = useState(false);
   const [needsUnmute, setNeedsUnmute] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -140,7 +140,7 @@ export function WorkDetailPage({ work }: { work: WorkWithLinks }) {
             {services.length ? (
               <div className="workpage-watch-services">
                 {services.map((service) => (
-                  <Link key={service.slug} to="/services/$slug" params={{ slug: service.slug }} className="workpage-service-chip" title={`Estimated ${formatRange(service.priceMinUsd, service.priceMaxUsd)} per ${service.priceUnit}`}>
+                  <Link key={service.slug} to="/services/$slug" params={{ slug: service.slug }} className="workpage-service-chip" title={`Estimated ${priceText('service', service.slug, service.priceMinUsd, service.priceMaxUsd)} per ${service.priceUnit}`}>
                     {service.name}
                   </Link>
                 ))}

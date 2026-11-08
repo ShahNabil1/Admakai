@@ -4,7 +4,7 @@ import { useEffect, useRef, type PointerEvent } from 'react';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
 import { Reveal } from '@/components/motion/Reveal';
 import { capabilities, type Capability } from '@/data/capabilities';
-import { useCurrency } from '@/lib/currency';
+import { OfferRange } from '@/components/offers/OfferPrice';
 import './capabilities.css';
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -17,7 +17,6 @@ function track(e: PointerEvent<HTMLElement>) {
 
 function CapCard({ c, i, reduce }: { c: Capability; i: number; reduce: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
-  const { formatRange } = useCurrency();
   useEffect(() => {
     const v = ref.current;
     if (!v) return;
@@ -42,7 +41,7 @@ function CapCard({ c, i, reduce }: { c: Capability; i: number; reduce: boolean }
         <div className="cap-card__body">
           <h3 className="cap-card__title">{c.title}</h3>
           <p className="cap-card__copy">{c.copy}</p>
-          <small className="cap-card__copy">Estimated {formatRange(c.priceMinUsd, c.priceMaxUsd)} per {c.priceUnit}</small>
+          <small className="cap-card__copy"><OfferRange compact kind="service" slug={c.slug} minUsd={c.priceMinUsd} maxUsd={c.priceMaxUsd} prefix="Estimated " suffix={` per ${c.priceUnit}`} /></small>
         </div>
         <span className="cap-card__cursor" aria-hidden="true">View</span>
       </Link>

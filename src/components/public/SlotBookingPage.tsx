@@ -16,7 +16,7 @@ import { notifyBookingRequested } from '@/lib/crm-emails.functions';
 
 import { serviceCategories, findPublishedService } from '@/data/services';
 import { plans } from '@/data/plans';
-import { useCurrency } from '@/lib/currency';
+import { OfferRange } from '@/components/offers/OfferPrice';
 import { emptyInterest, interestFromSearch, interestName, legacyBookingNeed, interestedMessage, categoryServices, type BookingInterest } from '@/lib/booking-interest';
 import './slot-booking.css';
 
@@ -39,7 +39,6 @@ const clock = (time: string) => { const hour = Number(time.slice(0, 2)); return 
 
 export function SlotBookingPage({ search = {}, prefill, onBooked, embedded = false }: { search?: { service?: string; plan?: string }; prefill?: BookingPrefill; onBooked?: () => void; embedded?: boolean } = {}) {
   const hydrated = useHydrated();
-  const { formatRange } = useCurrency();
   const [interest, setInterest] = useState<BookingInterest>(emptyInterest);
   const reduce = useMotionPreference();
   const [step, setStep] = useState(1);
@@ -128,9 +127,9 @@ export function SlotBookingPage({ search = {}, prefill, onBooked, embedded = fal
         <AnimatePresence mode="wait" initial={false}><motion.div key={step} initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reduce ? 0 : -8 }} transition={{ duration: reduce ? 0 : .16 }}>
         <div className="book-step-heading">{step > 1 && step < 5 && <Button className="book-back" type="button" variant="ghost" size="icon" aria-label="Back to previous step" title="Back" onClick={() => { setError(''); setStep(step - 1); }}><ArrowLeft /></Button>}{step === 5 && <span className="book-confirmation-icon"><Check /></span>}<h2 ref={titleRef} tabIndex={-1}>{title}</h2></div>
         {step === 1 && <><div className="book-services">{choices.map(item => <Button type="button" variant="outline" key={item.value} className={`book-service ${interest.category === item.value ? 'selected' : ''}`} onClick={() => { chooseInterest({ category: item.value, service: '', plan: '' }); if (item.value === 'unsure') setStep(2); }}><span><strong>{item.title}</strong><span>{item.description}</span><small>30 min · Free</small></span><ArrowRight /></Button>)}</div>
-        {interest.category === 'monthly' && <><p className="book-budget-label">Choose a monthly plan</p><div className="book-services">{plans.map(plan => <Button key={plan.id} type="button" variant="outline" className={`book-service ${interest.plan === plan.id ? 'selected' : ''}`} onClick={() => chooseInterest({category:'monthly',service:'',plan:plan.id})}><span><strong>{plan.name}</strong><span>{plan.forLine}</span><small>{formatRange(plan.priceMinUsd, plan.priceMaxUsd)} /month</small></span><ArrowRight /></Button>)}</div></>}
+        {interest.category === 'monthly' && <><p className="book-budget-label">Choose a monthly plan</p><div className="book-services">{plans.map(plan => <Button key={plan.id} type="button" variant="outline" className={`book-service ${interest.plan === plan.id ? 'selected' : ''}`} onClick={() => chooseInterest({category:'monthly',service:'',plan:plan.id})}><span><strong>{plan.name}</strong><span>{plan.forLine}</span><small><OfferRange compact kind="plan" slug={plan.slug} minUsd={plan.priceMinUsd} maxUsd={plan.priceMaxUsd} suffix=" /month" /></small></span><ArrowRight /></Button>)}</div></>}
         {secondChoices.length > 0 && <><p className="book-budget-label">Choose a service · optional</p><ChipRow label="Choose a service" items={secondChoices.map(service => ({ value: service.slug, label: service.name }))} value={interest.service} onChange={slug => chooseInterest({...interest, service:slug})}/></>}
-        {chosenService && <p className="book-zone">Estimated {formatRange(chosenService.priceMinUsd, chosenService.priceMaxUsd)} per {chosenService.priceUnit}</p>}
+        {chosenService && <p className="book-zone"><OfferRange compact kind="service" slug={chosenService.slug} minUsd={chosenService.priceMinUsd} maxUsd={chosenService.priceMaxUsd} prefix="Estimated " suffix={` per ${chosenService.priceUnit}`} /></p>}
         {serviceChosen && interest.category !== 'unsure' && <Button type="button" className="book-submit" disabled={interest.category === 'monthly' && !chosenPlan} onClick={() => setStep(2)}>Continue <ArrowRight /></Button>}</>}
 
         {step === 2 && <><p className="book-zone">Dhaka time, GMT+6</p>{availability || <BookingCalendar days={groups.map(([key]) => key)} month={displayMonth} selected={day} today={today} onMonth={setMonth} onSelect={value => { setDay(value); setTime(''); setError(''); setStep(3); }} />}</>}

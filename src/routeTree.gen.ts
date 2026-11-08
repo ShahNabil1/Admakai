@@ -23,6 +23,7 @@ import { Route as SitePrivacyRouteImport } from './routes/_site.privacy'
 import { Route as SiteRefundRouteImport } from './routes/_site.refund'
 import { Route as SiteServicesRouteImport } from './routes/_site.services'
 import { Route as SiteTermsRouteImport } from './routes/_site.terms'
+import { Route as AdminOffersRouteImport } from './routes/admin_.offers'
 import { Route as AdminSiteContentRouteImport } from './routes/admin_.site-content'
 import { Route as AppSplatRouteImport } from './routes/app.$'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
@@ -127,6 +128,11 @@ const SiteTermsRoute = SiteTermsRouteImport.update({
   id: '/terms',
   path: '/terms',
   getParentRoute: () => SiteRoute,
+} as any)
+const AdminOffersRoute = AdminOffersRouteImport.update({
+  id: '/admin_/offers',
+  path: '/admin/offers',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminSiteContentRoute = AdminSiteContentRouteImport.update({
   id: '/admin_/site-content',
@@ -323,6 +329,7 @@ export interface FileRoutesByFullPath {
   '/refund': typeof SiteRefundRoute
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
+  '/admin/offers': typeof AdminOffersRoute
   '/admin/site-content': typeof AdminSiteContentRouteWithChildren
   '/app/$': typeof AppSplatRoute
   '/dashboard/calls': typeof DashboardCallsRoute
@@ -371,6 +378,7 @@ export interface FileRoutesByTo {
   '/refund': typeof SiteRefundRoute
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
+  '/admin/offers': typeof AdminOffersRoute
   '/admin/site-content': typeof AdminSiteContentRouteWithChildren
   '/app/$': typeof AppSplatRoute
   '/dashboard/calls': typeof DashboardCallsRoute
@@ -422,6 +430,7 @@ export interface FileRoutesById {
   '/_site/refund': typeof SiteRefundRoute
   '/_site/services': typeof SiteServicesRoute
   '/_site/terms': typeof SiteTermsRoute
+  '/admin_/offers': typeof AdminOffersRoute
   '/admin_/site-content': typeof AdminSiteContentRouteWithChildren
   '/app/$': typeof AppSplatRoute
   '/dashboard/calls': typeof DashboardCallsRoute
@@ -475,6 +484,7 @@ export interface FileRouteTypes {
     | '/refund'
     | '/services'
     | '/terms'
+    | '/admin/offers'
     | '/admin/site-content'
     | '/app/$'
     | '/dashboard/calls'
@@ -523,6 +533,7 @@ export interface FileRouteTypes {
     | '/refund'
     | '/services'
     | '/terms'
+    | '/admin/offers'
     | '/admin/site-content'
     | '/app/$'
     | '/dashboard/calls'
@@ -573,6 +584,7 @@ export interface FileRouteTypes {
     | '/_site/refund'
     | '/_site/services'
     | '/_site/terms'
+    | '/admin_/offers'
     | '/admin_/site-content'
     | '/app/$'
     | '/dashboard/calls'
@@ -618,6 +630,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRouteWithChildren
   MeRoute: typeof MeRouteWithChildren
   SigninRoute: typeof SigninRoute
+  AdminOffersRoute: typeof AdminOffersRoute
   AdminSiteContentRoute: typeof AdminSiteContentRouteWithChildren
   AdminHiringAgreementsRoute: typeof AdminHiringAgreementsRoute
   AdminHiringApplicationsRoute: typeof AdminHiringApplicationsRoute
@@ -733,6 +746,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/terms'
       preLoaderRoute: typeof SiteTermsRouteImport
       parentRoute: typeof SiteRoute
+    }
+    '/admin_/offers': {
+      id: '/admin_/offers'
+      path: '/admin/offers'
+      fullPath: '/admin/offers'
+      preLoaderRoute: typeof AdminOffersRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin_/site-content': {
       id: '/admin_/site-content'
@@ -1099,6 +1119,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRouteWithChildren,
   MeRoute: MeRouteWithChildren,
   SigninRoute: SigninRoute,
+  AdminOffersRoute: AdminOffersRoute,
   AdminSiteContentRoute: AdminSiteContentRouteWithChildren,
   AdminHiringAgreementsRoute: AdminHiringAgreementsRoute,
   AdminHiringApplicationsRoute: AdminHiringApplicationsRoute,

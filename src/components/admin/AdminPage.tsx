@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
 import { Toaster, toast } from 'sonner';
-import { Activity, ArrowLeft, CalendarDays, Clapperboard, FolderKanban, LayoutDashboard, LogOut, Receipt, Search, Users, BriefcaseBusiness, ChevronDown, PanelsTopLeft } from 'lucide-react';
+import { Activity, ArrowLeft, CalendarDays, Clapperboard, FolderKanban, LayoutDashboard, LogOut, Receipt, Search, Users, BriefcaseBusiness, ChevronDown, PanelsTopLeft, BadgePercent } from 'lucide-react';
 import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { HiringWorkspace } from './hiring/HiringWorkspace';
 import { supabase } from '@/lib/supabase';
@@ -17,13 +17,21 @@ import { StaffProjects } from '@/components/delivery/ProjectsWorkspace';
 import { StaffBilling } from './Billing';
 import { WorkAdmin } from './WorkAdmin';
 import { SiteContent } from './site-content/SiteContent';
+import { OffersAdmin } from './offers/OffersAdmin';
+import { readableOn } from '@/lib/offer-rules';
 import { ActivityLog, fetchActivity } from './ActivityLog';
 import { BookingSubmission, type BookingSubmissionData } from './BookingSubmission';
 import { Empty, Modal, Pill, Timeline, fmtDate, label, useConfirm } from './ui';
 import './admin.css';
 
 type ClientRef = { contact_name: string | null; email: string | null; brand_name?: string | null; whatsapp?: string | null } | null;
-type Booking = BookingSubmissionData & { status: string; owner_id: string | null; meet_link: string | null; notes_shared: string | null };
+type Booking = BookingSubmissionData & { status: string; owner_id: string | null; meet_link: string | null; notes_shared: string | null; lead_id: string | null; offer_id: string | null };
+type OfferTag = { id: string; name: string; short_badge: string; badge: string };
+/** Small badge naming the offer that was live when a booking or enquiry came in. */
+function OfferTagBadge({ offer }: { offer: OfferTag | undefined }) {
+  if (!offer) return null;
+  return <span className="admin-offer-badge" style={{ background: offer.badge, color: readableOn(offer.badge) }} title={`Came in during ${offer.name}`}>{offer.short_badge}</span>;
+}
 type Lead = { id: string; stage: string; owner_id: string | null; value_estimate: number | null; currency: string | null; lost_reason_category: string | null; lost_reason: string | null; stage_changed_at: string; clients: ClientRef };
 type Tab = 'today' | 'bookings' | 'leads' | 'projects' | 'work' | 'billing' | 'activity';
 
@@ -133,7 +141,8 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
   const navigate = useNavigate();
   const isHiring = location.pathname === '/admin/hiring' || location.pathname.startsWith('/admin/hiring/');
   const isSiteContent = location.pathname === '/admin/site-content' || location.pathname.startsWith('/admin/site-content/');
-  const elsewhere = isHiring || isSiteContent;
+  const isOffers = location.pathname === '/admin/offers' || location.pathname.startsWith('/admin/offers/');
+  const elsewhere = isHiring || isSiteContent || isOffers;
   const [hiringRoles, setHiringRoles] = useState<string[]>([]);
   const [hiringExpanded, setHiringExpanded] = useState(isHiring);
   useEffect(() => { void supabase.from('hiring_user_roles').select('role').eq('user_id', userId).then(({data}) => setHiringRoles(data?.map(r => r.role) ?? [])); }, [userId]);
@@ -172,7 +181,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
 
   const load = useCallback(async () => {
     const [b, l] = await Promise.all([
-      supabase.from('bookings').select('id, slot_at, duration_minutes, created_at, source, status, budget_band, owner_id, meet_link, notes_shared, brief, clients(contact_name, email, brand_name, whatsapp)').order('slot_at', { ascending: false }).limit(300),
+      supabase.from('bookings').select('id, slot_at, duration_minutes, created_at, source, status, budget_band, owner_id, meet_link, notes_shared, brief, lead_id, offer_id, clients(contact_name, email, brand_name, whatsapp)').order('slot_at', { ascending: false }).limit(300),
       supabase.from('leads').select('id, stage, owner_id, value_estimate, currency, lost_reason_category, lost_reason, stage_changed_at, clients(contact_name, email, brand_name, whatsapp)').order('stage_changed_at', { ascending: false }).limit(400),
     ]);
     if (b.error || l.error) toast.error('Some data could not be loaded.');
@@ -180,6 +189,21 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
     setLeads((l.data ?? []) as unknown as Lead[]);
   }, []);
 
+  const [offerTags, setOfferTags] = useState<Record<string, OfferTag>>({});
+  const [enquiryOffers, setEnquiryOffers] = useState<Record<string, string>>({});
+  useEffect(() => {
+    if (isHiring) return;
+    void supabase.from('offers').select('id, name, short_badge, theme').limit(300).then(({ data }) => {
+      const m: Record<string, OfferTag> = {};
+      for (const o of data ?? []) { const t = (o.theme ?? {}) as Record<string, unknown>; m[o.id] = { id: o.id, name: o.name, short_badge: o.short_badge, badge: typeof t['badge'] === 'string' && /^#[0-9A-Fa-f]{6}$/.test(t['badge']) ? t['badge'] : '#FFD43B' }; }
+      setOfferTags(m);
+    });
+    void supabase.from('enquiries').select('lead_id, offer_id').not('offer_id', 'is', null).not('lead_id', 'is', null).order('created_at', { ascending: false }).limit(1000).then(({ data }) => {
+      const m: Record<string, string> = {};
+      for (const q of data ?? []) if (q.lead_id && q.offer_id) m[q.lead_id] ??= q.offer_id;
+      setEnquiryOffers(m);
+    });
+  }, [isHiring]);
   useEffect(() => {
     if (isHiring) return;
     void load();
@@ -219,6 +243,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
   const now = Date.now();
   const stale = (leads ?? []).filter((l) => ['new', 'contacted'].includes(l.stage) && now - new Date(l.stage_changed_at).getTime() > 2 * 86400000);
   const booking = all.find((b) => b.id === openBooking) ?? null;
+  const leadOffer = (leadId: string) => { const id = all.find((b) => b.lead_id === leadId && b.offer_id)?.offer_id ?? enquiryOffers[leadId]; return id ? offerTags[id] : undefined; };
   const lead = (leads ?? []).find((l) => l.id === openLead) ?? null;
 
   return (
@@ -236,6 +261,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
             </button>
           ))}
           {canEditSite && <Link to="/admin/site-content" className={`sc-side-link ${isSiteContent ? 'is-active' : ''}`} aria-current={isSiteContent ? 'page' : undefined}><PanelsTopLeft size={17} /><span>Site content</span></Link>}
+          {canEditSite && <Link to="/admin/offers" className={`sc-side-link ${isOffers ? 'is-active' : ''}`} aria-current={isOffers ? 'page' : undefined}><BadgePercent size={17} /><span>Offers</span></Link>}
           {hiringRoles.length > 0 && <><Button variant="ghost" className={isHiring ? 'is-active' : ''} aria-expanded={hiringExpanded} onClick={() => setHiringExpanded(!hiringExpanded)}><BriefcaseBusiness size={17}/><span>Hiring</span><ChevronDown size={14}/></Button>{hiringExpanded && <div className="hiring-side-links">{hiringRoles.some(r=>['admin','reviewer'].includes(r)) && <><Link to="/admin/hiring">Overview</Link><Link to="/admin/hiring/applications">Applications</Link></>}<Link to="/admin/hiring/interviews">Interviews</Link><Link to="/admin/hiring/jobs" aria-current={location.pathname.includes('/hiring/jobs')?'page':undefined}>Jobs</Link><Link to="/admin/hiring/questions" aria-current={location.pathname.endsWith('/questions')?'page':undefined}>Question bank</Link>{hiringRoles.includes('admin') && <><Link to="/admin/hiring/journey">Team journey</Link><Link to="/admin/hiring/emails">Emails</Link><Link to="/admin/hiring/agreements">Agreements</Link><Link to="/admin/hiring/settings">Settings</Link></>}</div>}</>}
         </nav>
         <div className="admin-me"><span className="truncate">{email}</span><small>{role}</small>
@@ -249,12 +275,12 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
       </header>
 
       <main className="admin-main" key={openBooking ? `booking-${openBooking}` : tab}>
-        {isHiring ? <HiringWorkspace/> : isSiteContent ? <SiteContent /> : openBooking ? (
+        {isHiring ? <HiringWorkspace/> : isSiteContent ? <SiteContent /> : isOffers ? <OffersAdmin /> : openBooking ? (
           <section className="booking-page">
             <button className="admin-btn-ghost booking-page-back" onClick={() => { setTab('bookings'); setOpenBooking(null); }}><ArrowLeft size={16} />Back to bookings</button>
             {booking ? <>
-              <header className="admin-head"><div><p className="admin-eyebrow">{fmtDate(booking.slot_at)} · Dhaka time</p><h1>{who(booking.clients)}</h1></div><Pill value={booking.status} /></header>
-              <div className="admin-panel"><BookingDetail key={booking.id} b={booking} manager={manager} userId={userId} names={names} update={update} confirm={confirm} /></div>
+              <header className="admin-head"><div><p className="admin-eyebrow">{fmtDate(booking.slot_at)} · Dhaka time</p><h1>{who(booking.clients)}</h1></div><span className="admin-offer-head"><OfferTagBadge offer={booking.offer_id ? offerTags[booking.offer_id] : undefined} /><Pill value={booking.status} /></span></header>
+              <div className="admin-panel"><BookingDetail key={booking.id} offerName={booking.offer_id ? offerTags[booking.offer_id]?.name ?? 'An offer' : null} b={booking} manager={manager} userId={userId} names={names} update={update} confirm={confirm} /></div>
             </> : bookings === null ? <div className="admin-skeleton" /> : <Empty title="Booking not found" hint="It may have been removed or you may not have access." />}
           </section>
         ) : <>
@@ -267,14 +293,14 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
               <button className="admin-stat" onClick={() => setTab('leads')}><span>Leads needing follow-up</span><b>{stale.length}</b></button>
             </div>
             <h2 className="admin-sub">Today's calls</h2>
-            {bookings === null ? <div className="admin-skeleton" /> : todays.length ? <div className="admin-grid">{todays.map((b) => <BookingCard key={b.id} b={b} names={names} userId={userId} onOpen={() => setOpenBooking(b.id)} />)}</div> : <Empty title="No calls today" hint="New bookings show up here in real time." />}
+            {bookings === null ? <div className="admin-skeleton" /> : todays.length ? <div className="admin-grid">{todays.map((b) => <BookingCard key={b.id} b={b} offer={b.offer_id ? offerTags[b.offer_id] : undefined} names={names} userId={userId} onOpen={() => setOpenBooking(b.id)} />)}</div> : <Empty title="No calls today" hint="New bookings show up here in real time." />}
             <NewEnquiries onOpen={(id) => { setOpenLead(id); }} />
             <h2 className="admin-sub">Follow-ups</h2>
-            {stale.length ? <div className="admin-grid">{stale.map((l) => <LeadCard key={l.id} l={l} names={names} userId={userId} onOpen={() => setOpenLead(l.id)} />)}</div> : <Empty title="Everyone is followed up" />}
+            {stale.length ? <div className="admin-grid">{stale.map((l) => <LeadCard key={l.id} l={l} offer={leadOffer(l.id)} names={names} userId={userId} onOpen={() => setOpenLead(l.id)} />)}</div> : <Empty title="Everyone is followed up" />}
           </section>
         )}
-        {tab === 'bookings' && <BookingsView rows={bookings} names={names} userId={userId} onOpen={setOpenBooking} />}
-        {tab === 'leads' && <Pipeline rows={leads} names={names} userId={userId} onOpen={setOpenLead} onMove={changeLeadStage} />}
+        {tab === 'bookings' && <BookingsView rows={bookings} offerTags={offerTags} names={names} userId={userId} onOpen={setOpenBooking} />}
+        {tab === 'leads' && <Pipeline rows={leads} leadOffer={leadOffer} names={names} userId={userId} onOpen={setOpenLead} onMove={changeLeadStage} />}
         {tab === 'projects' && <StaffProjects userId={userId} />}
         {tab === 'work' && <WorkAdmin />}
         {tab === 'billing' && <StaffBilling manager={manager} names={names} />}
@@ -293,7 +319,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
       </nav>
 
       <Modal open={!!lead} onOpenChange={(o) => !o && setOpenLead(null)} title={lead ? who(lead.clients) : ''} description={lead?.clients?.email ?? undefined} wide>
-        {lead && <LeadDetail l={lead} manager={manager} userId={userId} names={names} update={update} onStage={(s) => changeLeadStage(lead, s)} />}
+        {lead && <LeadDetail offer={leadOffer(lead.id)} l={lead} manager={manager} userId={userId} names={names} update={update} onStage={(s) => changeLeadStage(lead, s)} />}
       </Modal>
       {confirmNode}
     </div>
@@ -301,17 +327,18 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
   );
 }
 
-function BookingCard({ b, names, userId, onOpen }: { b: Booking; names: Record<string, string>; userId: string; onOpen: () => void }) {
+function BookingCard({ b, names, userId, onOpen, offer }: { b: Booking; names: Record<string, string>; userId: string; onOpen: () => void; offer?: OfferTag | undefined }) {
   return (
     <button className="admin-card-item" onClick={onOpen}>
       <div className="admin-card-top"><strong className="truncate">{who(b.clients)}</strong><Pill value={b.status} /></div>
       <p className="truncate">{b.clients?.email ?? 'Not supplied'}</p>
+      {offer && <OfferTagBadge offer={offer} />}
       <div className="admin-card-meta"><span>{fmtDate(b.slot_at)}</span><span className="truncate">{b.owner_id ? b.owner_id === userId ? 'You' : names[b.owner_id] ?? 'Assigned' : 'Unassigned'}</span></div>
     </button>
   );
 }
 
-function BookingsView({ rows, names, userId, onOpen }: { rows: Booking[] | null; names: Record<string, string>; userId: string; onOpen: (id: string) => void }) {
+function BookingsView({ rows, names, userId, onOpen, offerTags }: { rows: Booking[] | null; names: Record<string, string>; userId: string; onOpen: (id: string) => void; offerTags: Record<string, OfferTag> }) {
   const [filter, setFilter] = useState('open');
   const [q, setQ] = useState('');
   const list = rows ?? [];
@@ -325,7 +352,7 @@ function BookingsView({ rows, names, userId, onOpen }: { rows: Booking[] | null;
       <div className="admin-chips">
         {['open', 'all', ...BOOKING_STATUSES].map((s) => <button key={s} className={filter === s ? 'is-active' : ''} onClick={() => setFilter(s)}>{label(s)}</button>)}
       </div>
-      {rows === null ? <div className="admin-skeleton" /> : shown.length ? <div className="admin-grid">{shown.map((b) => <BookingCard key={b.id} b={b} names={names} userId={userId} onOpen={() => onOpen(b.id)} />)}</div> : <Empty title="No bookings match" />}
+      {rows === null ? <div className="admin-skeleton" /> : shown.length ? <div className="admin-grid">{shown.map((b) => <BookingCard key={b.id} b={b} offer={b.offer_id ? offerTags[b.offer_id] : undefined} names={names} userId={userId} onOpen={() => onOpen(b.id)} />)}</div> : <Empty title="No bookings match" />}
     </section>
   );
 }
@@ -338,7 +365,7 @@ function useEntityActivity(id: string, dep: unknown) {
   return rows;
 }
 
-function BookingDetail({ b, manager, userId, names, update, confirm }: { b: Booking; manager: boolean; userId: string; names: Record<string, string>; update: Upd; confirm: ReturnType<typeof useConfirm>['confirm'] }) {
+function BookingDetail({ b, manager, userId, names, update, confirm, offerName }: { offerName: string | null; b: Booking; manager: boolean; userId: string; names: Record<string, string>; update: Upd; confirm: ReturnType<typeof useConfirm>['confirm'] }) {
   const canEdit = manager || b.owner_id === userId;
   const [link, setLink] = useState(b.meet_link ?? '');
   const [notes, setNotes] = useState(b.notes_shared ?? '');
@@ -356,7 +383,7 @@ function BookingDetail({ b, manager, userId, names, update, confirm }: { b: Book
   };
   return (
     <div className="admin-detail">
-      <BookingSubmission booking={b} />
+      <BookingSubmission booking={b} offerName={offerName} />
         <div className="admin-side-panel booking-management">
           <p className="admin-label">Status</p>
           <div className="admin-segment">
@@ -382,18 +409,19 @@ function BookingDetail({ b, manager, userId, names, update, confirm }: { b: Book
   );
 }
 
-function LeadCard({ l, names, userId, onOpen, draggable }: { l: Lead; names: Record<string, string>; userId: string; onOpen: () => void; draggable?: boolean }) {
+function LeadCard({ l, names, userId, onOpen, draggable, offer }: { l: Lead; names: Record<string, string>; userId: string; onOpen: () => void; draggable?: boolean; offer?: OfferTag | undefined }) {
   const days = Math.floor((Date.now() - new Date(l.stage_changed_at).getTime()) / 86400000);
   return (
     <button className="admin-card-item is-lead" onClick={onOpen} draggable={draggable} onDragStart={(e: DragEvent) => e.dataTransfer.setData('text/lead', l.id)}>
       <div className="admin-card-top"><strong className="truncate">{who(l.clients)}</strong>{l.value_estimate ? <small>{l.currency ?? 'BDT'} {l.value_estimate.toLocaleString()}</small> : null}</div>
       <p className="truncate">{l.clients?.email ?? 'Not supplied'}</p>
+      {offer && <OfferTagBadge offer={offer} />}
       <div className="admin-card-meta"><span>{days === 0 ? 'Today' : `${days}d in stage`}</span><span className="truncate">{l.owner_id ? l.owner_id === userId ? 'You' : names[l.owner_id] ?? 'Assigned' : 'Unassigned'}</span></div>
     </button>
   );
 }
 
-function Pipeline({ rows, names, userId, onOpen, onMove }: { rows: Lead[] | null; names: Record<string, string>; userId: string; onOpen: (id: string) => void; onMove: (l: Lead, s: string) => void }) {
+function Pipeline({ rows, names, userId, onOpen, onMove, leadOffer }: { rows: Lead[] | null; names: Record<string, string>; userId: string; onOpen: (id: string) => void; onMove: (l: Lead, s: string) => void; leadOffer: (leadId: string) => OfferTag | undefined }) {
   const [over, setOver] = useState<string | null>(null);
   const list = rows ?? [];
   const totals = useMemo(() => Object.fromEntries(LEAD_STAGES.map((s) => [s, list.filter((l) => l.stage === s)])), [list]);
@@ -408,7 +436,7 @@ function Pipeline({ rows, names, userId, onOpen, onMove }: { rows: Lead[] | null
               onDrop={(e) => { e.preventDefault(); setOver(null); const l = list.find((x) => x.id === e.dataTransfer.getData('text/lead')); if (l) onMove(l, s); }}>
               <h3><span className={`admin-dot is-${s}`} />{label(s)}<small>{totals[s]!.length}</small></h3>
               <div className="admin-col-body">
-                {totals[s]!.length ? totals[s]!.map((l) => <LeadCard key={l.id} l={l} names={names} userId={userId} onOpen={() => onOpen(l.id)} draggable />) : <p className="admin-empty">Drop leads here</p>}
+                {totals[s]!.length ? totals[s]!.map((l) => <LeadCard key={l.id} l={l} offer={leadOffer(l.id)} names={names} userId={userId} onOpen={() => onOpen(l.id)} draggable />) : <p className="admin-empty">Drop leads here</p>}
               </div>
             </section>
           ))}
@@ -418,7 +446,7 @@ function Pipeline({ rows, names, userId, onOpen, onMove }: { rows: Lead[] | null
   );
 }
 
-function LeadDetail({ l, manager, userId, names, update, onStage }: { l: Lead; manager: boolean; userId: string; names: Record<string, string>; update: Upd; onStage: (s: string) => void }) {
+function LeadDetail({ l, manager, userId, names, update, onStage, offer }: { offer: OfferTag | undefined; l: Lead; manager: boolean; userId: string; names: Record<string, string>; update: Upd; onStage: (s: string) => void }) {
   const canEdit = manager || l.owner_id === userId;
   const [value, setValue] = useState(l.value_estimate?.toString() ?? '');
   const [reason, setReason] = useState({ cat: l.lost_reason_category ?? '', text: l.lost_reason ?? '' });
@@ -437,6 +465,7 @@ function LeadDetail({ l, manager, userId, names, update, onStage }: { l: Lead; m
           <div><dt>Brand</dt><dd>{l.clients?.brand_name ?? 'Not supplied'}</dd></div>
           <div><dt>Owner</dt><dd>{l.owner_id ? l.owner_id === userId ? 'You' : names[l.owner_id] ?? 'Assigned' : 'Unassigned'}</dd></div>
           <div><dt>In stage since</dt><dd>{fmtDate(l.stage_changed_at)}</dd></div>
+          {offer && <div><dt>Came in during</dt><dd><OfferTagBadge offer={offer} /> {offer.name}</dd></div>}
         </dl>
         <div className="admin-side-panel">
           {!l.owner_id && <button className="admin-btn" onClick={() => update('leads', l.id, { owner_id: userId }, 'Lead assigned to you')}>Assign to me</button>}
