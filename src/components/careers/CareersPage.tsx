@@ -19,18 +19,13 @@ const faq = [
     "Can I work remotely?",
     "Yes, remote and hybrid are both possible. You may be asked to come to the office for some sessions.",
   ],
-  ["Do I have to pay for the learning?", "No. The internship has no fee."],
-  [
-    "When do I get paid?",
-    "In-house work during the learning stage is part of your training. Any client project you are added to is paid, and you will always be told which work is client work.",
-  ],
   [
     "Can I work with another agency at the same time?",
     "Not with a competing agency or AI video studio during the 6 month program.",
   ],
   [
     "What happens after 6 months?",
-    "People who prove themselves are offered a salaried position in the team.",
+    "People who prove themselves during the program are invited to join our core team.",
   ],
 ];
 export function CareersPage() {
@@ -74,9 +69,9 @@ export function CareersPage() {
           </Reveal>
           <div className="career-program">
             {[
-              [BookOpen, "Months 1 to 2", "Learn hands-on beside the team. No fee."],
-              [Briefcase, "After that", "Paid project work for those who do well."],
-              [Trophy, "Within 6 months", "A salaried team spot for anyone who proves themselves."],
+              [BookOpen, "Months 1 to 2", "Learn from zero, hands-on beside the team."],
+              [Briefcase, "After that", "Work on real brand projects."],
+              [Trophy, "Within 6 months", "The best join our core team."],
             ].map(([Icon, title, copy], i) => {
               const I = Icon as typeof BookOpen;
               return (

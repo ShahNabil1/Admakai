@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { seoHead } from "@/lib/seo";
 import { jobPosting } from "@/lib/careers-rules";
-import { careerDetailOptions, internshipVideoOptions } from "@/lib/careers-query";
+import { careerDetailOptions, careerJobsOptions, internshipVideoOptions } from "@/lib/careers-query";
 import { JobDetailsPage } from "@/components/careers/JobDetailsPage";
 import { PageError } from "@/components/public/PageElements";
 import { hiringMediaPath } from "@/lib/hiring-media";
 export const Route = createFileRoute("/_site/careers/$slug/")({
   loader: async ({ context, params }) => {
-    const [detail] = await Promise.all([context.queryClient.ensureQueryData(careerDetailOptions(params.slug)), context.queryClient.ensureQueryData(internshipVideoOptions)]);
+    const [detail] = await Promise.all([context.queryClient.ensureQueryData(careerDetailOptions(params.slug)), context.queryClient.ensureQueryData(internshipVideoOptions), context.queryClient.ensureQueryData(careerJobsOptions).catch(() => null)]);
     return detail;
   },
   head: ({ loaderData, params }) => {

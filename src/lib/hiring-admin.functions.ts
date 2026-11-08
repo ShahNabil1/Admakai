@@ -128,6 +128,8 @@ const jobSchema = z.object({
   task_brief: text,
   task_due_days: z.number().int().min(1).nullable(),
   task_submission_type: z.enum(["link", "file"]),
+  who_its_for: z.string().max(5000).nullable().optional(),
+  job_faqs: z.array(z.object({ question: z.string().trim().min(1).max(300), answer: z.string().trim().min(1).max(2000) })).max(30).optional(),
 });
 export const saveHiringJob = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

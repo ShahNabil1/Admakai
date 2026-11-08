@@ -337,3 +337,9 @@
     flex-basis: 65%;
   }
 }
+.hiring-faq-editor{border:1px solid var(--line);border-radius:12px;padding:1rem;display:flex;flex-direction:column;gap:.75rem;min-width:0}
+.hiring-faq-editor legend{padding:0 .35rem;font-size:.85rem}
+.hiring-faq-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) auto;gap:.6rem;align-items:end;padding-bottom:.75rem;border-bottom:1px solid var(--line)}
+.hiring-faq-actions{display:flex;gap:.3rem}
+.hiring-faq-editor .admin-btn-ghost{align-self:flex-start}
+@media (max-width:760px){.hiring-faq-row{grid-template-columns:1fr}}

@@ -5,8 +5,8 @@ import { useMotionPreference } from '@/hooks/use-motion-preference';
 import { previewLoopTime, resolveInternshipVideo, youtubePoster, type InternshipVideoSettings } from '@/lib/internship-video';
 import { useHiringMedia } from '@/hooks/use-hiring-media';
 
-export function InternshipVideo({ settings, compact = false }: { settings: InternshipVideoSettings; compact?: boolean }) {
-  const [playing, setPlaying] = useState(false);
+export function InternshipVideo({ settings, compact = false, autoPlay = false }: { settings: InternshipVideoSettings; compact?: boolean; autoPlay?: boolean }) {
+  const [playing, setPlaying] = useState(autoPlay);
   const [failed, setFailed] = useState(false);
   const [posterFailed, setPosterFailed] = useState(false);
   const [thumbnailFallback, setThumbnailFallback] = useState(false);

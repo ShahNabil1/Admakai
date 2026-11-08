@@ -1470,6 +1470,7 @@ export type Database = {
           description: string | null
           experience_level: string
           id: string
+          job_faqs: Json
           journey_pipeline_id: string | null
           nice_to_have: string[]
           requirements: string[]
@@ -1488,6 +1489,7 @@ export type Database = {
           tools: string[]
           type: string
           updated_at: string
+          who_its_for: string | null
           work_mode: string
         }
         Insert: {
@@ -1501,6 +1503,7 @@ export type Database = {
           description?: string | null
           experience_level?: string
           id?: string
+          job_faqs?: Json
           journey_pipeline_id?: string | null
           nice_to_have?: string[]
           requirements?: string[]
@@ -1519,6 +1522,7 @@ export type Database = {
           tools?: string[]
           type: string
           updated_at?: string
+          who_its_for?: string | null
           work_mode: string
         }
         Update: {
@@ -1532,6 +1536,7 @@ export type Database = {
           description?: string | null
           experience_level?: string
           id?: string
+          job_faqs?: Json
           journey_pipeline_id?: string | null
           nice_to_have?: string[]
           requirements?: string[]
@@ -1550,6 +1555,7 @@ export type Database = {
           tools?: string[]
           type?: string
           updated_at?: string
+          who_its_for?: string | null
           work_mode?: string
         }
         Relationships: [
@@ -2456,6 +2462,32 @@ export type Database = {
             columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "review_comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      saved_jobs: {
+        Row: {
+          created_at: string
+          job_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          job_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          job_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_jobs_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
             referencedColumns: ["id"]
           },
         ]

@@ -12,7 +12,7 @@ export function ApplicationSignIn({ returnPath, onSignedIn, googleEnabled = true
     <div className="apply-signin-story">
       <img className="apply-logo" src={logo.url} alt="Admakai" />
       <div><p className="apply-kicker">YOUR NEXT CHAPTER</p><h1>Start your journey in AI filmmaking</h1>
-      <ul>{[[GraduationCap, 'No fee to learn'], [Film, 'Learn beside a working AI film team'], [BriefcaseBusiness, 'Paid projects after the learning stage']].map(([Icon, text]) => { const FactIcon = Icon as typeof Film; return <li key={String(text)}><span><FactIcon size={20} /></span>{String(text)}</li>; })}</ul></div>
+      <ul>{[[GraduationCap, 'Learn from zero'], [Film, 'Learn beside a working AI film team'], [BriefcaseBusiness, 'Work on real brand projects']].map(([Icon, text]) => { const FactIcon = Icon as typeof Film; return <li key={String(text)}><span><FactIcon size={20} /></span>{String(text)}</li>; })}</ul></div>
       <p className="apply-story-footer">Admakai · A Branta Tech sister concern</p>
     </div>
     <div className="apply-signin-fields">

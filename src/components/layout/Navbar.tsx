@@ -1,4 +1,5 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useLocation } from '@tanstack/react-router';
+import { isJobDetailsPath } from '@/lib/job-page-rules';
 import { motion } from 'framer-motion';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -26,6 +27,8 @@ export function Navbar({ hero = false }: { hero?: boolean }) {
   const previousY = useRef(0);
   const reduce = useMotionPreference();
   const { user, ready } = useAuth();
+  // The white job details page shows the header as a light floating pill; everywhere else stays dark.
+  const light = isJobDetailsPath(useLocation({ select: l => l.pathname }));
   useEffect(() => {
     if (!hero) return;
     previousY.current = Math.max(0, window.scrollY);
@@ -42,7 +45,7 @@ export function Navbar({ hero = false }: { hero?: boolean }) {
   if (!hero) return <nav>Navbar</nav>;
 
   return (
-    <header className={`hero-navbar-wrapper${scroll.scrolled ? ' is-scrolled' : ''}`}>
+    <header className={`hero-navbar-wrapper${scroll.scrolled || light ? ' is-scrolled' : ''}${light ? ' is-light' : ''}`}>
       <motion.nav className="hero-navbar" aria-label="Main navigation" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : .2, duration: reduce ? 0 : .6 }}>
         <Link to="/" aria-label="Admakai home"><img className="hero-logo" src="/brand/logo-white.png" alt="Admakai" width="218" height="44" /></Link>
         <div className="hero-nav-links">

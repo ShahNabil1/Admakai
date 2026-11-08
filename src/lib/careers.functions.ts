@@ -18,7 +18,7 @@ export type CareerDetail = {
   terms: string[];
 };
 const columns =
-  "id,title,slug,type,work_mode,schedule_text,experience_level,schedule,summary,description,responsibilities,requirements,nice_to_have,benefits,tools,seats,deadline,status,cover_image_url,application_pipeline_id,journey_pipeline_id,agreement_template_id,task_enabled,task_brief,task_due_days,task_submission_type,created_at,updated_at,created_by";
+  "id,title,slug,type,work_mode,schedule_text,experience_level,schedule,summary,description,responsibilities,requirements,nice_to_have,benefits,tools,seats,deadline,status,cover_image_url,application_pipeline_id,journey_pipeline_id,agreement_template_id,task_enabled,task_brief,task_due_days,task_submission_type,created_at,updated_at,created_by,who_its_for,job_faqs";
 function publicDb() {
   const url = process.env["SUPABASE_URL"];
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"] || process.env["SUPABASE_ANON_KEY"];

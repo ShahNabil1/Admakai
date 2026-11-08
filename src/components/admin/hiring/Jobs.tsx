@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { JobFaqEditor } from './JobFaqEditor';
+import { jobFaqs } from '@/lib/job-page-rules';
 import { Link, useNavigate, useBlocker } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -257,6 +259,8 @@ function blankJob(data: HiringWorkspace): HiringJob {
     nice_to_have: [],
     benefits: [],
     tools: [],
+    who_its_for: null,
+    job_faqs: [],
     status: "draft",
     cover_image_url: null,
     application_pipeline_id: data.pipelines.find((p) => p.kind === "application")?.id ?? "",
@@ -377,6 +381,8 @@ export function JobEditor({
             experience_level: job.experience_level as 'none' | 'junior' | 'mid' | 'senior',
             schedule: job.schedule as 'day' | 'evening' | 'flexible',
             task_submission_type: job.task_submission_type === "file" ? "file" : "link",
+            who_its_for: job.who_its_for ?? null,
+            job_faqs: jobFaqs(job.job_faqs),
           },
           questions,
         },
@@ -572,6 +578,17 @@ export function JobEditor({
               />
             ),
           )}
+          <label>
+            Who this is for
+            <textarea
+              rows={4}
+              maxLength={5000}
+              value={job.who_its_for ?? ""}
+              onChange={(e) => patch({ who_its_for: e.target.value })}
+              disabled={!admin}
+            />
+          </label>
+          <JobFaqEditor value={jobFaqs(job.job_faqs)} onChange={(job_faqs) => patch({ job_faqs })} disabled={!admin} />
           {admin && (
             <ImageUpload
               label="Cover image"
