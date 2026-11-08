@@ -1,0 +1,1 @@
+CREATE POLICY "staff_invites_no_client_access" ON public.staff_invites AS RESTRICTIVE FOR ALL TO anon, authenticated USING (false) WITH CHECK (false);

@@ -2793,6 +2793,30 @@ export type Database = {
           },
         ]
       }
+      staff_invites: {
+        Row: {
+          claimed_at: string | null
+          claimed_by: string | null
+          created_at: string
+          email: string
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Insert: {
+          claimed_at?: string | null
+          claimed_by?: string | null
+          created_at?: string
+          email: string
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Update: {
+          claimed_at?: string | null
+          claimed_by?: string | null
+          created_at?: string
+          email?: string
+          role?: Database["public"]["Enums"]["user_role"]
+        }
+        Relationships: []
+      }
       talent_pool: {
         Row: {
           created_at: string
