@@ -5,3 +5,5 @@
 - Application private reads and mutations use authenticated no-store server functions; public loaders read only safe role/settings data. Serialize autosaves and Next writes to prevent stale progress overwrites.
 - Application signatures use signature_pad and server-validated transparent PNGs; personal name/version matching is rechecked by SQL on final submission.
 - Signature object writes are privileged only after user-scoped draft ownership and PNG checks; restrictive storage policies block browser bypass. Candidate name changes invalidate unfinished signatures in SQL.
+- Candidate URLs use a client-only pathless layout and shared email-code form; each private handler independently authenticates and filters ownership, including staff viewing their own applications.
+- Submitted PDF finalization changes only validated path/hash; the exact signed template/version and signature content remain immutable, and failed delivery cannot undo submission.

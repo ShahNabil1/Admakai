@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ArrowRight, Check, Loader2, Upload } from "lucide-react";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import {
@@ -10,7 +9,6 @@ import {
   AUTOSAVE_MS,
   CV_LIMIT,
   PHOTO_LIMIT,
-  RESEND_SECONDS,
   answerError,
   candidateSchema,
   candidateDraftSchema,
@@ -39,6 +37,7 @@ import {
 import { ApplicationQuestion } from "./ApplicationQuestion";
 import { ApplicationSignature } from "./ApplicationSignature";
 import { HiringRichText } from './HiringRichText';
+import { EmailCodeForm } from './EmailCodeForm';
 import "./application.css";
 
 const emptyCandidate: CandidateFields = {
@@ -118,10 +117,6 @@ export function ApplicationPage({
     [saved, setSaved] = useState(""),
     [dirty, setDirty] = useState(0),
     [today, setToday] = useState<Date | null>(null);
-  const [email, setEmail] = useState(""),
-    [code, setCode] = useState(""),
-    [codeSent, setCodeSent] = useState(false),
-    [resend, setResend] = useState(0);
   const gate = useRef(false),
     active = useRef(true),
     submitted = useRef(false),
@@ -204,11 +199,6 @@ export function ApplicationPage({
       if (timer.current) clearTimeout(timer.current);
     };
   }, [load]);
-  useEffect(() => {
-    if (!resend) return;
-    const id = setInterval(() => setResend((v) => Math.max(0, v - 1)), 1000);
-    return () => clearInterval(id);
-  }, [resend]);
   useEffect(() => {
     if (step !== 6) return;
     const el = agreementBox.current;
@@ -448,41 +438,6 @@ export function ApplicationPage({
       setReadEnd(false);
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
-  const sendCode = () =>
-    void run(async () => {
-      if (resend > 0) return;
-      const parsed = z.string().trim().email().max(255).safeParse(email);
-      if (!parsed.success) {
-        setErrors({ email: "Enter a valid email address." });
-        return;
-      }
-      setErrors({});
-      const { error } = await supabase.auth.signInWithOtp({
-        email: parsed.data,
-        options: {
-          emailRedirectTo: `${window.location.origin}/careers/${encodeURIComponent(slug)}/apply`,
-        },
-      });
-      if (error) throw new Error("The code could not be sent. Please try again.");
-      setCodeSent(true);
-      setResend(RESEND_SECONDS);
-      setCode("");
-    });
-  const verify = () =>
-    void run(async () => {
-      if (!/^\d{6}$/.test(code)) {
-        setErrors({ code: "Enter the six-digit email code." });
-        return;
-      }
-      const { error } = await supabase.auth.verifyOtp({
-        email: email.trim(),
-        token: code,
-        type: "email",
-      });
-      if (error) throw new Error("That code is wrong or expired. Please request a new code.");
-      setErrors({});
-      await load();
-    });
   const updatePerson = (key: keyof CandidateFields, value: string) => {
     setCandidate((old) => ({
       ...old,
@@ -597,81 +552,7 @@ export function ApplicationPage({
                   </p>
                 )}
                 {step === 1 && !signedIn ? (
-                  <div className="application-form application-otp">
-                    <label id="field-email">
-                      Email
-                      <input
-                        type="email"
-                        autoComplete="email"
-                        value={email}
-                        disabled={busy || codeSent}
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
-                      {errors["email"] && <p className="application-error">{errors["email"]}</p>}
-                    </label>
-                    {!codeSent ? (
-                      <Button className="application-next" disabled={busy} onClick={sendCode}>
-                        Send code
-                      </Button>
-                    ) : (
-                      <>
-                        <p className="application-hint">
-                          Enter the six-digit code sent to your email.
-                        </p>
-                        <label id="field-code">
-                          Verification code
-                          <input
-                            inputMode="numeric"
-                            autoComplete="one-time-code"
-                            maxLength={6}
-                            value={code}
-                            onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-                          />
-                          {errors["code"] && <p className="application-error">{errors["code"]}</p>}
-                        </label>
-                        <Button className="application-next" disabled={busy} onClick={verify}>
-                          Verify and continue
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="application-back"
-                          disabled={busy || resend > 0}
-                          onClick={sendCode}
-                        >
-                          {resend > 0 ? `Resend in ${resend}s` : "Resend code"}
-                        </Button>
-                        <Button
-                          variant="link"
-                          className="application-back"
-                          onClick={() => {
-                            setCodeSent(false);
-                            setNotice(null);
-                          }}
-                        >
-                          Use a different email
-                        </Button>
-                      </>
-                    )}
-                    {googleEnabled && (
-                      <Button
-                        variant="outline"
-                        disabled={busy}
-                        onClick={() =>
-                          void run(async () => {
-                            const { error } = await supabase.auth.signInWithOAuth({
-                              provider: "google",
-                              options: {
-                                redirectTo: `${window.location.origin}/careers/${encodeURIComponent(slug)}/apply`,
-                              },
-                            });
-                            if (error) throw new Error("Google sign-in is unavailable.");
-                          })
-                        }
-                      >
-                        Continue with Google
-                      </Button>
-                    )}
-                  </div>
+                  <EmailCodeForm returnPath={`/careers/${encodeURIComponent(slug)}/apply`} onSignedIn={load} googleEnabled={googleEnabled}/>
                 ) : data ? (
                   <form
                     className="application-form"
@@ -730,6 +611,7 @@ export function ApplicationPage({
                                   }
                                   onChange={(e) => updatePerson(key, e.target.value)}
                                 />
+                                {key === 'full_name' && <p className="application-hint">Write your name in English, as on your NID</p>}
                               </label>
                             )}
                             {errors[key] && (

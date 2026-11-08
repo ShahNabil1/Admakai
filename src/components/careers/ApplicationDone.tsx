@@ -4,6 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { readApplication, type ApplicationData } from "@/lib/application.functions";
+import { AgreementPdf } from './AgreementPdf';
+import './candidate.css';
 import "./application.css";
 export function ApplicationDone({ slug }: { slug: string }) {
   const read = useServerFn(readApplication);
@@ -51,12 +53,7 @@ export function ApplicationDone({ slug }: { slug: string }) {
                   <li key={stage.key}>{stage.candidate_label}</li>
                 ))}
             </ol>
-            <div className="application-pdf-slot">
-              <p>Agreement PDF preview · coming next</p>
-              <Button variant="outline" disabled>
-                Download PDF
-              </Button>
-            </div>
+            {data.application && <AgreementPdf id={data.application.id} poll/>}
             <div className="application-done-actions">
               <Button asChild>
                 <Link to="/me">Go to my dashboard</Link>

@@ -359,5 +359,13 @@ export const submitApplication = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     setResponseHeader("Cache-Control", "no-store");
     checked(await context.supabase.rpc("submit_application", { _application_id: data.id }));
-    return { ok: true };
+    // The caller-scoped RPC commits first; delivery failures must never undo submission.
+    try {
+      const { deliverSubmittedApplication } = await import('./hiring-delivery.server');
+      const delivery = await deliverSubmittedApplication(data.id);
+      return { ok: true, delivery };
+    } catch {
+      console.error('Hiring post-submission delivery failed');
+      return { ok: true, delivery: { pdf: 'failed', email: 'failed' } };
+    }
   });

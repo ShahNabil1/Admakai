@@ -1,0 +1,3 @@
+ALTER FUNCTION public.withdraw_application(uuid,text) SET SCHEMA hiring_private;
+CREATE FUNCTION public.withdraw_application(_application_id uuid,_reason text DEFAULT NULL) RETURNS uuid LANGUAGE sql SET search_path='' AS $$ SELECT hiring_private.withdraw_application(_application_id,_reason) $$;
+REVOKE ALL ON FUNCTION public.withdraw_application(uuid,text) FROM PUBLIC,anon; GRANT EXECUTE ON FUNCTION public.withdraw_application(uuid,text) TO authenticated;

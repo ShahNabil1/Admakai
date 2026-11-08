@@ -17,6 +17,11 @@ import {
   type ApplicationQuestion,
 } from "./application-rules";
 describe("Application requirements", () => {
+  it('requires English-letter NID names', () => {
+    const fields={full_name:'নাবিল',phone:'01712345678',whatsapp:'',area:'Dhaka',education:'College',current_occupation:'Student'};
+    expect(candidateSchema.safeParse(fields).success).toBe(false);
+    expect(candidateSchema.safeParse({...fields,full_name:"Md. Nabil Rahman"}).success).toBe(true);
+  });
   it("accepts the two Bangladesh phone formats only", () => {
     expect(phoneSchema.safeParse("+8801712345678").success).toBe(true);
     expect(phoneSchema.safeParse("01712345678").success).toBe(true);

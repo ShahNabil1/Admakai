@@ -19,7 +19,7 @@ export const phoneSchema = z
   .trim()
   .regex(/^(\+8801|01)[3-9]\d{8}$/, "Enter a Bangladesh number starting with +880 or 01.");
 export const candidateSchema = z.object({
-  full_name: z.string().trim().min(2, "Enter your full name.").max(100),
+  full_name: z.string().trim().min(2, "Enter your full name.").max(100).regex(/^[A-Za-z .'-]+$/, "Write your name in English, as on your NID"),
   phone: phoneSchema,
   whatsapp: z.union([phoneSchema, z.literal("")]),
   area: z.string().trim().min(1, "Enter your area or city.").max(150),
@@ -28,7 +28,7 @@ export const candidateSchema = z.object({
 });
 export type CandidateFields = z.infer<typeof candidateSchema>;
 export const candidateDraftSchema = z.object({
-  full_name: z.string().max(100),
+  full_name: z.string().max(100).regex(/^[A-Za-z .'-]*$/, "Write your name in English, as on your NID"),
   phone: z.union([phoneSchema, z.literal("")]),
   whatsapp: z.union([phoneSchema, z.literal("")]),
   area: z.string().max(150),

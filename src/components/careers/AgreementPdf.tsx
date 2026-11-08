@@ -1,0 +1,12 @@
+import { useEffect, useState } from 'react';
+import { useServerFn } from '@tanstack/react-start';
+import { Download, Printer, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { candidatePdf } from '@/lib/candidate.functions';
+import { PDF_POLL_MS, PDF_POLL_LIMIT_MS } from '@/lib/candidate-rules';
+export function AgreementPdf({id,poll=false}:{id:string;poll?:boolean}) {
+  const read=useServerFn(candidatePdf);const [url,setUrl]=useState<string|null>(null),[status,setStatus]=useState<string|null>(null),[waiting,setWaiting]=useState(true),[error,setError]=useState('');
+  useEffect(()=>{let active=true;let timer:ReturnType<typeof setTimeout>|undefined;const end=Date.now()+PDF_POLL_LIMIT_MS;const load=async()=>{try{const r=await read({data:{id}});if(!active)return;setUrl(r.url);setStatus(r.emailStatus);if(r.url){setWaiting(false);timer=setTimeout(load,240000);}else if(poll&&Date.now()<end)timer=setTimeout(load,PDF_POLL_MS);else setWaiting(false);}catch{if(active){setError('Your agreement is not ready yet. Please check Documents later.');setWaiting(false);}}};void load();return()=>{active=false;if(timer)clearTimeout(timer);};},[id,poll,read]);
+  async function open(print=false){const r=await read({data:{id}});if(r.url){window.open(r.url,'_blank','noopener,noreferrer');}else setError('Your agreement is not ready yet.');}
+  return <section className="candidate-pdf">{url?<><iframe title="Your application agreement" src={url}/><div className="candidate-actions"><Button onClick={()=>void open()}><Download size={16}/>Download PDF</Button><Button variant="outline" onClick={()=>void open(true)}><Printer size={16}/>Print</Button></div></>:<p role="status">{waiting?<><Loader2 className="inline animate-spin" size={16}/> Preparing your agreement...</>:error||'Your agreement is still being prepared. Check Documents again shortly.'}</p>}{status==='sent'?<p className="application-hint">A copy has been sent to your email.</p>:status==='skipped'?<p className="application-hint">Email delivery is not enabled. Your agreement stays available here.</p>:status==='failed'?<p className="application-hint">The email could not be sent. Your application is submitted.</p>:null}</section>;
+}

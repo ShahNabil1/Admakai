@@ -2427,6 +2427,25 @@ export type Database = {
         Args: { _job_id: string; _user_id: string }
         Returns: boolean
       }
+      hiring_candidate_contact: { Args: never; Returns: string }
+      hiring_candidate_email_status: {
+        Args: { _application_id: string }
+        Returns: string
+      }
+      hiring_candidate_questions: {
+        Args: { _application_id: string }
+        Returns: {
+          id: string
+          label: string
+          section: string
+          sort_order: number
+          type: string
+        }[]
+      }
+      hiring_candidate_submit_task: {
+        Args: { _application_id: string; _note?: string; _url: string }
+        Returns: string
+      }
       hiring_current_template: {
         Args: { _job_id: string }
         Returns: {
@@ -2455,6 +2474,13 @@ export type Database = {
         Returns: boolean
       }
       hiring_owns_journey: { Args: { _journey_id: string }; Returns: boolean }
+      hiring_pdf_only_update: {
+        Args: {
+          _new: Database["public"]["Tables"]["signed_agreements"]["Row"]
+          _old: Database["public"]["Tables"]["signed_agreements"]["Row"]
+        }
+        Returns: boolean
+      }
       hiring_public_help: { Args: never; Returns: string }
       hiring_public_internship_video: {
         Args: never
@@ -2527,6 +2553,10 @@ export type Database = {
       submit_application: { Args: { _application_id: string }; Returns: string }
       submit_task: {
         Args: { _application_id: string; _url: string }
+        Returns: string
+      }
+      withdraw_application: {
+        Args: { _application_id: string; _reason?: string }
         Returns: string
       }
     }

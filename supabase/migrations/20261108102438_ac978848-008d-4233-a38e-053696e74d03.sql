@@ -1,0 +1,25 @@
+DO $test$ DECLARE ca uuid:='e5000000-0000-4000-8000-000000000001'; cb uuid:='e5000000-0000-4000-8000-000000000002'; jid uuid:='e5000000-0000-4000-8000-000000000003'; aid uuid:='e5000000-0000-4000-8000-000000000004'; tid uuid; pid uuid; jpid uuid; code text; BEGIN BEGIN
+INSERT INTO auth.users(id,email,raw_user_meta_data) VALUES(ca,'step5-a@example.invalid','{}'),(cb,'step5-b@example.invalid','{}');
+INSERT INTO public.candidates(id,full_name,phone,area,education,current_occupation) VALUES(ca,'Test Applicant','01712345678','Dhaka','College','Student'),(cb,'Other Applicant','01712345679','Dhaka','College','Student');
+SELECT id INTO tid FROM public.agreement_templates ORDER BY created_at LIMIT 1; SELECT id INTO pid FROM public.pipelines WHERE kind='application' LIMIT 1; SELECT id INTO jpid FROM public.pipelines WHERE kind='journey' LIMIT 1;
+INSERT INTO public.jobs(id,slug,title,type,work_mode,status,application_pipeline_id,journey_pipeline_id,agreement_template_id) VALUES(jid,'step5-rollback','Step Five Test','internship','remote','draft',pid,jpid,tid);
+INSERT INTO public.applications(id,job_id,candidate_id) VALUES(aid,jid,ca);
+INSERT INTO public.signed_agreements(application_id,template_id,template_version,signer_full_name,signature_path,pdf_path,pdf_sha256,accepted_terms) SELECT aid,id,version,'Test Applicant',ca::text||'/'||aid::text||'/signature.png','',repeat('0',64),key_terms FROM public.hiring_current_template(jid);
+UPDATE public.applications SET is_draft=false,status_key='submitted',submitted_at=now() WHERE id=aid;SELECT public_code INTO code FROM public.applications WHERE id=aid;
+PERFORM set_config('request.jwt.claim.sub',ca::text,true);PERFORM set_config('request.jwt.claims',jsonb_build_object('sub',ca,'role','authenticated')::text,true);SET LOCAL ROLE authenticated;
+BEGIN PERFORM public.withdraw_application(aid,repeat('x',2001));RAISE EXCEPTION 'Long reason accepted';EXCEPTION WHEN SQLSTATE 'P0001' THEN IF SQLERRM='Long reason accepted' THEN RAISE;END IF;END;
+RESET ROLE;PERFORM set_config('request.jwt.claims','{"role":"service_role"}',true);SET LOCAL ROLE service_role;
+UPDATE public.signed_agreements SET pdf_path=ca::text||'/'||aid::text||'/agreement-'||code||'.pdf',pdf_sha256=repeat('a',64) WHERE application_id=aid;
+BEGIN UPDATE public.signed_agreements SET signer_full_name='Changed' WHERE application_id=aid;RAISE EXCEPTION 'Signed content changed';EXCEPTION WHEN insufficient_privilege THEN NULL; WHEN SQLSTATE 'P0001' THEN IF SQLERRM='Signed content changed' THEN RAISE; END IF;END;
+INSERT INTO public.documents(candidate_id,kind,title,file_path) VALUES(ca,'agreement','Test agreement',ca::text||'/'||aid::text||'/agreement-'||code||'.pdf');
+INSERT INTO public.email_log(application_id,to_email,trigger_key,status) VALUES(aid,'step5-a@example.invalid','application_submitted','skipped');
+RESET ROLE;PERFORM set_config('request.jwt.claim.sub',cb::text,true);PERFORM set_config('request.jwt.claims',jsonb_build_object('sub',cb,'role','authenticated')::text,true);SET LOCAL ROLE authenticated;
+IF EXISTS(SELECT 1 FROM public.applications WHERE id=aid) OR EXISTS(SELECT 1 FROM public.documents WHERE candidate_id=ca) OR EXISTS(SELECT 1 FROM public.signed_agreements WHERE application_id=aid) OR EXISTS(SELECT 1 FROM public.candidate_interviews WHERE application_id=aid) OR public.hiring_candidate_email_status(aid) IS NOT NULL THEN RAISE EXCEPTION 'Cross-candidate read leak';END IF;
+BEGIN PERFORM public.withdraw_application(aid,'');RAISE EXCEPTION 'Other candidate withdrew';EXCEPTION WHEN insufficient_privilege THEN NULL;END;
+RESET ROLE;PERFORM set_config('request.jwt.claim.sub',ca::text,true);PERFORM set_config('request.jwt.claims',jsonb_build_object('sub',ca,'role','authenticated')::text,true);SET LOCAL ROLE authenticated;
+PERFORM public.withdraw_application(aid,'No longer available');IF (SELECT status_key FROM public.applications WHERE id=aid)<>'withdrawn' THEN RAISE EXCEPTION 'Withdrawal not saved';END IF;
+IF NOT EXISTS(SELECT 1 FROM public.application_events WHERE application_id=aid AND reason='No longer available') THEN RAISE EXCEPTION 'Withdrawal event missing';END IF;
+BEGIN PERFORM public.withdraw_application(aid,'Again');RAISE EXCEPTION 'Terminal application withdrawn';EXCEPTION WHEN SQLSTATE 'P0001' THEN IF SQLERRM='Terminal application withdrawn' THEN RAISE;END IF;END;
+BEGIN UPDATE public.candidates SET full_name='নাবিল' WHERE id=ca;RAISE EXCEPTION 'Non-English name accepted';EXCEPTION WHEN SQLSTATE 'P0001' THEN IF SQLERRM='Non-English name accepted' THEN RAISE;END IF;END;
+RESET ROLE;RAISE EXCEPTION 'step5_rollback' USING ERRCODE='Z0001';EXCEPTION WHEN SQLSTATE 'Z0001' THEN NULL;END;
+IF EXISTS(SELECT 1 FROM auth.users WHERE id IN(ca,cb)) THEN RAISE EXCEPTION 'Fixtures not rolled back';END IF;END $test$;
