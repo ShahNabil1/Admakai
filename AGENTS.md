@@ -54,3 +54,4 @@
 - Talent-pool submissions use the public publishable client and a normalized-email transactional trigger; staff-only read policies keep applicant contact details private.
 - Enquiries use server-only app.create_enquiry; CRM mail goes via crm-emails.server.ts and the shared reminder endpoint, one delivery path.
 - html lang comes from page-lang.ts; seoHead lang sets hreflang.
+- Every email, agreement PDF and letter goes through public.delivery_outbox (src/lib/outbox.server.ts): enqueue a full snapshot first, then process; retries and the reminders endpoint/button resend only from the stored snapshot, and the (event, kind, trigger) key prevents double sends.

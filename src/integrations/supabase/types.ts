@@ -700,6 +700,85 @@ export type Database = {
           },
         ]
       }
+      delivery_outbox: {
+        Row: {
+          application_id: string | null
+          attempts: number
+          booking_id: string | null
+          created_at: string
+          event_id: string
+          id: string
+          journey_id: string | null
+          kind: string
+          last_error: string | null
+          next_attempt_at: string
+          payload: Json
+          result: Json | null
+          sent_at: string | null
+          status: string
+          trigger_key: string
+          updated_at: string
+        }
+        Insert: {
+          application_id?: string | null
+          attempts?: number
+          booking_id?: string | null
+          created_at?: string
+          event_id: string
+          id?: string
+          journey_id?: string | null
+          kind: string
+          last_error?: string | null
+          next_attempt_at?: string
+          payload?: Json
+          result?: Json | null
+          sent_at?: string | null
+          status?: string
+          trigger_key?: string
+          updated_at?: string
+        }
+        Update: {
+          application_id?: string | null
+          attempts?: number
+          booking_id?: string | null
+          created_at?: string
+          event_id?: string
+          id?: string
+          journey_id?: string | null
+          kind?: string
+          last_error?: string | null
+          next_attempt_at?: string
+          payload?: Json
+          result?: Json | null
+          sent_at?: string | null
+          status?: string
+          trigger_key?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_outbox_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "delivery_outbox_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "delivery_outbox_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "member_journeys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           candidate_id: string
@@ -742,6 +821,7 @@ export type Database = {
           created_at: string
           error: string | null
           id: string
+          outbox_id: string | null
           provider_id: string | null
           status: string
           to_email: string
@@ -753,6 +833,7 @@ export type Database = {
           created_at?: string
           error?: string | null
           id?: string
+          outbox_id?: string | null
           provider_id?: string | null
           status: string
           to_email: string
@@ -764,6 +845,7 @@ export type Database = {
           created_at?: string
           error?: string | null
           id?: string
+          outbox_id?: string | null
           provider_id?: string | null
           status?: string
           to_email?: string
@@ -782,6 +864,13 @@ export type Database = {
             columns: ["booking_id"]
             isOneToOne: false
             referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_log_outbox_id_fkey"
+            columns: ["outbox_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_outbox"
             referencedColumns: ["id"]
           },
           {
@@ -2555,6 +2644,33 @@ export type Database = {
         }
         Returns: string
       }
+      claim_delivery_outbox: {
+        Args: { _ids?: string[]; _limit?: number }
+        Returns: {
+          application_id: string | null
+          attempts: number
+          booking_id: string | null
+          created_at: string
+          event_id: string
+          id: string
+          journey_id: string | null
+          kind: string
+          last_error: string | null
+          next_attempt_at: string
+          payload: Json
+          result: Json | null
+          sent_at: string | null
+          status: string
+          trigger_key: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "delivery_outbox"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       client_call_host: { Args: { p_booking_id: string }; Returns: string }
       create_booking: {
         Args: {
@@ -2818,6 +2934,10 @@ export type Database = {
           _user_agent: string
         }
         Returns: string
+      }
+      reorder_pipeline_stages: {
+        Args: { _pipeline_id: string; _stage_ids: string[] }
+        Returns: number
       }
       reschedule_interview: {
         Args: { _interview_id: string; _message: string; _scheduled_at: string }

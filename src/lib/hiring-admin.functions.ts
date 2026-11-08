@@ -9,6 +9,12 @@ export type HiringJob = Tables["jobs"]["Row"];
 export type BankQuestion = Tables["question_bank"]["Row"];
 export type HiringSettings = Tables["hiring_settings"]["Row"];
 export type HiringTemplate = Tables["agreement_templates"]["Row"];
+/** An update that changed no row (wrong id or no permission) is an error, not a success. */
+const changedRow = <T>(r: { data: T[] | null; error: { message: string } | null }, what: string) => {
+  if (r.error) throw new Error(r.error.message);
+  if (!r.data?.length) throw new Error(`${what} was not changed. It may have been removed, or you lack permission.`);
+  return r.data[0];
+};
 const checked = <T>(r: { data: T; error: { message: string } | null }) => {
   if (r.error) throw new Error(r.error.message);
   return r.data;
@@ -155,7 +161,7 @@ export const changeHiringJobStatus = createServerFn({ method: "POST" })
       );
       if (errors?.length) throw new Error(`Missing: ${errors.join(", ")}`);
     }
-    checked(await context.supabase.from("jobs").update({ status: data.status }).eq("id", data.id));
+    changedRow(await context.supabase.from("jobs").update({ status: data.status }).eq("id", data.id).select("id"), "Job");
     return { ok: true };
   });
 export const hiringSlugAvailable = createServerFn({ method: "POST" })
@@ -186,7 +192,7 @@ export const saveBankQuestion = createServerFn({ method: "POST" })
     // Detach legacy linked questions before a bank edit so their help/length remain frozen too.
     if (data.id) {
       checked(await context.supabase.rpc("hiring_admin_freeze_bank", { _id: data.id }));
-      checked(await context.supabase.from("question_bank").update(patch).eq("id", data.id));
+      changedRow(await context.supabase.from("question_bank").update(patch).eq("id", data.id).select("id"), "Question");
       return data.id;
     }
     return checked(await context.supabase.from("question_bank").insert(patch).select("id").single())
@@ -197,11 +203,13 @@ export const archiveBankQuestion = createServerFn({ method: "POST" })
   .inputValidator(id.extend({ active: z.boolean() }))
   .handler(async ({ data, context }) => {
     await requireAdmin(context);
-    checked(
+    changedRow(
       await context.supabase
         .from("question_bank")
         .update({ is_active: data.active })
-        .eq("id", data.id),
+        .eq("id", data.id)
+        .select("id"),
+      "Question",
     );
     return { ok: true };
   });
@@ -304,7 +312,7 @@ export const saveHiringSettings = createServerFn({ method: "POST" })
   .inputValidator(settingsSchema)
   .handler(async ({ data, context }) => {
     await requireAdmin(context);
-    checked(await context.supabase.from("hiring_settings").update(data).eq("id", true));
+    changedRow(await context.supabase.from("hiring_settings").update(data).eq("id", true).select("id"), "Settings");
     return { ok: true };
   });
 export const uploadHiringImage = createServerFn({ method: "POST" })

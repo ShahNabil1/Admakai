@@ -214,3 +214,39 @@ export function ImageUpload({
     </div>
   );
 }
+
+/** Previous/next paging with a total, 50 rows per page. */
+export function Pager({ page, total, size = 50, onPage }: { page: number; total: number; size?: number; onPage: (p: number) => void }) {
+  const pages = Math.max(1, Math.ceil(total / size));
+  if (total <= size) return <p className="hiring-pager-total">{total} total</p>;
+  return (
+    <nav className="hiring-pager admin-actions" aria-label="Pages">
+      <Action disabled={page <= 0} onClick={() => onPage(page - 1)}>Previous</Action>
+      <span>Page {page + 1} of {pages} · {total} total</span>
+      <Action disabled={page >= pages - 1} onClick={() => onPage(page + 1)}>Next</Action>
+    </nav>
+  );
+}
+
+type Delivery = { id: string; kind: string; trigger_key: string; status: string; attempts: number; last_error: string | null; created_at: string };
+const kindLabel = (d: Delivery) => d.kind === 'agreement_pdf' ? 'Agreement PDF' : d.kind === 'offer_letter' ? 'Offer letter' : d.kind === 'promotion_letter' ? 'Promotion letter' : `Email · ${d.trigger_key.replace(/_/g, ' ')}`;
+const statusLabel = (s: string) => s === 'sent' ? 'Sent' : s === 'failed' ? 'Failed' : 'Pending';
+/** Sent / Pending / Failed with Retry, read from the delivery outbox. */
+export function DeliveryList({ items, canRetry, onRetry }: { items: Delivery[]; canRetry: boolean; onRetry: (id: string) => Promise<unknown> }) {
+  const [busy, setBusy] = useState<string | null>(null);
+  if (!items.length) return null;
+  return (
+    <ul className="hiring-deliveries">
+      {items.map((d) => (
+        <li key={d.id} data-status={d.status}>
+          <span>{kindLabel(d)}</span>
+          <strong className={`admin-pill hiring-delivery-${statusLabel(d.status).toLowerCase()}`}>{statusLabel(d.status)}</strong>
+          {d.status === 'failed' && d.last_error && <small title={d.last_error}>{d.last_error.slice(0, 120)}</small>}
+          {d.status === 'failed' && canRetry && (
+            <Action disabled={busy === d.id} onClick={() => { setBusy(d.id); void onRetry(d.id).then((r) => { const s = (r as { status?: string } | undefined)?.status; if (s === 'sent') toast.success('Delivered'); else if (s === 'failed') toast.error('Still failing; see the error shown'); else toast.message('Queued for another try'); }).catch((e: unknown) => toast.error(e instanceof Error ? e.message : 'Retry failed')).finally(() => setBusy(null)); }}>Retry</Action>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+}

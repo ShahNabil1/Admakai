@@ -5,6 +5,7 @@ import { latinFont, bengaliFont } from './hiring-fonts.server';
 import { dhakaDate, shouldSendHiringEmail, taskDueAt } from './candidate-rules';
 import { fillAgreement } from './application-rules';
 import { hiringEmailHtml } from './hiring-email-design';
+import { enqueue, processOutbox, type OutboxAttachment, type OutboxMessage } from './outbox.server';
 
 function required<T>(r: {data:T;error:{message:string}|null}): NonNullable<T> { if(r.error || r.data == null) throw new Error(r.error?.message ?? 'Hiring record unavailable'); return r.data; }
 export async function hiringDeliveryContext(id: string) {
@@ -58,39 +59,42 @@ export async function generateAgreementPdf(id: string) {
   if(!existing.data){const r=await db.from('documents').insert({candidate_id:app.candidate_id,kind:'agreement',title:`Application agreement · ${job.title}`,file_path:path});if(r.error)throw r.error;}
   return path;
 }
-export async function sendHiringEmail(trigger:string,id:string,extra:Record<string,string>={},extraAttachments:Array<{filename:string;content:string}>=[],recipient?:string) {
+
+/** Renders a hiring template for its recipients now, so the stored snapshot is what gets sent later. */
+export async function renderHiringEmail(trigger:string,id:string,extra:Record<string,string>={},recipient?:string):Promise<OutboxMessage[]>{
   const {app,candidate,job,profile,settings}=await hiringDeliveryContext(id);
   const template=required(await db.from('email_templates').select('*').eq('trigger_key',trigger).single());
   const admin=trigger==='admin_new_application';const recipients=recipient?[recipient]:admin?settings.notify_admin_emails:[profile.email];
   const tracker=`https://admakai.com/dashboard/applications/${app.id}`;
   const values:Record<string,string>={...extra,candidate_name:candidate.full_name,job_title:job.title,application_code:app.public_code,tracker_link:extra['tracker_link'] ?? tracker,status_message:extra['status_message'] ?? ''};
   const fill=(s:string)=>s.replace(/{{\s*([a-z_]+)\s*}}/g,(_,key:string)=>values[key] ?? '');
-  const results:Array<{status:string}>=[];
-  for(const to of recipients){let status='skipped',error:string|null=null,providerId:string|null=null;
-    if(shouldSendHiringEmail(trigger,template.is_enabled,candidate.email_notifications)&&process.env['RESEND_API_KEY']){
-      try{let content=fill(template.body);if(extra['interview_details']&&!content.includes(extra['interview_details']))content+=`\n${extra['interview_details']}`;if(admin)content+=`\nCandidate: ${candidate.full_name}\nJob: ${job.title}\nKnockout flags: ${extra['knockout_flags'] ?? 'None'}\nhttps://admakai.com/admin/hiring/jobs`;
-        const button=admin?'https://admakai.com/admin/hiring/jobs':tracker;
-        const html=hiringEmailHtml(fill(template.subject),content,button,settings.company_address ?? '',admin);
-        const attachments:Array<{filename:string;content:string}>=[...extraAttachments];
-        if(trigger==='application_submitted'){
-          const agreement=await db.from('signed_agreements').select('pdf_path').eq('application_id',id).maybeSingle();
-          if(agreement.data?.pdf_path){const file=await db.storage.from('agreements').download(agreement.data.pdf_path);if(file.data){const bytes=new Uint8Array(await file.data.arrayBuffer());let binary='';for(const b of bytes)binary+=String.fromCharCode(b);attachments.push({filename:`agreement-${app.public_code}.pdf`,content:btoa(binary)});}}
-        }
-        const response=await fetch('https://api.resend.com/emails',{method:'POST',signal:AbortSignal.timeout(15000),headers:{Authorization:`Bearer ${process.env['RESEND_API_KEY']}`,'Content-Type':'application/json'},body:JSON.stringify({from:settings.from_email,to:[to],...(settings.reply_to?{reply_to:settings.reply_to}:{}),subject:fill(template.subject),html,text:`${content}\n\n${button}\n\nAdmakai\n${settings.company_address ?? ''}`,...(attachments.length?{attachments}: {})})});
-        if(!response.ok){const body=await response.json().catch(()=>({}));throw new Error(`Resend ${response.status}: ${typeof body.message==='string'?body.message.slice(0,300):'Delivery rejected'}`);}const body=await response.json();providerId=body.id ?? null;status='sent';
-      }catch(e){status='failed';error=e instanceof Error?e.message:'Email delivery failed';}
-    }
-    const r=await db.from('email_log').insert({application_id:id,to_email:to,trigger_key:trigger,status,provider_id:providerId,error});if(r.error)throw r.error;results.push({status});
-  }return results;
+  let content=fill(template.body);if(extra['interview_details']&&!content.includes(extra['interview_details']))content+=`\n${extra['interview_details']}`;if(admin)content+=`\nCandidate: ${candidate.full_name}\nJob: ${job.title}\nKnockout flags: ${extra['knockout_flags'] ?? 'None'}\nhttps://admakai.com/admin/hiring/jobs`;
+  const button=admin?'https://admakai.com/admin/hiring/jobs':tracker;const subject=fill(template.subject);
+  const skip=shouldSendHiringEmail(trigger,template.is_enabled,candidate.email_notifications)?null:'Template disabled or candidate opted out';
+  return (recipients??[]).filter(Boolean).map(to=>({to,from:settings.from_email,reply_to:settings.reply_to,subject,html:hiringEmailHtml(subject,content,button,settings.company_address ?? '',admin),text:`${content}\n\n${button}\n\nAdmakai\n${settings.company_address ?? ''}`,skip}));
+}
+/** Queues a hiring email snapshot in the outbox, then tries to send it straight away. */
+export async function sendHiringEmail(trigger:string,id:string,extra:Record<string,string>={},attachments:OutboxAttachment[]=[],opts:{eventId:string;journeyId?:string|null;waitFor?:string[];recipient?:string;process?:boolean}){
+  const messages=await renderHiringEmail(trigger,id,extra,opts.recipient);
+  const outboxId=await enqueue({kind:'email',trigger_key:trigger,event_id:opts.eventId,application_id:id,journey_id:opts.journeyId ?? null,payload:{messages,attachments,wait_for:opts.waitFor ?? []}});
+  if(opts.process===false)return {outboxId,status:'pending'};
+  const r=await processOutbox([outboxId]);return {outboxId,status:r.statuses[outboxId] ?? 'pending'};
 }
 export async function deliverSubmittedApplication(id:string){
-  const outcome={pdf:'failed',email:'failed'};
-  try{await generateAgreementPdf(id);outcome.pdf='ready';}catch{console.error('Hiring agreement generation failed');}
-  try{const {data:reviews}=await db.from('application_reviews').select('knockout_flags').eq('application_id',id);const results=await sendHiringEmail('application_submitted',id);await sendHiringEmail('admin_new_application',id,{knockout_flags:JSON.stringify(reviews?.map(r=>r.knockout_flags) ?? [])});outcome.email=results[0]?.status ?? 'skipped';}catch{console.error('Hiring submission email delivery failed');}
-  return outcome;
+  const {app}=await hiringDeliveryContext(id);
+  const pdf=await enqueue({kind:'agreement_pdf',trigger_key:'agreement',event_id:id,application_id:id,payload:{application_id:id}});
+  const {data:reviews}=await db.from('application_reviews').select('knockout_flags').eq('application_id',id);
+  const candidate=await sendHiringEmail('application_submitted',id,{},[{filename:`agreement-${app.public_code}.pdf`,from_outbox:pdf}],{eventId:id,waitFor:[pdf],process:false});
+  const admin=await sendHiringEmail('admin_new_application',id,{knockout_flags:JSON.stringify(reviews?.map(r=>r.knockout_flags) ?? [])},[],{eventId:id,process:false});
+  const r=await processOutbox([pdf,candidate.outboxId,admin.outboxId]);
+  const pdfStatus=r.statuses[pdf],mail=r.statuses[candidate.outboxId];
+  return {pdf:pdfStatus==='sent'?'ready':pdfStatus==='failed'?'failed':'queued',email:mail==='sent'?'sent':mail==='failed'?'failed':'queued',queued:true};
 }
-export async function deliverStatusEmail(id:string,status:string,message:string,reason:string){
-  const {job}=await hiringDeliveryContext(id);let attachments:Array<{filename:string;content:string}>=[];if(status==='offer'){const {generateHiringLetter}=await import('./hiring-letters.server');attachments=[(await generateHiringLetter(id,'offer')).attachment];}const {data:stage}=await db.from('pipeline_stages').select('sends_email').eq('pipeline_id',job.application_pipeline_id).eq('key',status).single();
-  if(!stage?.sends_email||!['in_review','shortlisted','rejected','selected','offer','hired','interview_scheduled'].includes(status))return;
-  const extra:Record<string,string>={status_message:status==='rejected'?`${message}\n${reason}`:message,reason};if(status==='shortlisted'){extra['task_brief']=job.task_brief ?? '';extra['task_due_date']=dhakaDate(taskDueAt(new Date().toISOString(),job.task_due_days ?? 3),true);extra['status_message']=`${message}\n${extra['task_brief']}\nDue: ${extra['task_due_date']}`;}await sendHiringEmail(status,id,extra,attachments);
+export async function deliverStatusEmail(id:string,status:string,message:string,reason:string,eventId:string){
+  const {job}=await hiringDeliveryContext(id);const attachments:OutboxAttachment[]=[];const waitFor:string[]=[];
+  if(status==='offer'){const {snapshotLetter}=await import('./hiring-letters.server');const snap=await snapshotLetter(id,'offer');const letter=await enqueue({kind:'offer_letter',trigger_key:'offer',event_id:eventId,application_id:id,payload:snap});waitFor.push(letter);attachments.push({filename:`admakai-offer-${snap.values.application_code}.pdf`,from_outbox:letter});}
+  const {data:stage}=await db.from('pipeline_stages').select('sends_email').eq('pipeline_id',job.application_pipeline_id).eq('key',status).single();
+  if(!stage?.sends_email||!['in_review','shortlisted','rejected','selected','offer','hired','interview_scheduled'].includes(status)){if(waitFor.length)return processOutbox(waitFor);return null;}
+  const extra:Record<string,string>={status_message:status==='rejected'?`${message}\n${reason}`:message,reason};if(status==='shortlisted'){extra['task_brief']=job.task_brief ?? '';extra['task_due_date']=dhakaDate(taskDueAt(new Date().toISOString(),job.task_due_days ?? 3),true);extra['status_message']=`${message}\n${extra['task_brief']}\nDue: ${extra['task_due_date']}`;}
+  const mail=await sendHiringEmail(status,id,extra,attachments,{eventId,waitFor,process:false});return processOutbox([...waitFor,mail.outboxId]);
 }

@@ -3,6 +3,8 @@ import { supabase } from '@/lib/supabase';
 import { DELIVERABLE_MAX_BYTES, DELIVERABLE_MIME, deliverablePath } from '@/lib/timecode';
 import { ReviewPlayer, type Deliverable } from './ReviewPlayer';
 import { Empty, Modal, Pill, label } from '@/components/admin/ui';
+import { Pager } from '@/components/admin/hiring/Controls';
+import '@/components/admin/hiring/review.css';
 import './delivery.css';
 
 type Project = { id: string; title: string; stage: string; due_at: string | null; revision_limit: number; client_id: string; clients: { contact_name: string | null; brand_name: string | null } | null };
@@ -29,17 +31,25 @@ export function StaffProjects({ userId }: { userId: string }) {
   const [open, setOpen] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
+  const [page, setPage] = useState(0);
+  const [total, setTotal] = useState(0);
+  // 50 projects per page with an exact total; tasks and deliverables load for the visible projects only, so nothing is cut off.
   const load = useCallback(async () => {
-    const [p, t, d] = await Promise.all([
-      supabase.from('projects').select('id, title, stage, due_at, revision_limit, client_id, clients(contact_name, brand_name)').order('created_at', { ascending: false }).limit(200),
-      supabase.from('tasks').select('id, project_id, title, status, assignee_id').order('created_at').limit(1000),
-      supabase.from('deliverables').select('id, project_id, title, version, status, storage_path, external_url, created_at').order('created_at', { ascending: false }).limit(500),
-    ]);
-    if (p.error || t.error || d.error) setMsg('Some project data could not be loaded.');
+    const p = await supabase.from('projects').select('id, title, stage, due_at, revision_limit, client_id, clients(contact_name, brand_name)', { count: 'exact' }).order('created_at', { ascending: false }).range(page * 50, page * 50 + 49);
+    const ids = (p.data ?? []).map((x) => x.id);
+    const all = async <T,>(q: (from: number) => PromiseLike<{ data: T[] | null; error: unknown }>) => { const out: T[] = []; for (let from = 0; ; from += 1000) { const r = await q(from); if (r.error) throw r.error; out.push(...(r.data ?? [])); if ((r.data ?? []).length < 1000) return out; } };
+    try {
+      const [t, d] = ids.length ? await Promise.all([
+        all((from) => supabase.from('tasks').select('id, project_id, title, status, assignee_id').in('project_id', ids).order('created_at').range(from, from + 999)),
+        all((from) => supabase.from('deliverables').select('id, project_id, title, version, status, storage_path, external_url, created_at').in('project_id', ids).order('created_at', { ascending: false }).range(from, from + 999)),
+      ]) : [[], []];
+      setTasks(t as Task[]);
+      setDeliverables(d as Deliverable[]);
+      if (p.error) setMsg('Some project data could not be loaded.');
+    } catch { setMsg('Some project data could not be loaded.'); }
     setProjects((p.data ?? []) as unknown as Project[]);
-    setTasks((t.data ?? []) as Task[]);
-    setDeliverables((d.data ?? []) as Deliverable[]);
-  }, []);
+    setTotal(p.count ?? 0);
+  }, [page]);
   useEffect(() => { void load(); }, [load]);
   useLive(['projects', 'tasks', 'deliverables'], load);
 
@@ -51,7 +61,7 @@ export function StaffProjects({ userId }: { userId: string }) {
   };
 
   const head = <header className="admin-head"><div><p className="admin-eyebrow">Delivery</p><h1>Projects</h1></div></header>;
-  if (!projects.length) return <section>{head}<Empty title="No projects yet" hint="Moving a lead to won opens one automatically." /></section>;
+  if (!projects.length && page === 0) return <section>{head}<Empty title="No projects yet" hint="Moving a lead to won opens one automatically." /></section>;
   const current = projects.find((p) => p.id === open) ?? null;
 
   return (
@@ -72,6 +82,7 @@ export function StaffProjects({ userId }: { userId: string }) {
           );
         })}
       </div>
+      <Pager page={page} total={total} onPage={(n) => { setOpen(null); setPage(n); }} />
       <Modal open={!!current} onOpenChange={(o) => !o && setOpen(null)} title={current?.title ?? ''} description={current ? `${current.clients?.brand_name ?? current.clients?.contact_name ?? 'Client'} · ${current.revision_limit} revisions included` : undefined} wide>
         {current && (<>
           <p className="admin-label">Stage</p>

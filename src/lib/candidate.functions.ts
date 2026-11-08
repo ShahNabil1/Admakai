@@ -57,9 +57,9 @@ export const regenerateHiringPdf=createServerFn({method:'POST'}).middleware([req
   const admin=checked(await context.supabase.rpc('has_role',{_user_id:context.userId,_role:'admin'}));if(!admin)throw new Error('Hiring admin required.');const {generateAgreementPdf}=await import('./hiring-delivery.server');await generateAgreementPdf(data.id);return {ok:true};
 });
 export const sendHiringEmail=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(idSchema.extend({trigger:z.string().max(80),extra:z.record(z.string(),z.string().max(5000)).default({})})).handler(async({data,context})=>{
-  const admin=checked(await context.supabase.rpc('has_role',{_user_id:context.userId,_role:'admin'}));if(!admin)throw new Error('Hiring admin required.');const delivery=await import('./hiring-delivery.server');return delivery.sendHiringEmail(data.trigger,data.id,data.extra);
+  const admin=checked(await context.supabase.rpc('has_role',{_user_id:context.userId,_role:'admin'}));if(!admin)throw new Error('Hiring admin required.');const delivery=await import('./hiring-delivery.server');return delivery.sendHiringEmail(data.trigger,data.id,data.extra,[],{eventId:crypto.randomUUID()});
 });
 export const hiringChangeStatus=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(idSchema.extend({status:z.string().max(80),message:z.string().max(5000).default(''),reason:z.string().max(2000).default('')})).handler(async({data,context})=>{
   const event=checked(await context.supabase.rpc('change_application_status',{_application_id:data.id,_to_status:data.status,_message:data.message,_reason:data.reason}));
-  try{const {deliverStatusEmail}=await import('./hiring-delivery.server');await deliverStatusEmail(data.id,data.status,data.message,data.reason);}catch{console.error('Hiring status email failed');}return {event};
+  let delivery='none';try{const {deliverStatusEmail}=await import('./hiring-delivery.server');const r=await deliverStatusEmail(data.id,data.status,data.message,data.reason,String(event));delivery=r?(r.failed?'failed':r.pending?'queued':'sent'):'none';}catch(e){delivery='failed';console.error('Hiring status delivery could not be queued',e);}return {event,delivery};
 });
