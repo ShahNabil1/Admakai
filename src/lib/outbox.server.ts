@@ -95,8 +95,10 @@ async function runRow(row: Row) {
       }
     } else if (row.kind === 'agreement_pdf') {
       const { generateAgreementPdf } = await import('./hiring-delivery.server');
-      const p = row.payload as { application_id: string; filename?: string };
-      result = { bucket: 'agreements', path: await generateAgreementPdf(p.application_id) };
+      const p = row.payload as import('./hiring-delivery.server').AgreementEditionPayload;
+      if(!p.snapshot){const {snapshotAgreement}=await import('./hiring-delivery.server');p.snapshot=await snapshotAgreement(p.application_id);await outbox().update({payload:p}).eq('id',row.id);}
+      try { result = { bucket: 'agreements', path: await generateAgreementPdf(p.application_id,p,row.event_id) }; }
+      finally { await outbox().update({payload:p}).eq('id',row.id); }
     } else {
       const { buildLetter } = await import('./hiring-letters.server');
       result = await buildLetter(row.payload as never, row.id);

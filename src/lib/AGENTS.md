@@ -1,0 +1,2 @@
+- Declaration PDFs render frozen signed template, applicant values and image bytes from the delivery outbox; status editions use unique paths without overwriting original signed PDF metadata.
+- Declaration footer IDs identify hashed document content; the complete file SHA-256 is stored separately because a PDF cannot embed its own final byte hash.

@@ -187,6 +187,63 @@ export type Database = {
           },
         ]
       }
+      application_pdf_versions: {
+        Row: {
+          application_id: string
+          created_at: string
+          document_id: string
+          event_id: string
+          file_path: string
+          id: string
+          pdf_sha256: string
+          status_key: string
+          status_label: string
+          template_id: string
+          template_version: number
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          document_id: string
+          event_id: string
+          file_path: string
+          id?: string
+          pdf_sha256: string
+          status_key: string
+          status_label: string
+          template_id: string
+          template_version: number
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          document_id?: string
+          event_id?: string
+          file_path?: string
+          id?: string
+          pdf_sha256?: string
+          status_key?: string
+          status_label?: string
+          template_id?: string
+          template_version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_pdf_versions_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "application_pdf_versions_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "agreement_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       application_reviews: {
         Row: {
           application_id: string
@@ -1050,6 +1107,8 @@ export type Database = {
       }
       hiring_settings: {
         Row: {
+          authorised_signatory_name: string
+          authorised_signatory_title: string
           authorised_signature_url: string | null
           company_address: string | null
           created_at: string
@@ -1066,6 +1125,8 @@ export type Database = {
           whatsapp_help_url: string | null
         }
         Insert: {
+          authorised_signatory_name?: string
+          authorised_signatory_title?: string
           authorised_signature_url?: string | null
           company_address?: string | null
           created_at?: string
@@ -1082,6 +1143,8 @@ export type Database = {
           whatsapp_help_url?: string | null
         }
         Update: {
+          authorised_signatory_name?: string
+          authorised_signatory_title?: string
           authorised_signature_url?: string | null
           company_address?: string | null
           created_at?: string

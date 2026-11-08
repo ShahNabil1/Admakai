@@ -763,6 +763,7 @@ export function ApplicationPage({
                     )}
                     {step === 6 && (
                       <>
+                        <p className="application-hint">Please read this declaration. It confirms your information is true and that you accept our privacy policy. It is not a job contract.</p>
                         <div id="field-agreement" tabIndex={-1}>
                           <div
                             className="application-agreement"

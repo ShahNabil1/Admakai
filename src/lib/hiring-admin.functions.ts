@@ -291,6 +291,8 @@ const settingsSchema = z.object({
   company_address: text,
   pdf_logo_url: text,
   authorised_signature_url: text,
+  authorised_signatory_name: z.string().trim().min(1).max(100),
+  authorised_signatory_title: z.string().trim().min(1).max(150),
   whatsapp_help_url: z
     .union([
       z

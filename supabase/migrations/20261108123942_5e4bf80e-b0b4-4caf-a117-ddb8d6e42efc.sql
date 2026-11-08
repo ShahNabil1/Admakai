@@ -1,0 +1,14 @@
+CREATE OR REPLACE FUNCTION public.hiring_queue_pdf_edition() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$ DECLARE s public.signed_agreements; t public.agreement_templates; j public.jobs; stage public.pipeline_stages; ev uuid; snap jsonb; BEGIN
+ IF NEW.is_draft OR (TG_OP='UPDATE' AND NEW.status_key=OLD.status_key AND NEW.is_draft=OLD.is_draft) THEN RETURN NEW; END IF;
+ SELECT * INTO s FROM public.signed_agreements WHERE application_id=NEW.id; IF NOT FOUND THEN RETURN NEW; END IF;
+ SELECT * INTO t FROM public.agreement_templates WHERE id=s.template_id;
+ SELECT * INTO j FROM public.jobs WHERE id=NEW.job_id;
+ SELECT * INTO stage FROM public.pipeline_stages WHERE pipeline_id=j.application_pipeline_id AND key=NEW.status_key;
+ ev:=gen_random_uuid(); IF OLD.is_draft THEN ev:=NEW.id; END IF;
+ snap:=jsonb_build_object('app',to_jsonb(NEW),'candidate',(SELECT to_jsonb(c) FROM public.candidates c WHERE id=NEW.candidate_id),'job',to_jsonb(j),'profile',(SELECT jsonb_build_object('email',email) FROM public.profiles WHERE user_id=NEW.candidate_id),'settings',(SELECT to_jsonb(h) FROM public.hiring_settings h WHERE id=true),'signed',to_jsonb(s),'template',to_jsonb(t),'answers',(SELECT coalesce(jsonb_agg(jsonb_build_object('label',coalesce(q.label_override,b.label),'answer',a.answer)),'[]'::jsonb) FROM public.application_answers a JOIN public.job_questions q ON q.id=a.job_question_id LEFT JOIN public.question_bank b ON b.id=q.question_id WHERE a.application_id=NEW.id));
+ INSERT INTO public.delivery_outbox(kind,trigger_key,event_id,application_id,payload) VALUES('agreement_pdf',CASE WHEN OLD.is_draft THEN 'agreement' ELSE 'agreement-status' END,ev,NEW.id,jsonb_build_object('application_id',NEW.id,'snapshot',snap,'status_key',NEW.status_key,'status_label',coalesce(stage.candidate_label,NEW.status_key),'status_color',coalesce(stage.color,'#444444'),'edition_at',now())) ON CONFLICT(event_id,kind,trigger_key) DO NOTHING;
+ RETURN NEW; END $$;
+DO $$ BEGIN
+ IF NOT EXISTS(SELECT 1 FROM public.hiring_settings WHERE authorised_signatory_name='Nasrin Akter' AND authorised_signatory_title='Chief Executive Officer') THEN RAISE EXCEPTION 'Incorrect signatory defaults'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM public.agreement_templates t JOIN public.hiring_agreement_reviews r ON r.template_id=t.id JOIN public.jobs j ON j.agreement_template_id=t.id WHERE j.id='e2000000-0000-4000-8000-000000000001' AND t.name='Application Declaration and Consent' AND jsonb_array_length(t.key_terms)=5 AND r.legal_review_pending) THEN RAISE EXCEPTION 'Declaration must have five terms and pending legal review'; END IF;
+END $$;

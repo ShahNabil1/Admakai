@@ -144,6 +144,7 @@ export function Settings() {
         </section>
         <section className="hiring-settings-section">
           <h2>Company</h2>
+          {!settings.pdf_logo_url && <p role="alert" className="admin-hint">A PDF logo is required. Upload the Admakai logo before generating declarations.</p>}
           <label>
             Company address
             <textarea
@@ -164,6 +165,10 @@ export function Settings() {
                 }}
               />
             ))}
+          </div>
+          <div className="admin-form-row">
+            <label>Authorised signatory name<input maxLength={100} required value={settings.authorised_signatory_name} onChange={e=>patch({authorised_signatory_name:e.target.value})}/></label>
+            <label>Authorised signatory title<input maxLength={150} required value={settings.authorised_signatory_title} onChange={e=>patch({authorised_signatory_title:e.target.value})}/></label>
           </div>
         </section>
         <section className="hiring-settings-section">

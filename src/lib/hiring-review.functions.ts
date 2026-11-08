@@ -25,14 +25,17 @@ export const hiringApplicant=createServerFn({method:'POST'}).middleware([require
  const a=checked(await db.from('applications').select('*').eq('id',data.id).single());if(!a)throw new Error('Applicant unavailable');
  const [answers,questions,notes,signed,emails]=await Promise.all([db.from('application_answers').select('*').eq('application_id',a.id),db.from('job_questions').select('*,question_bank(label,help_text)').eq('job_id',a.job_id).order('sort_order'),db.from('internal_notes').select('*').eq('application_id',a.id).order('created_at',{ascending:false}),db.from('signed_agreements').select('*').eq('application_id',a.id).maybeSingle(),db.from('email_log').select('*').eq('application_id',a.id).order('created_at')]);
  const deliveries=(checked(await db.from('delivery_outbox' as never).select('id,kind,trigger_key,status,attempts,last_error,created_at,sent_at').eq('application_id' as never,a.id).order('created_at' as never)) as unknown as DeliveryRow[]|null)??[];
+ const editions=checked(await db.from('application_pdf_versions').select('id,file_path,status_label,created_at,pdf_sha256').eq('application_id',a.id).order('created_at',{ascending:false}))??[];
  const signedRow=checked(signed);const agreement=signedRow?{...signedRow,ip_address:typeof signedRow.ip_address==='string'?signedRow.ip_address:null}:null;const urls:Record<string,string>={};
  // RLS proved staff access to this application before privileged file signing.
  const {supabaseAdmin}=await import('@/integrations/supabase/client.server');
  for(const [key,bucket,path] of [['cv','resumes',a.cv_path],['signature','signatures',agreement?.signature_path],['pdf','agreements',agreement?.pdf_path]] as const){if(path){const url=await supabaseAdmin.storage.from(bucket).createSignedUrl(path,300);if(url.error)throw url.error;urls[key]=url.data.signedUrl;}}
  const candidate=checked(await db.from('candidates').select('photo_url').eq('id',a.candidate_id).single());if(candidate?.photo_url){const photo=await supabaseAdmin.storage.from('task-files').createSignedUrl(candidate.photo_url,300);if(photo.data)urls['photo']=photo.data.signedUrl;}
+ const pdfVersions=await Promise.all(editions.map(async v=>({...v,url:(await supabaseAdmin.storage.from('agreements').createSignedUrl(v.file_path,300)).data?.signedUrl??null})));
+ if(pdfVersions[0]?.url){if(urls['pdf'])pdfVersions.push({id:'original',file_path:agreement?.pdf_path??'',status_label:'Original signed document',created_at:'',pdf_sha256:agreement?.pdf_sha256??'',url:urls['pdf']});urls['pdf']=pdfVersions[0].url;}
  const template=agreement?checked(await supabaseAdmin.from('agreement_templates').select('name,version').eq('id',agreement.template_id).eq('version',agreement.template_version).single()):null;
  const authorIds=[...new Set((checked(notes)??[]).map(n=>n.author_id))];const authors=authorIds.length?checked(await db.rpc('hiring_staff_contacts',{_ids:authorIds}))??[]:[];
- return {deliveries,answers:checked(answers)??[],questions:checked(questions)??[],notes:checked(notes)??[],agreement,emails:checked(emails)??[],urls,template,authors};
+ return {pdfVersions:pdfVersions.slice(1),deliveries,answers:checked(answers)??[],questions:checked(questions)??[],notes:checked(notes)??[],agreement,emails:checked(emails)??[],urls,template,authors};
 });
 export type HiringApplicantData=Awaited<ReturnType<typeof hiringApplicant>>;
 export const moveHiringApplicant=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(z.object({ids:z.array(id).min(1).max(100),status:z.string().min(1).max(80),message:z.string().max(5000),reason:z.string().max(2000)})).handler(async({data,context})=>{

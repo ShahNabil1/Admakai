@@ -1,9 +1,6 @@
-import { PDFDocument, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
-import fontkit from '@pdf-lib/fontkit';
+import { renderDeclarationPdf, pdfHash, type DeclarationSnapshot } from './declaration-pdf.server';
 import { supabaseAdmin as db } from '@/integrations/supabase/client.server';
-import { latinFont, bengaliFont } from './hiring-fonts.server';
 import { dhakaDate, shouldSendHiringEmail, taskDueAt } from './candidate-rules';
-import { fillAgreement } from './application-rules';
 import { hiringEmailHtml } from './hiring-email-design';
 import { enqueue, processOutbox, type OutboxAttachment, type OutboxMessage } from './outbox.server';
 
@@ -13,50 +10,39 @@ export async function hiringDeliveryContext(id: string) {
   const [c,j,p,s]=await Promise.all([db.from('candidates').select('*').eq('id',app.candidate_id).single(),db.from('jobs').select('*').eq('id',app.job_id).single(),db.from('profiles').select('email').eq('user_id',app.candidate_id).single(),db.from('hiring_settings').select('*').single()]);
   return {app,candidate:required(c),job:required(j),profile:required(p),settings:required(s)};
 }
-export async function generateAgreementPdf(id: string) {
-  const {app,candidate,job,profile,settings}=await hiringDeliveryContext(id);
-  if(app.is_draft) throw new Error('Submit your application first.');
+export async function snapshotAgreement(id:string):Promise<DeclarationSnapshot> {
+  const context=await hiringDeliveryContext(id);if(context.app.is_draft)throw new Error('Submit your application first.');
   const signed=required(await db.from('signed_agreements').select('*').eq('application_id',id).single());
   const template=required(await db.from('agreement_templates').select('*').eq('id',signed.template_id).eq('version',signed.template_version).single());
-  const doc=await PDFDocument.create(); doc.registerFontkit(fontkit);
-  const bytes=(s:string)=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
-  const latin=await doc.embedFont(bytes(latinFont),{subset:true}), bengali=await doc.embedFont(bytes(bengaliFont),{subset:true});
-  const ink=rgb(.07,.07,.07), muted=rgb(.4,.4,.4);
-  let page:PDFPage=doc.addPage([595.28,841.89]), y=785;
-  const newPage=()=>{page=doc.addPage([595.28,841.89]);y=785;};
-  const choose=(s:string):PDFFont=>/[\u0980-\u09ff]/.test(s)?bengali:latin;
-  function line(text:string,size=10) {
-    const font=choose(text); const safe=[...text].map(c=>font.getCharacterSet().includes(c.codePointAt(0) ?? 0)?c:'?').join('');
-    const words=safe.split(/\s+/); let row='';
-    const draw=()=>{if(y<75)newPage();page.drawText(row,{x:48,y,size,font,color:ink});y-=size*1.65;row='';};
-    for(const word of words){ const test=row?`${row} ${word}`:word; if(font.widthOfTextAtSize(test,size)>499 && row)draw(); if(font.widthOfTextAtSize(word,size)>499){for(const c of word){if(font.widthOfTextAtSize(row+c,size)>499)draw();row+=c;}}else row+=(row?' ':'')+word; } if(row)draw(); y-=4;
+  const answers=required(await db.from('application_answers').select('answer,job_questions(label_override,question_bank(label))').eq('application_id',id));
+  return {...context,signed,template,answers:answers.map(a=>({label:a.job_questions?.label_override??a.job_questions?.question_bank?.label??'',answer:a.answer}))};
+}
+export type AgreementEditionPayload={application_id:string;snapshot?:DeclarationSnapshot;status_key?:string;status_label?:string;status_color?:string;edition_at?:string};
+export async function generateAgreementPdf(id:string,payload?:AgreementEditionPayload,eventId=id) {
+  const existing=await db.from('application_pdf_versions').select('file_path').eq('application_id',id).eq('event_id',eventId).maybeSingle();if(existing.error)throw existing.error;if(existing.data)return existing.data.file_path;
+  // Freeze every non-status value from the earliest successful edition, never current editable profiles/settings.
+  const earlier=await db.from('delivery_outbox').select('payload').eq('application_id',id).eq('kind','agreement_pdf').eq('status','sent').not('payload->snapshot->images','is',null).order('created_at').limit(1).maybeSingle();
+  const previous=earlier.data?.payload as unknown as AgreementEditionPayload|undefined;
+  const snap=previous?.snapshot?.images?previous.snapshot:payload?.snapshot??await snapshotAgreement(id);
+  if(!snap.images?.logo||!snap.images.passport||!snap.images.applicant||!snap.images.authorised){
+    const current=await hiringDeliveryContext(id);
+    // Missing setup may be supplied before the first successful PDF; successful editions are never rebranded.
+    if(!snap.settings.pdf_logo_url)snap.settings.pdf_logo_url=current.settings.pdf_logo_url;
+    if(!snap.settings.authorised_signature_url)snap.settings.authorised_signature_url=current.settings.authorised_signature_url;
+    const image=async(bucket:string,path:string|null|undefined)=>{if(!path)return '';let p=path;if(/^https:\/\//.test(p)){const match=p.match(/\/storage\/v1\/object\/(?:sign|public)\/hiring-assets\/([^?]+)/);if(!match)return '';p=decodeURIComponent(match[1]??'');}const r=await db.storage.from(bucket).download(p);if(!r.data)return '';const bytes=new Uint8Array(await r.data.arrayBuffer());let out='';for(let i=0;i<bytes.length;i+=32768)out+=String.fromCharCode(...bytes.subarray(i,i+32768));return btoa(out);};
+    const [logo,passport,applicant,authorised]=await Promise.all([image('hiring-assets',snap.settings.pdf_logo_url),image('task-files',snap.app.passport_photo_path),image('signatures',snap.signed.signature_path),image('hiring-assets',snap.settings.authorised_signature_url)]);snap.images={logo,passport,applicant,authorised};
   }
-  async function image(bucket:string,path:string|null,width:number,height:number) {
-    if(!path)return false;
-    let storagePath=path;
-    if(/^https:\/\//.test(path)){const m=path.match(/\/storage\/v1\/object\/(?:sign|public)\/hiring-assets\/([^?]+)/);if(!m)return false;storagePath=decodeURIComponent(m[1] ?? '');}
-    const r=await db.storage.from(bucket).download(storagePath);if(r.error||!r.data)return false;
-    const b=new Uint8Array(await r.data.arrayBuffer());const png=b[0]===137;const img=png?await doc.embedPng(b):await doc.embedJpg(b);const scale=Math.min(width/img.width,height/img.height);
-    if(y<height+80)newPage();page.drawImage(img,{x:48,y:y-height,width:img.width*scale,height:img.height*scale});y-=height+10;return true;
-  }
-  await image('hiring-assets',settings.pdf_logo_url,130,45);
-  line('Admakai',22);if(settings.company_address)line(settings.company_address);y-=12;
-  line('Application Agreement',18);line(`${app.public_code} · ${dhakaDate(signed.signed_at)}`);y-=12;
-  line('Candidate details',13);line(`Name: ${signed.signer_full_name}`);line(`Email: ${profile.email}`);line(`Phone: ${candidate.phone ?? 'Not provided'}`);line(`Area: ${candidate.area ?? 'Not provided'}`);y-=10;
-  line('Job details',13);line(job.title,12);line(`${job.type} · ${job.work_mode}`);if(job.schedule_text)line(job.schedule_text);y-=12;
-  const body=fillAgreement(template.body,signed.signer_full_name,job.title,app.public_code,new Date(signed.signed_at));
-  for(const paragraph of body.split('\n'))line(paragraph.replace(/^#{1,6}\s*/,'').replace(/\*\*/g,''),paragraph.startsWith('#')?13:10);
-  line('Accepted key terms',13);
-  for(const term of Array.isArray(signed.accepted_terms)?signed.accepted_terms:[]){if(typeof term==='string'){if(y<100)newPage();page.drawLine({start:{x:48,y:y-3},end:{x:51,y:y-6},thickness:1,color:ink});page.drawLine({start:{x:51,y:y-6},end:{x:58,y:y+2},thickness:1,color:ink});line(`    ${term}`);}}
-  y-=14;line('Candidate signature',13);if(!await image('signatures',signed.signature_path,230,70))throw new Error('Candidate signature image unavailable');line(signed.signer_full_name,12);line(`Signed: ${dhakaDate(signed.signed_at,true)} (Asia/Dhaka)`);line(`IP address: ${signed.ip_address ?? 'Not recorded'}`);line(`Template: ${template.name} · Version ${signed.template_version}`);
-  if(settings.authorised_signature_url){y-=12;line('For Admakai',13);await image('hiring-assets',settings.authorised_signature_url,180,65);}
-  const pages=doc.getPages();pages.forEach((p,i)=>p.drawText(`Electronically signed via admakai.com · Page ${i+1} of ${pages.length}`,{x:48,y:35,size:8,font:latin,color:muted}));
-  const pdf=await doc.save();const digest=await crypto.subtle.digest('SHA-256',new Uint8Array(pdf));const hash=[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
-  const path=`${app.candidate_id}/${app.id}/agreement-${app.public_code}.pdf`;
-  const upload=await db.storage.from('agreements').upload(path,pdf,{contentType:'application/pdf',upsert:true});if(upload.error)throw upload.error;
-  const update=await db.from('signed_agreements').update({pdf_path:path,pdf_sha256:hash}).eq('id',signed.id);if(update.error)throw update.error;
-  const existing=await db.from('documents').select('id').eq('candidate_id',app.candidate_id).eq('file_path',path).maybeSingle();if(existing.error)throw existing.error;
-  if(!existing.data){const r=await db.from('documents').insert({candidate_id:app.candidate_id,kind:'agreement',title:`Application agreement · ${job.title}`,file_path:path});if(r.error)throw r.error;}
+  if(payload)payload.snapshot=snap;
+  const {app,job}=await hiringDeliveryContext(id);
+  const stage=await db.from('pipeline_stages').select('candidate_label,color').eq('pipeline_id',job.application_pipeline_id).eq('key',payload?.status_key??app.status_key).maybeSingle();
+  const statusKey=payload?.status_key??app.status_key,statusLabel=payload?.status_label??stage.data?.candidate_label??statusKey;
+  if(payload){payload.status_key=statusKey;payload.status_label=statusLabel;payload.status_color??=stage.data?.color??'#444444';}
+  const rendered=await renderDeclarationPdf(snap,statusLabel,payload?.status_color??stage.data?.color??'#444444');
+  const hash=await pdfHash(rendered.bytes),path=`${app.candidate_id}/${app.id}/declaration-${eventId}-${hash.slice(0,12)}.pdf`;
+  const upload=await db.storage.from('agreements').upload(path,rendered.bytes,{contentType:'application/pdf',upsert:false});if(upload.error){const stored=await db.storage.from('agreements').download(path);if(!stored.data||await pdfHash(new Uint8Array(await stored.data.arrayBuffer()))!==hash)throw upload.error;}
+  const insert=await db.from('application_pdf_versions').insert({application_id:id,event_id:eventId,template_id:snap.signed.template_id,template_version:snap.signed.template_version,status_key:statusKey,status_label:statusLabel,file_path:path,pdf_sha256:hash,document_id:rendered.documentId,created_at:payload?.edition_at??new Date().toISOString()});if(insert.error)throw insert.error;
+  // Preserve signed_agreements.pdf_path/pdf_sha256 and every previously uploaded original.
+  const doc=await db.from('documents').select('id').eq('candidate_id',app.candidate_id).eq('kind','agreement').maybeSingle();if(!doc.data){const r=await db.from('documents').insert({candidate_id:app.candidate_id,kind:'agreement',title:`Application declaration · ${snap.job.title}`,file_path:path});if(r.error)throw r.error;}
   return path;
 }
 
@@ -82,7 +68,7 @@ export async function sendHiringEmail(trigger:string,id:string,extra:Record<stri
 }
 export async function deliverSubmittedApplication(id:string){
   const {app}=await hiringDeliveryContext(id);
-  const pdf=await enqueue({kind:'agreement_pdf',trigger_key:'agreement',event_id:id,application_id:id,payload:{application_id:id}});
+  const pdf=await enqueue({kind:'agreement_pdf',trigger_key:'agreement',event_id:id,application_id:id,payload:{application_id:id,snapshot:await snapshotAgreement(id),status_key:app.status_key}});
   const {data:reviews}=await db.from('application_reviews').select('knockout_flags').eq('application_id',id);
   const candidate=await sendHiringEmail('application_submitted',id,{},[{filename:`agreement-${app.public_code}.pdf`,from_outbox:pdf}],{eventId:id,waitFor:[pdf],process:false});
   const admin=await sendHiringEmail('admin_new_application',id,{knockout_flags:JSON.stringify(reviews?.map(r=>r.knockout_flags) ?? [])},[],{eventId:id,process:false});
@@ -91,7 +77,10 @@ export async function deliverSubmittedApplication(id:string){
   return {pdf:pdfStatus==='sent'?'ready':pdfStatus==='failed'?'failed':'queued',email:mail==='sent'?'sent':mail==='failed'?'failed':'queued',queued:true};
 }
 export async function deliverStatusEmail(id:string,status:string,message:string,reason:string,eventId:string){
-  const {job}=await hiringDeliveryContext(id);const attachments:OutboxAttachment[]=[];const waitFor:string[]=[];
+  const {job}=await hiringDeliveryContext(id);
+  const pdfRows=await db.from('delivery_outbox').select('id').eq('application_id',id).eq('kind','agreement_pdf').eq('status','pending');
+  const pdfIds=(pdfRows.data??[]).map(r=>r.id);if(pdfIds.length)await processOutbox(pdfIds);
+  const attachments:OutboxAttachment[]=[];const waitFor:string[]=[];
   if(status==='offer'){const {snapshotLetter}=await import('./hiring-letters.server');const snap=await snapshotLetter(id,'offer');const letter=await enqueue({kind:'offer_letter',trigger_key:'offer',event_id:eventId,application_id:id,payload:snap});waitFor.push(letter);attachments.push({filename:`admakai-offer-${snap.values.application_code}.pdf`,from_outbox:letter});}
   const {data:stage}=await db.from('pipeline_stages').select('sends_email').eq('pipeline_id',job.application_pipeline_id).eq('key',status).single();
   if(!stage?.sends_email||!['in_review','shortlisted','rejected','selected','offer','hired','interview_scheduled'].includes(status)){if(waitFor.length)return processOutbox(waitFor);return null;}
