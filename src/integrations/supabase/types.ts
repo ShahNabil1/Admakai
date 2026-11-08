@@ -253,8 +253,10 @@ export type Database = {
           candidate_id: string
           created_at: string
           current_step: number
+          cv_path: string | null
           id: string
           is_draft: boolean
+          is_test: boolean | null
           job_id: string
           public_code: string
           status_key: string
@@ -268,8 +270,10 @@ export type Database = {
           candidate_id: string
           created_at?: string
           current_step?: number
+          cv_path?: string | null
           id?: string
           is_draft?: boolean
+          is_test?: boolean | null
           job_id: string
           public_code: string
           status_key?: string
@@ -283,8 +287,10 @@ export type Database = {
           candidate_id?: string
           created_at?: string
           current_step?: number
+          cv_path?: string | null
           id?: string
           is_draft?: boolean
+          is_test?: boolean | null
           job_id?: string
           public_code?: string
           status_key?: string
@@ -813,6 +819,7 @@ export type Database = {
           company_address: string | null
           created_at: string
           from_email: string
+          google_login_enabled: boolean | null
           id: boolean
           internship_video_poster_url: string | null
           internship_video_title: string | null
@@ -827,6 +834,7 @@ export type Database = {
           company_address?: string | null
           created_at?: string
           from_email?: string
+          google_login_enabled?: boolean | null
           id?: boolean
           internship_video_poster_url?: string | null
           internship_video_title?: string | null
@@ -841,6 +849,7 @@ export type Database = {
           company_address?: string | null
           created_at?: string
           from_email?: string
+          google_login_enabled?: boolean | null
           id?: boolean
           internship_video_poster_url?: string | null
           internship_video_title?: string | null
@@ -2286,6 +2295,49 @@ export type Database = {
         }
         Returns: boolean
       }
+      hiring_application_questions: {
+        Args: { _job_id: string }
+        Returns: {
+          help_text: string
+          id: string
+          label: string
+          max_length: number
+          options: Json
+          required: boolean
+          section: string
+          sort_order: number
+          type: string
+        }[]
+      }
+      hiring_application_settings: {
+        Args: never
+        Returns: {
+          google_login_enabled: boolean
+        }[]
+      }
+      hiring_can_apply: {
+        Args: { _job_id: string; _user_id: string }
+        Returns: boolean
+      }
+      hiring_current_template: {
+        Args: { _job_id: string }
+        Returns: {
+          body: string
+          created_at: string
+          id: string
+          is_current: boolean
+          job_type: string
+          key_terms: Json
+          name: string
+          version: number
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "agreement_templates"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       hiring_owns_application: {
         Args: { _application_id: string; _draft_only?: boolean }
         Returns: boolean
@@ -2299,8 +2351,43 @@ export type Database = {
           internship_video_url: string
         }[]
       }
+      hiring_save_progress: {
+        Args: {
+          _answers: Json
+          _cv_path?: string
+          _job_id: string
+          _step: number
+        }
+        Returns: {
+          candidate_id: string
+          created_at: string
+          current_step: number
+          cv_path: string | null
+          id: string
+          is_draft: boolean
+          is_test: boolean | null
+          job_id: string
+          public_code: string
+          status_key: string
+          submitted_at: string | null
+          task_submission_url: string | null
+          task_submitted_at: string | null
+          updated_at: string
+          withdrawn_at: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "applications"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       hiring_storage_path_owned: { Args: { _name: string }; Returns: boolean }
       hiring_template_is_latest: { Args: { _id: string }; Returns: boolean }
+      hiring_validate_answer: {
+        Args: { _answer: Json; _question_id: string }
+        Returns: undefined
+      }
       is_hiring_staff: { Args: { _user_id: string }; Returns: boolean }
       open_slots: {
         Args: { p_from?: string; p_to?: string }
@@ -2314,7 +2401,21 @@ export type Database = {
         Args: { p_password: string }
         Returns: boolean
       }
+      record_signature: {
+        Args: {
+          _accepted_terms: Json
+          _application_id: string
+          _signature_path: string
+          _signer_full_name: string
+          _user_agent: string
+        }
+        Returns: string
+      }
       submit_application: { Args: { _application_id: string }; Returns: string }
+      submit_task: {
+        Args: { _application_id: string; _url: string }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "reviewer" | "interviewer"

@@ -1,0 +1,15 @@
+ALTER FUNCTION public.hiring_can_apply(uuid,uuid) SET SCHEMA hiring_private;
+CREATE FUNCTION public.hiring_can_apply(_job_id uuid,_user_id uuid) RETURNS boolean LANGUAGE sql STABLE SECURITY INVOKER SET search_path=public AS $$ SELECT hiring_private.hiring_can_apply(_job_id,_user_id) $$;
+REVOKE ALL ON FUNCTION public.hiring_can_apply(uuid,uuid) FROM PUBLIC,anon; GRANT EXECUTE ON FUNCTION public.hiring_can_apply(uuid,uuid) TO authenticated,service_role;
+ALTER FUNCTION public.record_signature(uuid,text,text,jsonb,text) SET SCHEMA hiring_private;
+CREATE FUNCTION public.record_signature(_application_id uuid,_signer_full_name text,_signature_path text,_accepted_terms jsonb,_user_agent text) RETURNS uuid LANGUAGE sql SECURITY INVOKER SET search_path=public AS $$ SELECT hiring_private.record_signature(_application_id,_signer_full_name,_signature_path,_accepted_terms,_user_agent) $$;
+REVOKE ALL ON FUNCTION public.record_signature(uuid,text,text,jsonb,text) FROM PUBLIC,anon; GRANT EXECUTE ON FUNCTION public.record_signature(uuid,text,text,jsonb,text) TO authenticated,service_role;
+ALTER FUNCTION public.submit_task(uuid,text) SET SCHEMA hiring_private;
+CREATE FUNCTION public.submit_task(_application_id uuid,_url text) RETURNS uuid LANGUAGE sql SECURITY INVOKER SET search_path=public AS $$ SELECT hiring_private.submit_task(_application_id,_url) $$;
+REVOKE ALL ON FUNCTION public.submit_task(uuid,text) FROM PUBLIC,anon; GRANT EXECUTE ON FUNCTION public.submit_task(uuid,text) TO authenticated,service_role;
+ALTER FUNCTION public.hiring_save_progress(uuid,integer,jsonb,text) SET SCHEMA hiring_private;
+CREATE FUNCTION public.hiring_save_progress(_job_id uuid,_step integer,_answers jsonb,_cv_path text DEFAULT NULL) RETURNS public.applications LANGUAGE sql SECURITY INVOKER SET search_path=public AS $$ SELECT hiring_private.hiring_save_progress(_job_id,_step,_answers,_cv_path) $$;
+REVOKE ALL ON FUNCTION public.hiring_save_progress(uuid,integer,jsonb,text) FROM PUBLIC,anon; GRANT EXECUTE ON FUNCTION public.hiring_save_progress(uuid,integer,jsonb,text) TO authenticated,service_role;
+ALTER FUNCTION public.hiring_application_settings() SET SCHEMA hiring_private;
+CREATE FUNCTION public.hiring_application_settings() RETURNS TABLE(google_login_enabled boolean) LANGUAGE sql STABLE SECURITY INVOKER SET search_path=public AS $$ SELECT * FROM hiring_private.hiring_application_settings() $$;
+REVOKE ALL ON FUNCTION public.hiring_application_settings() FROM PUBLIC; GRANT EXECUTE ON FUNCTION public.hiring_application_settings() TO anon,authenticated,service_role;
