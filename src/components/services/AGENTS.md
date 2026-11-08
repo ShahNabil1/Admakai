@@ -12,3 +12,4 @@
 - Service detail pages share the numbered ServiceDetailPage landing template and service-sd stylesheet; service content, category use cases, category use cases and verified proof stay browser-safe and separate from the catalogue UI.
 
 - Detail heroes read heroTitle directly; the previous ServiceHero module stays unused for this layout. Service portfolio scrollers read admin-managed works (direct service links, else same-category fallback) via service-works; VideoPreviewCard handles media previews and VimeoPlayer preserves the existing lightbox.
+- CurrencyProvider owns cached rates; ServicePrice syncs prices, not Finder requests.
