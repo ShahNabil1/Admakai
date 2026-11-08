@@ -4,7 +4,7 @@ import { ArrowLeft, ExternalLink, Monitor, Search, Smartphone, TriangleAlert } f
 import { useServerFn } from '@tanstack/react-start';
 import { saveOffer } from '@/lib/offers.functions';
 import { offerValuesSchema, type OfferValues } from '@/lib/offer-schema';
-import { dhakaInputToIso, isoToDhakaInput, OFFER_PRESETS, overlapWarnings, PRESETS, type OfferPreset, type OfferScope, type PublicOffer } from '@/lib/offer-rules';
+import { dhakaInputToIso, isoToDhakaInput, OFFER_PRESETS, offerStatus, overlapWarnings, PRESETS, type OfferPreset, type OfferScope, type PublicOffer } from '@/lib/offer-rules';
 import { slugify } from '@/lib/site-content-editor';
 import { OfferPreviewProvider } from '@/components/offers/OfferContext';
 import { OfferBarView } from '@/components/offers/OfferBar';
@@ -130,7 +130,8 @@ export function OfferEditor({ row, data, onClose, onSaved }: { row: OfferRow | n
       setErrors(next); setServerError('Check the highlighted fields.'); return;
     }
     setBusy(true); setServerError(null);
-    try { const result = await save({ data: { id: row?.id ?? null, values: parsed.data } }); setSaved(draft); toast.success('Saved'); await onSaved(result.id); }
+    try { const result = await save({ data: { id: row?.id ?? null, values: parsed.data } }); setSaved(draft);
+      if (draft.isActive) toast.success('Saved'); else toast.warning('Saved, but the offer is switched off, so visitors will not see it.'); await onSaved(result.id); }
     catch (e) { setServerError(e instanceof Error ? e.message : 'This change could not be saved.'); }
     finally { setBusy(false); }
   };
@@ -144,6 +145,13 @@ export function OfferEditor({ row, data, onClose, onSaved }: { row: OfferRow | n
       <div className="sc-actions"><a className="admin-btn-ghost" href="/pricing" target="_blank" rel="noopener noreferrer"><ExternalLink size={15} />View pricing</a><button type="submit" className="admin-btn" disabled={busy || !dirty}>{busy ? 'Saving…' : dirty ? 'Save changes' : 'Saved'}</button></div>
     </header>
     {serverError && <p className="work-field-error sc-server-error" role="alert">{serverError}</p>}
+    {(() => {
+      const status = offerStatus({ isActive: draft.isActive, startsAt: values.startsAt || new Date(now).toISOString(), endsAt: values.endsAt || null }, now);
+      if (status === 'live') return <p className="of-status-note is-live" role="status">Live now: visitors see this offer{dirty ? ' after you save' : ''}.</p>;
+      if (status === 'off') return <p className="of-warning" role="status"><TriangleAlert size={15} aria-hidden="true" /><span>This offer is switched off, so the site shows normal prices and no offer bar. <button type="button" className="of-inline-btn" onClick={() => set('isActive', true)}>Switch it on</button>, then save.</span></p>;
+      if (status === 'scheduled') return <p className="of-warning" role="status"><TriangleAlert size={15} aria-hidden="true" />Scheduled: this offer starts {fmtDate(values.startsAt)} (Dhaka time). Prices stay normal until then.</p>;
+      return <p className="of-warning" role="status"><TriangleAlert size={15} aria-hidden="true" />This offer has ended. Move the end date later to show it again.</p>;
+    })()}
     {warnings.map(w => <p key={`${w.a}-${w.b}`} className="of-warning" role="status"><TriangleAlert size={15} aria-hidden="true" />{w.text}</p>)}
     <div className="sc-editor-grid of-editor-grid">
       <div className="sc-editor-main">

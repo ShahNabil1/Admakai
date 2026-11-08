@@ -57,3 +57,5 @@
 /* Offer badges on bookings and leads */
 .admin-offer-badge { display: inline-flex; align-self: flex-start; align-items: center; height: 1.25rem; padding: 0 .5rem; border-radius: 999px; font-size: .68rem; font-weight: 700; letter-spacing: .02em; white-space: nowrap; }
 .admin-offer-head { display: inline-flex; align-items: center; gap: .5rem; }
+.of-status-note { margin: 0 0 .75rem; padding: .7rem .9rem; border-radius: .8rem; border: 1px solid var(--border); background: var(--card); color: var(--foreground); font-size: .85rem; font-weight: 600; }
+.of-inline-btn { padding: 0; border: 0; background: none; color: inherit; font: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
