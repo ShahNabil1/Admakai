@@ -69,7 +69,7 @@ export async function sendHiringEmail(trigger:string,id:string,extra:Record<stri
   const results:Array<{status:string}>=[];
   for(const to of recipients){let status='skipped',error:string|null=null,providerId:string|null=null;
     if(shouldSendHiringEmail(trigger,template.is_enabled,candidate.email_notifications)&&process.env['RESEND_API_KEY']){
-      try{let content=fill(template.body);if(admin)content+=`\nCandidate: ${candidate.full_name}\nJob: ${job.title}\nKnockout flags: ${extra['knockout_flags'] ?? 'None'}\nhttps://admakai.com/admin/hiring/jobs`;
+      try{let content=fill(template.body);if(extra['interview_details']&&!content.includes(extra['interview_details']))content+=`\n${extra['interview_details']}`;if(admin)content+=`\nCandidate: ${candidate.full_name}\nJob: ${job.title}\nKnockout flags: ${extra['knockout_flags'] ?? 'None'}\nhttps://admakai.com/admin/hiring/jobs`;
         const button=admin?'https://admakai.com/admin/hiring/jobs':tracker;
         const html=`<!doctype html><html><body style="background:#f6f6f6;color:#111;font-family:Arial,sans-serif;margin:0;padding:32px"><div style="max-width:560px;margin:auto"><img src="https://admakai.com${emailLogo.url}" alt="Admakai" width="160"><h1 style="font-size:24px">${escape(fill(template.subject))}</h1><p style="line-height:1.7;white-space:pre-line">${escape(content)}</p><a href="${button}" style="display:inline-block;background:#111;color:#fff;padding:14px 22px;text-decoration:none">${admin?'Review applications':'Track your application'}</a><p style="font-size:12px;color:#666;margin-top:32px">Admakai<br>${escape(settings.company_address ?? '')}</p></div></body></html>`;
         const attachments:Array<{filename:string;content:string}>=[...extraAttachments];
