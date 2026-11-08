@@ -1,0 +1,3 @@
+- Reuse the shared internship URL resolver and player so Careers and internship job details cannot diverge.
+- Prime public video settings through Query and expose only video fields through the safe reader; private settings stay private.
+- Hero previews use only direct MP4, loop the first ten seconds muted and respect reduced motion.

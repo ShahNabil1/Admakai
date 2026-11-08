@@ -1,10 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { seoHead } from "@/lib/seo";
-import { careerJobsOptions } from "@/lib/careers-query";
+import { careerJobsOptions, internshipVideoOptions } from "@/lib/careers-query";
 import { CareersPage } from "@/components/careers/CareersPage";
 import { PageError } from "@/components/public/PageElements";
 export const Route = createFileRoute("/_site/careers/")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(careerJobsOptions),
+  loader: async ({ context }) => {
+    const [jobs] = await Promise.all([context.queryClient.ensureQueryData(careerJobsOptions), context.queryClient.ensureQueryData(internshipVideoOptions)]);
+    return jobs;
+  },
   head: () =>
     seoHead({
       title: "Careers at Admakai",

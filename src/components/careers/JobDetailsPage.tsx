@@ -4,12 +4,15 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowLeft, Check, Copy, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
-import { careerDetailOptions } from "@/lib/careers-query";
+import { careerDetailOptions, internshipVideoOptions } from "@/lib/careers-query";
+import { showInternshipVideo } from '@/lib/internship-video';
+import { InternshipVideo } from './InternshipVideo';
 import { ApplyLink, CareerUnavailable, Deadline, DraftBanner, JobBadges } from "./CareerShared";
 import { useCareersIdentity } from "./useCareersIdentity";
 import "@/components/public/pages.css";
 export function JobDetailsPage({ slug }: { slug: string }) {
   const { data: publicDetail } = useSuspenseQuery(careerDetailOptions(slug));
+  const { data: videoSettings } = useSuspenseQuery(internshipVideoOptions);
   const identity = useCareersIdentity(slug);
   const detail = identity.data?.detail ?? publicDetail;
   const [share, setShare] = useState(false);
@@ -85,6 +88,7 @@ export function JobDetailsPage({ slug }: { slug: string }) {
               {job.description && <p className="career-description">{job.description}</p>}
             </Reveal>
           </section>
+          {showInternshipVideo(job.type) && <InternshipVideo key={videoSettings.internship_video_url} settings={videoSettings} compact />}
           {[
             ["What you will do", job.responsibilities],
             ["What you need", job.requirements],

@@ -1,5 +1,10 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getCareerJobs, getCareerDetail } from "./careers.functions";
+import { getCareerJobs, getCareerDetail, getInternshipVideo } from "./careers.functions";
+export const internshipVideoOptions = queryOptions({
+  queryKey: ['careers', 'internship-video'],
+  queryFn: () => getInternshipVideo(),
+  staleTime: 30000,
+});
 export const careerJobsOptions = queryOptions({
   queryKey: ["careers", "public"],
   queryFn: () => getCareerJobs(),

@@ -5,6 +5,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
 import { z } from "zod";
 import { talentSchema } from "./careers-rules";
+import { emptyInternshipVideo, type InternshipVideoSettings } from './internship-video';
 export type CareerJob = Database["public"]["Tables"]["jobs"]["Row"];
 export type CareerDetail = {
   job: CareerJob;
@@ -82,6 +83,11 @@ async function detail(db: SupabaseClient<Database>, slug: string): Promise<Caree
   };
 }
 export const getCareerJobs = createServerFn({ method: "GET" }).handler(() => list(publicDb()));
+export const getInternshipVideo = createServerFn({ method: 'GET' }).handler(async (): Promise<InternshipVideoSettings> => {
+  const { data, error } = await publicDb().rpc('hiring_public_internship_video');
+  if (error || !data?.[0]) return emptyInternshipVideo;
+  return data[0];
+});
 export const getCareerDetail = createServerFn({ method: "GET" })
   .inputValidator(z.object({ slug: z.string().min(1).max(160) }))
   .handler(({ data }) => detail(publicDb(), data.slug));

@@ -47,6 +47,42 @@
   );
   border-bottom: 1px solid var(--line);
 }
+.career-video {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-top: 48px;
+  background: linear-gradient(135deg, var(--surface), var(--bg));
+  color: var(--fg);
+}
+.career-video-compact { margin: 0 0 48px; }
+.career-video > video, .career-video > iframe, .career-video-poster {
+  position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover;
+}
+.career-video > video { object-fit: contain; background: var(--bg); }
+.career-video-shade { position: absolute; inset: 0; background: linear-gradient(transparent 30%, color-mix(in oklch, var(--bg) 90%, transparent)); }
+.career-video .career-video-play {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 72px; height: 72px; border-radius: 50%; background: var(--career-yellow); color: var(--career-ink);
+}
+.career-video .career-video-play:hover { background: var(--paper); }
+.career-video .career-video-play svg { width: 28px; height: 28px; }
+.career-video-caption { position: absolute; bottom: 28px; left: 32px; right: 32px; pointer-events: none; }
+.career-video-caption h3 { font-size: 24px; line-height: 1.3; margin-bottom: 8px; }
+.careers .career-video-caption p { color: var(--fg); font-size: 14px; line-height: 1.5; margin: 0; }
+.career-video-error { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; background: var(--bg); }
+.career-hero-preview { position: absolute; inset: 0 0 0 58%; }
+.career-hero-preview video { width: 100%; height: 100%; object-fit: cover; opacity: .7; }
+.career-hero-preview-shade { position: absolute; inset: 0; background: linear-gradient(90deg, var(--bg), transparent 40%); }
+@media (width < 900px) { .career-hero-preview { display: none; } }
+@media (width < 640px) {
+  .career-video-caption { bottom: 14px; left: 16px; right: 16px; }
+  .career-video-caption h3 { font-size: 17px; margin-bottom: 4px; }
+  .careers .career-video-caption p { font-size: 11px; }
+  .career-video .career-video-play { width: 48px; height: 48px; top: 38%; }
+  .career-video .career-video-play svg { width: 20px; height: 20px; }
+}
 .career-hero-content {
   height: 100%;
   display: flex;

@@ -814,6 +814,9 @@ export type Database = {
           created_at: string
           from_email: string
           id: boolean
+          internship_video_poster_url: string | null
+          internship_video_title: string | null
+          internship_video_url: string | null
           notify_admin_emails: string[]
           pdf_logo_url: string | null
           reply_to: string | null
@@ -825,6 +828,9 @@ export type Database = {
           created_at?: string
           from_email?: string
           id?: boolean
+          internship_video_poster_url?: string | null
+          internship_video_title?: string | null
+          internship_video_url?: string | null
           notify_admin_emails?: string[]
           pdf_logo_url?: string | null
           reply_to?: string | null
@@ -836,6 +842,9 @@ export type Database = {
           created_at?: string
           from_email?: string
           id?: boolean
+          internship_video_poster_url?: string | null
+          internship_video_title?: string | null
+          internship_video_url?: string | null
           notify_admin_emails?: string[]
           pdf_logo_url?: string | null
           reply_to?: string | null
@@ -2282,6 +2291,14 @@ export type Database = {
         Returns: boolean
       }
       hiring_owns_journey: { Args: { _journey_id: string }; Returns: boolean }
+      hiring_public_internship_video: {
+        Args: never
+        Returns: {
+          internship_video_poster_url: string
+          internship_video_title: string
+          internship_video_url: string
+        }[]
+      }
       hiring_storage_path_owned: { Args: { _name: string }; Returns: boolean }
       hiring_template_is_latest: { Args: { _id: string }; Returns: boolean }
       is_hiring_staff: { Args: { _user_id: string }; Returns: boolean }

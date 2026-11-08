@@ -13,7 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
 import "@/components/public/pages.css";
-import { careerJobsOptions } from "@/lib/careers-query";
+import { careerJobsOptions, internshipVideoOptions } from "@/lib/careers-query";
+import { InternshipVideo, InternshipHeroPreview } from './InternshipVideo';
 import { matchesJob } from "@/lib/careers-rules";
 import { useCareersIdentity } from "./useCareersIdentity";
 import { ApplyLink, Deadline, DraftBanner, JobBadges } from "./CareerShared";
@@ -41,6 +42,7 @@ const faq = [
 ];
 export function CareersPage() {
   const { data: publicJobs } = useSuspenseQuery(careerJobsOptions);
+  const { data: videoSettings } = useSuspenseQuery(internshipVideoOptions);
   const identity = useCareersIdentity();
   const [filter, setFilter] = useState("All");
   const jobs = (identity.data?.staff ? identity.data.jobs : publicJobs).filter((job) =>
@@ -50,6 +52,7 @@ export function CareersPage() {
     <div className="public-page careers">
       <header className="career-hero">
         <div className="career-showreel" aria-hidden="true">
+          <InternshipHeroPreview settings={videoSettings} />
           <div className="career-film-lines" />
         </div>
         <div className="container-site career-hero-content">
@@ -116,6 +119,7 @@ export function CareersPage() {
               );
             })}
           </div>
+          <InternshipVideo key={videoSettings.internship_video_url} settings={videoSettings} />
         </div>
       </section>
       <section id="roles" className="container-site page-section">
