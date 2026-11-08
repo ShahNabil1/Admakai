@@ -245,6 +245,8 @@ function blankJob(data: HiringWorkspace): HiringJob {
     slug: "",
     type: "internship",
     work_mode: "hybrid",
+    experience_level: 'none',
+    schedule: 'evening',
     schedule_text: "",
     seats: null,
     deadline: null,
@@ -372,6 +374,8 @@ export function JobEditor({
             slug: job.slug || `draft-${job.id}`,
             type: job.type as "internship" | "full_time" | "freelance",
             work_mode: job.work_mode as "remote" | "hybrid" | "office",
+            experience_level: job.experience_level as 'none' | 'junior' | 'mid' | 'senior',
+            schedule: job.schedule as 'day' | 'evening' | 'flexible',
             task_submission_type: job.task_submission_type === "file" ? "file" : "link",
           },
           questions,
@@ -512,6 +516,18 @@ export function JobEditor({
                 value={job.schedule_text ?? ""}
                 onChange={(e) => patch({ schedule_text: e.target.value })}
               />
+            </label>
+            <label>
+              Experience level
+              <select value={job.experience_level} onChange={e=>patch({experience_level:e.target.value})}>
+                <option value="none">No experience needed</option><option value="junior">Junior</option><option value="mid">Mid</option><option value="senior">Senior</option>
+              </select>
+            </label>
+            <label>
+              Schedule filter
+              <select value={job.schedule} onChange={e=>patch({schedule:e.target.value})}>
+                <option value="day">Day</option><option value="evening">Evening</option><option value="flexible">Flexible</option>
+              </select>
             </label>
             <label>
               Seats

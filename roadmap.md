@@ -1,4 +1,6 @@
 # Tasks
+- [x] Careers-only job board: URL search/filter sidebar/mobile sheet, role cards/video promo, preserved lower content; additive job fields/admin Details. 31 focused tests and build OK; real Careers/job/Apply navigation and URL reload/mobile sheet verified. Reference 3 absent; followed written layout. Video modal checked with temporary browser fixture since current video is unset.
+- [ ] Careers admin filter save and own-application link readback — real signed-in external Supabase session unavailable; current internship video must be supplied for real playback verification.
 - [x] Application declaration: new immutable template, signatory settings, formal PDF/status history; 61 focused tests, Submitted/In Review PDF visual QA and signed-out apply/dashboard smoke passed. Fixed word wrapping and missing footers during QA.
 - [ ] Declaration live signed-in submission/status/PDF history check — requires real external Supabase session plus PDF logo and authorised signature uploads in Hiring Settings; current company address is also unset.
 - [x] Apply redesign: shared split sign-in, six-step intern wizard, required private passport crop, 16 beginner job questions; 68 focused tests, Careers/apply smoke and desktop/mobile crop/navigation fixtures passed.

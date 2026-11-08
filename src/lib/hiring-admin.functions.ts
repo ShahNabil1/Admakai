@@ -108,6 +108,8 @@ const jobSchema = z.object({
     .max(160),
   type: z.enum(["internship", "full_time", "freelance"]),
   work_mode: z.enum(["remote", "hybrid", "office"]),
+  experience_level: z.enum(['none','junior','mid','senior']).optional(),
+  schedule: z.enum(['day','evening','flexible']).optional(),
   schedule_text: text,
   seats: z.number().int().min(1).nullable(),
   deadline: z.string().nullable(),
@@ -133,7 +135,7 @@ export const saveHiringJob = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await requireAdmin(context);
     return checked(
-      await context.supabase.rpc("hiring_admin_save_job", {
+      await context.supabase.rpc("hiring_save_job_filters", {
         _job: data.job,
         _questions: data.questions.map((q) => ({
           ...q,

@@ -1,0 +1,2 @@
+ALTER TABLE public.jobs ADD COLUMN IF NOT EXISTS experience_level text NOT NULL DEFAULT 'none' CHECK(experience_level IN ('none','junior','mid','senior')), ADD COLUMN IF NOT EXISTS schedule text NOT NULL DEFAULT 'evening' CHECK(schedule IN ('day','evening','flexible'));
+UPDATE public.jobs SET experience_level='none',schedule='evening' WHERE id='e2000000-0000-4000-8000-000000000001';

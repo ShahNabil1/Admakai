@@ -8,3 +8,4 @@
 - Candidate URLs use a client-only pathless layout and shared email-code form; each private handler independently authenticates and filters ownership, including staff viewing their own applications.
 - Signed PDF originals and signed fields never change; status editions use immutable application_pdf_versions and frozen outbox inputs/images, with ownership-checked latest/history reads. Failed delivery cannot undo submission.
 - Shared ApplicationSignIn keeps apply/sign-in identical; visible steps map to existing saved numbers, retired questions retain answer references, and browser passport crops require server dimension/ownership checks.
+- Careers board uses typed URL state and one pure grouped matcher; its isolated stylesheet never changes job details. Additive job-filter saves wrap the existing admin RPC in one invoker transaction to preserve question and permission flows.

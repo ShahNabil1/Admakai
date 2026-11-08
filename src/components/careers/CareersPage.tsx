@@ -1,26 +1,18 @@
-import { useState } from "react";
-import { Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
-  ArrowDown,
-  ArrowUpRight,
   BookOpen,
   Briefcase,
-  Clapperboard,
   Plus,
   Trophy,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
 import "@/components/public/pages.css";
 import { careerJobsOptions, internshipVideoOptions } from "@/lib/careers-query";
 import { InternshipVideo, InternshipHeroPreview } from './InternshipVideo';
-import { matchesJob } from "@/lib/careers-rules";
 import { useCareersIdentity } from "./useCareersIdentity";
-import { ApplyLink, Deadline, DraftBanner, JobBadges } from "./CareerShared";
 import { TalentPool } from "./TalentPool";
-import { HiringCover } from "./HiringCover";
-const filters = ["All", "Internship", "Full-time", "Freelance", "Office", "Remote", "Hybrid"];
+import { CareerSearch, CareerBoard } from "./CareerBoard";
+import "./career-board.css";
 const faq = [
   ["What are the working hours?", "3 PM to 6 PM and 8 PM to 11 PM, Bangladesh time."],
   [
@@ -45,12 +37,9 @@ export function CareersPage() {
   const { data: publicJobs } = useSuspenseQuery(careerJobsOptions);
   const { data: videoSettings } = useSuspenseQuery(internshipVideoOptions);
   const identity = useCareersIdentity();
-  const [filter, setFilter] = useState("All");
-  const jobs = (identity.data?.staff ? identity.data.jobs : publicJobs).filter((job) =>
-    matchesJob(job, filter),
-  );
+  const jobs = identity.data?.staff ? identity.data.jobs : publicJobs;
   return (
-    <div className="public-page careers">
+    <div className="public-page careers career-board-page">
       <header className="career-hero">
         <div className="career-showreel" aria-hidden="true">
           <InternshipHeroPreview settings={videoSettings} />
@@ -67,29 +56,12 @@ export function CareersPage() {
               Admakai makes ad films with AI instead of cameras. We are looking for people who think
               like filmmakers.
             </p>
-            <div className="career-actions">
-              <Button asChild className="page-call">
-                <a href="#roles">
-                  See open roles <ArrowDown />
-                </a>
-              </Button>
-              <Button asChild variant="ghost" className="career-secondary">
-                <a href="#how-hiring-works">
-                  How hiring works <ArrowUpRight />
-                </a>
-              </Button>
-            </div>
+            <CareerSearch />
           </Reveal>
-          <div className="career-hero-foot">
-            <span>
-              <Clapperboard size={16} /> Human-led. AI-made.
-            </span>
-            <a href="#internship" aria-label="Explore the internship">
-              <ArrowDown size={18} />
-            </a>
-          </div>
         </div>
       </header>
+      {identity.isError && <p role="alert" className="container-site">Staff previews and your applications could not load. Please refresh.</p>}
+      <CareerBoard jobs={jobs} applications={identity.data?.applications ?? []} settings={videoSettings} />
       <section id="internship" className="page-paper page-section">
         <div className="container-site">
           <Reveal>
@@ -122,84 +94,6 @@ export function CareersPage() {
           </div>
           <InternshipVideo key={videoSettings.internship_video_url} settings={videoSettings} />
         </div>
-      </section>
-      <section id="roles" className="container-site page-section">
-        <Reveal>
-          <div className="career-heading">
-            <div>
-              <p className="page-eyebrow">Make your next move</p>
-              <h2 className="section-title">
-                Open roles<span className="serif">.</span>
-              </h2>
-            </div>
-            <span>
-              {jobs.length} {jobs.length === 1 ? "role" : "roles"}
-            </span>
-          </div>
-        </Reveal>
-        <div className="page-pills career-filters" aria-label="Filter roles">
-          {filters.map((value) => (
-            <Button
-              key={value}
-              variant="ghost"
-              className={`filter-pill ${filter === value ? "active" : ""}`}
-              aria-pressed={filter === value}
-              onClick={() => setFilter(value)}
-            >
-              {value}
-            </Button>
-          ))}
-        </div>
-        {identity.isError && (
-          <p role="alert">Staff previews and your applications could not load. Please refresh.</p>
-        )}
-        <div className="career-job-grid">
-          {jobs.map((job, i) => (
-            <Reveal key={job.id} delay={i * 0.07}>
-              <article className="career-job-card">
-                <HiringCover value={job.cover_image_url} title={job.title} />
-                {job.status === "draft" && <DraftBanner />}
-                <div className="career-card-top">
-                  <span className="career-badge">{job.type}</span>
-                  <Deadline job={job} />
-                </div>
-                <h3>
-                  <Link to="/careers/$slug" params={{ slug: job.slug }}>
-                    {job.title}
-                  </Link>
-                </h3>
-                <JobBadges job={job} />
-                <p>{job.summary}</p>
-                <div className="career-card-actions">
-                  <Button asChild variant="ghost">
-                    <Link to="/careers/$slug" params={{ slug: job.slug }}>
-                      View details <ArrowUpRight />
-                    </Link>
-                  </Button>
-                  <ApplyLink
-                    job={job}
-                    existing={identity.data?.applications.some((a) => a.job_id === job.id)}
-                  />
-                </div>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-        {!jobs.length && (
-          <div className="career-empty">
-            <Briefcase size={28} />
-            <p>
-              {filter === "All"
-                ? "No open roles right now. Join the talent pool and we will reach out."
-                : "No roles match this filter."}
-            </p>
-            <Button asChild variant="link">
-              <a href="#talent-pool">
-                Join the talent pool <ArrowDown />
-              </a>
-            </Button>
-          </div>
-        )}
       </section>
       <section id="how-hiring-works" className="page-section career-how">
         <div className="container-site">

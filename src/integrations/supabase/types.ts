@@ -1468,11 +1468,13 @@ export type Database = {
           created_by: string | null
           deadline: string | null
           description: string | null
+          experience_level: string
           id: string
           journey_pipeline_id: string | null
           nice_to_have: string[]
           requirements: string[]
           responsibilities: string[]
+          schedule: string
           schedule_text: string | null
           seats: number | null
           slug: string
@@ -1497,11 +1499,13 @@ export type Database = {
           created_by?: string | null
           deadline?: string | null
           description?: string | null
+          experience_level?: string
           id?: string
           journey_pipeline_id?: string | null
           nice_to_have?: string[]
           requirements?: string[]
           responsibilities?: string[]
+          schedule?: string
           schedule_text?: string | null
           seats?: number | null
           slug: string
@@ -1526,11 +1530,13 @@ export type Database = {
           created_by?: string | null
           deadline?: string | null
           description?: string | null
+          experience_level?: string
           id?: string
           journey_pipeline_id?: string | null
           nice_to_have?: string[]
           requirements?: string[]
           responsibilities?: string[]
+          schedule?: string
           schedule_text?: string | null
           seats?: number | null
           slug?: string
@@ -2896,6 +2902,10 @@ export type Database = {
           internship_video_title: string
           internship_video_url: string
         }[]
+      }
+      hiring_save_job_filters: {
+        Args: { _job: Json; _questions: Json }
+        Returns: string
       }
       hiring_save_progress: {
         Args: {
