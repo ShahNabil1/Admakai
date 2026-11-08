@@ -111,3 +111,16 @@
 .service-sd-see-all a { display: inline-flex; align-items: center; gap: .4rem; font-weight: 600; color: inherit; text-decoration: underline; text-underline-offset: 4px; }
 
 .service-sd-portfolio-video.video-preview{padding:0;display:block;aspect-ratio:auto;white-space:normal;}
+
+/* Editor-added content: rich descriptions and optional service FAQs. */
+.service-sd-rich p { margin: 0 0 .75em; }
+.service-sd-rich p:last-child { margin-bottom: 0; }
+.service-sd-rich ul, .service-sd-rich ol { margin: .5em 0 .75em 1.25em; list-style: disc; }
+.service-sd-rich ol { list-style: decimal; }
+.service-sd-faq { display: grid; gap: 12px; margin-top: 32px; max-width: 860px; }
+.service-sd-faq details { border: 1px solid var(--service-landing-line); border-radius: 16px; background: var(--service-landing-bg); color: var(--service-landing-ink); padding: 18px 22px; }
+.service-sd-faq summary { cursor: pointer; font-weight: 600; font-size: 17px; list-style: none; }
+.service-sd-faq summary::-webkit-details-marker { display: none; }
+.service-sd-faq summary::after { content: "+"; float: right; color: var(--service-landing-muted); }
+.service-sd-faq details[open] summary::after { content: '\2212'; }
+.service-sd-faq p { margin: 12px 0 0; color: var(--service-landing-muted); line-height: 1.6; }

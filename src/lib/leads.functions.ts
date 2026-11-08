@@ -1,6 +1,5 @@
 import { createServerFn } from '@tanstack/react-start';
 import { leadSchema, validateEnquiryAttachment, fileSignature } from './lead-schema';
-import { services } from '@/data/services';
 
 const MIME = { png: 'image/png', jpg: 'image/jpeg', pdf: 'application/pdf' } as const;
 
@@ -16,8 +15,11 @@ export const submitLead = createServerFn({ method: 'POST' }).inputValidator((inp
 }).handler(async ({ data }) => {
   const { values, file } = data;
   if (values.website) return { status: 'saved' as const }; // honeypot
-  if (values.service_slug && values.service_slug !== 'not-sure' && !services.some(s => s.slug === values.service_slug)) return { status: 'error' as const };
-  if (values.plan_slug && !['starter', 'growth', 'scale'].includes(values.plan_slug)) return { status: 'error' as const };
+  // Validate against the live published catalogue (static copy if the database is unreachable).
+  const { loadPublicCatalogue } = await import('./site-content.server');
+  const catalogue = await loadPublicCatalogue();
+  if (values.service_slug && values.service_slug !== 'not-sure' && !catalogue.services.some(s => s.slug === values.service_slug)) return { status: 'error' as const };
+  if (values.plan_slug && !catalogue.plans.some(plan => plan.slug === values.plan_slug)) return { status: 'error' as const };
   const { supabaseAdmin: db } = await import('@/integrations/supabase/client.server');
   let path: string | null = null;
   try {

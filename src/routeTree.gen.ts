@@ -23,6 +23,7 @@ import { Route as SitePrivacyRouteImport } from './routes/_site.privacy'
 import { Route as SiteRefundRouteImport } from './routes/_site.refund'
 import { Route as SiteServicesRouteImport } from './routes/_site.services'
 import { Route as SiteTermsRouteImport } from './routes/_site.terms'
+import { Route as AdminSiteContentRouteImport } from './routes/admin_.site-content'
 import { Route as AppSplatRouteImport } from './routes/app.$'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardCallsRouteImport } from './routes/dashboard.calls'
@@ -47,6 +48,7 @@ import { Route as AdminHiringJobsRouteImport } from './routes/admin_.hiring.jobs
 import { Route as AdminHiringJourneyRouteImport } from './routes/admin_.hiring.journey'
 import { Route as AdminHiringQuestionsRouteImport } from './routes/admin_.hiring.questions'
 import { Route as AdminHiringSettingsRouteImport } from './routes/admin_.hiring.settings'
+import { Route as AdminSiteContentPlansRouteImport } from './routes/admin_.site-content.plans'
 import { Route as ApiPublicHiringRemindersRouteImport } from './routes/api/public/hiring-reminders'
 import { Route as AuthSsoCallbackRouteImport } from './routes/auth.sso.callback'
 import { Route as DashboardApplicationsIdRouteImport } from './routes/dashboard.applications.$id'
@@ -125,6 +127,11 @@ const SiteTermsRoute = SiteTermsRouteImport.update({
   id: '/terms',
   path: '/terms',
   getParentRoute: () => SiteRoute,
+} as any)
+const AdminSiteContentRoute = AdminSiteContentRouteImport.update({
+  id: '/admin_/site-content',
+  path: '/admin/site-content',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppSplatRoute = AppSplatRouteImport.update({
   id: '/$',
@@ -247,6 +254,11 @@ const AdminHiringSettingsRoute = AdminHiringSettingsRouteImport.update({
   path: '/admin/hiring/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSiteContentPlansRoute = AdminSiteContentPlansRouteImport.update({
+  id: '/plans',
+  path: '/plans',
+  getParentRoute: () => AdminSiteContentRoute,
+} as any)
 const ApiPublicHiringRemindersRoute =
   ApiPublicHiringRemindersRouteImport.update({
     id: '/api/public/hiring-reminders',
@@ -311,6 +323,7 @@ export interface FileRoutesByFullPath {
   '/refund': typeof SiteRefundRoute
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
+  '/admin/site-content': typeof AdminSiteContentRouteWithChildren
   '/app/$': typeof AppSplatRoute
   '/dashboard/calls': typeof DashboardCallsRoute
   '/dashboard/careers': typeof DashboardCareersRoute
@@ -331,6 +344,7 @@ export interface FileRoutesByFullPath {
   '/admin/hiring/journey': typeof AdminHiringJourneyRoute
   '/admin/hiring/questions': typeof AdminHiringQuestionsRoute
   '/admin/hiring/settings': typeof AdminHiringSettingsRoute
+  '/admin/site-content/plans': typeof AdminSiteContentPlansRoute
   '/api/public/hiring-reminders': typeof ApiPublicHiringRemindersRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/dashboard/applications/$id': typeof DashboardApplicationsIdRoute
@@ -357,6 +371,7 @@ export interface FileRoutesByTo {
   '/refund': typeof SiteRefundRoute
   '/services': typeof SiteServicesRoute
   '/terms': typeof SiteTermsRoute
+  '/admin/site-content': typeof AdminSiteContentRouteWithChildren
   '/app/$': typeof AppSplatRoute
   '/dashboard/calls': typeof DashboardCallsRoute
   '/dashboard/careers': typeof DashboardCareersRoute
@@ -378,6 +393,7 @@ export interface FileRoutesByTo {
   '/admin/hiring/journey': typeof AdminHiringJourneyRoute
   '/admin/hiring/questions': typeof AdminHiringQuestionsRoute
   '/admin/hiring/settings': typeof AdminHiringSettingsRoute
+  '/admin/site-content/plans': typeof AdminSiteContentPlansRoute
   '/api/public/hiring-reminders': typeof ApiPublicHiringRemindersRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/dashboard/applications/$id': typeof DashboardApplicationsIdRoute
@@ -406,6 +422,7 @@ export interface FileRoutesById {
   '/_site/refund': typeof SiteRefundRoute
   '/_site/services': typeof SiteServicesRoute
   '/_site/terms': typeof SiteTermsRoute
+  '/admin_/site-content': typeof AdminSiteContentRouteWithChildren
   '/app/$': typeof AppSplatRoute
   '/dashboard/calls': typeof DashboardCallsRoute
   '/dashboard/careers': typeof DashboardCareersRoute
@@ -427,6 +444,7 @@ export interface FileRoutesById {
   '/admin_/hiring/journey': typeof AdminHiringJourneyRoute
   '/admin_/hiring/questions': typeof AdminHiringQuestionsRoute
   '/admin_/hiring/settings': typeof AdminHiringSettingsRoute
+  '/admin_/site-content/plans': typeof AdminSiteContentPlansRoute
   '/api/public/hiring-reminders': typeof ApiPublicHiringRemindersRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/dashboard/applications/$id': typeof DashboardApplicationsIdRoute
@@ -457,6 +475,7 @@ export interface FileRouteTypes {
     | '/refund'
     | '/services'
     | '/terms'
+    | '/admin/site-content'
     | '/app/$'
     | '/dashboard/calls'
     | '/dashboard/careers'
@@ -477,6 +496,7 @@ export interface FileRouteTypes {
     | '/admin/hiring/journey'
     | '/admin/hiring/questions'
     | '/admin/hiring/settings'
+    | '/admin/site-content/plans'
     | '/api/public/hiring-reminders'
     | '/auth/sso/callback'
     | '/dashboard/applications/$id'
@@ -503,6 +523,7 @@ export interface FileRouteTypes {
     | '/refund'
     | '/services'
     | '/terms'
+    | '/admin/site-content'
     | '/app/$'
     | '/dashboard/calls'
     | '/dashboard/careers'
@@ -524,6 +545,7 @@ export interface FileRouteTypes {
     | '/admin/hiring/journey'
     | '/admin/hiring/questions'
     | '/admin/hiring/settings'
+    | '/admin/site-content/plans'
     | '/api/public/hiring-reminders'
     | '/auth/sso/callback'
     | '/dashboard/applications/$id'
@@ -551,6 +573,7 @@ export interface FileRouteTypes {
     | '/_site/refund'
     | '/_site/services'
     | '/_site/terms'
+    | '/admin_/site-content'
     | '/app/$'
     | '/dashboard/calls'
     | '/dashboard/careers'
@@ -572,6 +595,7 @@ export interface FileRouteTypes {
     | '/admin_/hiring/journey'
     | '/admin_/hiring/questions'
     | '/admin_/hiring/settings'
+    | '/admin_/site-content/plans'
     | '/api/public/hiring-reminders'
     | '/auth/sso/callback'
     | '/dashboard/applications/$id'
@@ -594,6 +618,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRouteWithChildren
   MeRoute: typeof MeRouteWithChildren
   SigninRoute: typeof SigninRoute
+  AdminSiteContentRoute: typeof AdminSiteContentRouteWithChildren
   AdminHiringAgreementsRoute: typeof AdminHiringAgreementsRoute
   AdminHiringApplicationsRoute: typeof AdminHiringApplicationsRoute
   AdminHiringEmailsRoute: typeof AdminHiringEmailsRoute
@@ -708,6 +733,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/terms'
       preLoaderRoute: typeof SiteTermsRouteImport
       parentRoute: typeof SiteRoute
+    }
+    '/admin_/site-content': {
+      id: '/admin_/site-content'
+      path: '/admin/site-content'
+      fullPath: '/admin/site-content'
+      preLoaderRoute: typeof AdminSiteContentRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/app/$': {
       id: '/app/$'
@@ -877,6 +909,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminHiringSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin_/site-content/plans': {
+      id: '/admin_/site-content/plans'
+      path: '/plans'
+      fullPath: '/admin/site-content/plans'
+      preLoaderRoute: typeof AdminSiteContentPlansRouteImport
+      parentRoute: typeof AdminSiteContentRoute
+    }
     '/api/public/hiring-reminders': {
       id: '/api/public/hiring-reminders'
       path: '/api/public/hiring-reminders'
@@ -1042,6 +1081,17 @@ const MeRouteChildren: MeRouteChildren = {
 
 const MeRouteWithChildren = MeRoute._addFileChildren(MeRouteChildren)
 
+interface AdminSiteContentRouteChildren {
+  AdminSiteContentPlansRoute: typeof AdminSiteContentPlansRoute
+}
+
+const AdminSiteContentRouteChildren: AdminSiteContentRouteChildren = {
+  AdminSiteContentPlansRoute: AdminSiteContentPlansRoute,
+}
+
+const AdminSiteContentRouteWithChildren =
+  AdminSiteContentRoute._addFileChildren(AdminSiteContentRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   SiteRoute: SiteRouteWithChildren,
   AdminRoute: AdminRoute,
@@ -1049,6 +1099,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRouteWithChildren,
   MeRoute: MeRouteWithChildren,
   SigninRoute: SigninRoute,
+  AdminSiteContentRoute: AdminSiteContentRouteWithChildren,
   AdminHiringAgreementsRoute: AdminHiringAgreementsRoute,
   AdminHiringApplicationsRoute: AdminHiringApplicationsRoute,
   AdminHiringEmailsRoute: AdminHiringEmailsRoute,

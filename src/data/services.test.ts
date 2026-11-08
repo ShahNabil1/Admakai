@@ -57,5 +57,5 @@ describe('Static service catalogue rules', () => {
     expect(relatedServices(service, services.map(item => ({ ...item, published: item.slug !== 'ai-commercial-60s' }))).map(item => item.slug)).toEqual(['cgi-product-commercial']);
   });
   it('keeps published detail destinations in the crawl inventory', () => { for (const service of services) expect(publicSeoPaths).toContain(`/services/${service.slug}`); });
-  it('prerenders every published service detail', () => { for (const service of services) expect(prerenderPaths).toContain(`/services/${service.slug}`); });
+  it('renders editable catalogue pages on request instead of prerendering them', () => { for (const path of ['/', '/services', '/pricing', ...services.map(service => `/services/${service.slug}`)]) expect(prerenderPaths).not.toContain(path); });
 });

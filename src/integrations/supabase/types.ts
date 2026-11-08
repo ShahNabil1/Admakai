@@ -2155,6 +2155,81 @@ export type Database = {
         }
         Relationships: []
       }
+      plans: {
+        Row: {
+          badge: string
+          base_currency: string
+          billing_period: string
+          calls: string
+          created_at: string
+          cta_text: string
+          features: string[]
+          id: string
+          is_highlighted: boolean
+          is_published: boolean
+          name: string
+          price_max: number
+          price_min: number
+          revision_rounds: number
+          slug: string
+          sort_order: number
+          statics: number
+          tagline: string
+          turnaround: string
+          turnaround_days: number
+          updated_at: string
+          videos: number
+        }
+        Insert: {
+          badge?: string
+          base_currency?: string
+          billing_period?: string
+          calls?: string
+          created_at?: string
+          cta_text?: string
+          features?: string[]
+          id?: string
+          is_highlighted?: boolean
+          is_published?: boolean
+          name: string
+          price_max: number
+          price_min: number
+          revision_rounds?: number
+          slug: string
+          sort_order?: number
+          statics?: number
+          tagline?: string
+          turnaround?: string
+          turnaround_days?: number
+          updated_at?: string
+          videos?: number
+        }
+        Update: {
+          badge?: string
+          base_currency?: string
+          billing_period?: string
+          calls?: string
+          created_at?: string
+          cta_text?: string
+          features?: string[]
+          id?: string
+          is_highlighted?: boolean
+          is_published?: boolean
+          name?: string
+          price_max?: number
+          price_min?: number
+          revision_rounds?: number
+          slug?: string
+          sort_order?: number
+          statics?: number
+          tagline?: string
+          turnaround?: string
+          turnaround_days?: number
+          updated_at?: string
+          videos?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -2382,6 +2457,149 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "review_comments"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_categories: {
+        Row: {
+          created_at: string
+          id: string
+          intro: string
+          name: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          intro?: string
+          name: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          intro?: string
+          name?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      services: {
+        Row: {
+          base_currency: string
+          best_for: string[]
+          category: string
+          compare_note: string | null
+          created_at: string
+          deliverables: string[]
+          delivery: string
+          faqs: Json
+          formats: string
+          full_description: string
+          goals: string[]
+          hero_media: Json | null
+          hero_title: Json
+          id: string
+          is_featured: boolean
+          is_new: boolean
+          is_published: boolean
+          name: string
+          price_max: number
+          price_min: number
+          price_unit: string
+          pricing_model: string
+          process_steps: Json
+          related: string[]
+          seo_description: string | null
+          seo_title: string | null
+          short_description: string
+          signs_you_need_it: string[]
+          slug: string
+          sort_order: number
+          updated_at: string
+          what_we_need: string[]
+        }
+        Insert: {
+          base_currency?: string
+          best_for?: string[]
+          category: string
+          compare_note?: string | null
+          created_at?: string
+          deliverables?: string[]
+          delivery?: string
+          faqs?: Json
+          formats?: string
+          full_description?: string
+          goals?: string[]
+          hero_media?: Json | null
+          hero_title?: Json
+          id?: string
+          is_featured?: boolean
+          is_new?: boolean
+          is_published?: boolean
+          name: string
+          price_max: number
+          price_min: number
+          price_unit: string
+          pricing_model?: string
+          process_steps?: Json
+          related?: string[]
+          seo_description?: string | null
+          seo_title?: string | null
+          short_description?: string
+          signs_you_need_it?: string[]
+          slug: string
+          sort_order?: number
+          updated_at?: string
+          what_we_need?: string[]
+        }
+        Update: {
+          base_currency?: string
+          best_for?: string[]
+          category?: string
+          compare_note?: string | null
+          created_at?: string
+          deliverables?: string[]
+          delivery?: string
+          faqs?: Json
+          formats?: string
+          full_description?: string
+          goals?: string[]
+          hero_media?: Json | null
+          hero_title?: Json
+          id?: string
+          is_featured?: boolean
+          is_new?: boolean
+          is_published?: boolean
+          name?: string
+          price_max?: number
+          price_min?: number
+          price_unit?: string
+          pricing_model?: string
+          process_steps?: Json
+          related?: string[]
+          seo_description?: string | null
+          seo_title?: string | null
+          short_description?: string
+          signs_you_need_it?: string[]
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+          what_we_need?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "services_category_fkey"
+            columns: ["category"]
+            isOneToOne: false
+            referencedRelation: "service_categories"
+            referencedColumns: ["slug"]
           },
         ]
       }
@@ -2697,6 +2915,7 @@ export type Database = {
       }
     }
     Functions: {
+      can_edit_site_content: { Args: never; Returns: boolean }
       cancel_interview: {
         Args: { _interview_id: string; _reason: string }
         Returns: string
@@ -3056,6 +3275,10 @@ export type Database = {
           _scheduled_at: string
         }
         Returns: string
+      }
+      site_content_reorder: {
+        Args: { _ids: string[]; _kind: string }
+        Returns: number
       }
       start_journey: {
         Args: {

@@ -1,18 +1,25 @@
 import { growthPlan, plans, type MonthlyPlan } from './plans';
 export type PricingTier = MonthlyPlan;
 export const pricingTiers = plans;
-export const contentPartner = {
-  ...growthPlan,
-  name: "Monthly content partner",
-  firstCutDays: growthPlan.turnaroundDays,
-  canPauseOrCancelMonthly: true,
-  freeMonthIfFirstCutLate: true,
-};
-export const pricingInclusions = [
-  "AI commercials", "AI UGC ads", "Product photoshoots", "Brand models and clones",
-  "Voice and dubbing", "Motion and logo animation", "Captions in Bangla and English",
-  `${contentPartner.revisionRounds === 2 ? "Two" : contentPartner.revisionRounds} revision rounds per piece`,
-];
+/** Read at render time so database edits to the Growth plan reach Home and structured data. */
+export function contentPartner() {
+  const growth = growthPlan();
+  return {
+    ...growth,
+    name: "Monthly content partner",
+    firstCutDays: growth.turnaroundDays,
+    canPauseOrCancelMonthly: true,
+    freeMonthIfFirstCutLate: true,
+  };
+}
+export function pricingInclusions() {
+  const rounds = growthPlan().revisionRounds;
+  return [
+    "AI commercials", "AI UGC ads", "Product photoshoots", "Brand models and clones",
+    "Voice and dubbing", "Motion and logo animation", "Captions in Bangla and English",
+    `${rounds === 2 ? "Two" : rounds} revision rounds per piece`,
+  ];
+}
 export const pricingFaq = [
  {id:'cheaper',question:'Why is this cheaper than a shoot?',answer:'No crew, no studio, no travel, no model day rate. The time goes into the idea and the finish, not logistics.'},
  {id:'small',question:'Can I start small?',answer:'Yes. One Product Film or one Photoshoot is the usual first order. Most clients move to a plan after that.'},

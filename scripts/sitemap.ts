@@ -2,7 +2,7 @@ import { writeFile } from 'node:fs/promises';
 import { createClient } from '@supabase/supabase-js';
 import { loadEnv } from 'vite';
 import { SITE_URL } from '../src/data/site';
-import { publicSeoPaths } from '../src/data/seo-routes';
+import { publicSeoPaths, staticServiceDetailPaths } from '../src/data/seo-routes';
 
 export type SitemapEntry = { path: string; lastmod?: string | undefined };
 export function sitemapXml(entries: SitemapEntry[]) {
@@ -40,10 +40,18 @@ export async function generateSitemap() {
         if (error) throw error;
         return data ?? [];
       });
-      // Published /services/:slug pages already come from publicSeoPaths.
-      entries.push(...works, ...jobs.map(j => ({ ...j, path: j.path.replace(/^\/work\//, '/careers/') })));
+      const services = await collectPublishedProjects(async offset => {
+        const { data, error } = await client.from('services').select('slug,updated_at').eq('is_published', true).order('id').range(offset, offset + 999);
+        if (error) throw error;
+        return data ?? [];
+      });
+      // Live published services replace the static fallback list, so unpublished services leave the sitemap.
+      const staticPaths = new Set(staticServiceDetailPaths);
+      entries.splice(0, entries.length, ...entries.filter(entry => !staticPaths.has(entry.path)));
+      entries.push(...services.map(s => ({ ...s, path: s.path.replace(/^\/work\//, '/services/') })), ...works, ...jobs.map(j => ({ ...j, path: j.path.replace(/^\/work\//, '/careers/') })));
     } catch {
-      console.warn('Sitemap: public works or jobs unavailable; writing static routes only. No partial list included.');
+      entries.splice(0, entries.length, ...publicSeoPaths.map(path => ({ path })));
+      console.warn('Sitemap: public services, works or jobs unavailable; writing static routes only. No partial list included.');
     }
   } else console.warn('Sitemap: public Supabase configuration unavailable; writing static routes only.');
   await writeFile('public/sitemap.xml', sitemapXml(entries));

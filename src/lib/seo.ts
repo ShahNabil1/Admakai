@@ -1,5 +1,5 @@
 import { SITE_URL, siteFallback, type SiteDetails } from '@/data/site';
-import { contentPartner } from '@/data/pricing';
+import { contentPartner as currentContentPartner } from '@/data/pricing';
 import { publishedServices } from '@/data/services';
 import darkLogo from '@/assets/brand/logo-dark-cropped.png.asset.json';
 
@@ -63,5 +63,6 @@ export function serviceSchemas(): JsonLd[] {
   return publishedServices().map(service => ({ '@context': 'https://schema.org', '@type': 'Service', name: service.name, description: service.shortDescription, provider: { '@id': organizationId }, areaServed: ['Bangladesh', 'Worldwide'], url: canonicalUrl(`/services/${service.slug}`) }));
 }
 export function monthlyPlanSchema(): JsonLd {
+  const contentPartner = currentContentPartner();
   return { '@context': 'https://schema.org', '@type': 'Product', name: 'Admakai Content Partner', description: `${contentPartner.videos} videos and ${contentPartner.statics} statics every month. First cut in ${contentPartner.firstCutDays} days or the month is free.`, brand: { '@type': 'Brand', name: 'Admakai' }, offers: { '@type': 'AggregateOffer', lowPrice: contentPartner.priceMinUsd, highPrice: contentPartner.priceMaxUsd, priceCurrency: 'USD', url: canonicalUrl('/pricing') } };
 }

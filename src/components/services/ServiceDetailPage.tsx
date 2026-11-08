@@ -12,9 +12,17 @@ import { ServiceLandingReveal } from './ServiceLandingMotion';
 import { ServicePortfolio } from './ServicePortfolio';
 import './service-detail.css';
 import { ServicePrice } from './ServicePrice';
+import ReactMarkdown from 'react-markdown';
+
+// Plain single-paragraph descriptions keep the original markup; editor Markdown (bold, lists, paragraphs) renders inside the same class.
+const MARKDOWN = /(\*\*|__|\n\s*[-*]\s|^\s*[-*]\s|\n\n|\[[^\]]+\]\()/;
+function ServiceDescription({ text }: { text: string }) {
+  if (!MARKDOWN.test(text)) return <p className="service-sd-description">{text}</p>;
+  return <div className="service-sd-description service-sd-rich"><ReactMarkdown skipHtml components={{ a: ({ children, href }) => <a href={href} target="_blank" rel="noopener noreferrer">{children}</a> }}>{text}</ReactMarkdown></div>;
+}
 
 const icons = [Megaphone, Play, Clapperboard, Globe, MonitorPlay, Presentation];
-const steps = [
+const defaultSteps = [
   { name: 'Brief', line: 'You tell us the product, the goal and where it will run.', chips: ['Goal', 'Audience', 'Platforms'] },
   { name: 'Concept and script', line: 'We send the idea, hooks and script for approval.', chips: ['Concept', 'Script', 'Hooks'] },
   { name: 'Production', line: 'We generate, edit, grade and add voice and music.', chips: ['AI generation', 'Edit', 'Sound'] },
@@ -33,13 +41,15 @@ function scrollToWork() {
 export function ServiceDetailPage({ service }: { service: Service }) {
   const category = serviceCategories.find(item => item.id === service.category);
   const stat = proof[service.slug]?.problemStat;
+  const custom = !!service.processSteps?.length;
+  const steps = custom ? service.processSteps ?? [] : defaultSteps;
   return <div className="service-sd-page">
     <nav className="service-sd-breadcrumb service-sd-inner" aria-label="Breadcrumb"><Link to="/">Home</Link><ChevronRight size={14}/><Link to="/services">Services</Link><ChevronRight size={14}/><span aria-current="page">{service.name}</span></nav>
     <section className="service-sd-hero">
       <div className="service-sd-inner">
         <ServiceLandingReveal><div className="service-sd-pills"><span>{category?.name} service</span>{service.isNew && <span>New</span>}{service.featured && <span className="service-sd-popular">Popular</span>}</div>
           <h1 className="service-sd-title">{service.heroTitle.lead} <em>{service.heroTitle.accent}</em> {service.heroTitle.rest}</h1>
-          <p className="service-sd-description">{service.description}</p>
+          <ServiceDescription text={service.description}/>
           <p className="service-sd-estimate"><ServicePrice service={service}/></p>
           <div className="service-sd-hero-actions"><Call service={service}>Book a free call</Call><Button className="service-sd-button service-sd-button-secondary" disabled title="Pricing section will follow in the next update">See pricing</Button></div>
           <ul className="service-sd-checklist">{[`Delivery in ${service.delivery}`, service.formats, 'Two revision rounds', 'Bangla or English', 'Final files are yours'].map(item => <li key={item}><Check size={15} aria-hidden="true"/>{item}</li>)}</ul>
@@ -68,10 +78,15 @@ export function ServiceDetailPage({ service }: { service: Service }) {
     <section className="service-sd-section service-sd-process">
       <div className="service-sd-inner"><Heading number="07" label="How it works" title={`From brief to delivery in ${service.delivery}`} intro="Every step ends with something you can review."/>
         <ol className="service-sd-timeline">{steps.map((step, index) => <li key={step.name}><span className="service-sd-timeline-dot"/><span>{step.name}</span><span className="service-sd-timeline-count">{String(index + 1).padStart(2, '0')}</span></li>)}</ol>
-        <div className="service-sd-steps">{steps.map((step, index) => <ServiceLandingReveal key={step.name} delay={index * .06}><article><span className="service-sd-step-number">{String(index + 1).padStart(2, '0')}</span><h3>{step.name}</h3><p>{step.line}</p><ul className="service-sd-step-chips">{(index === 4 ? [service.formats, ...step.chips] : step.chips).map(chip => <li key={chip}>{chip}</li>)}</ul></article></ServiceLandingReveal>)}</div>
+        <div className="service-sd-steps">{steps.map((step, index) => <ServiceLandingReveal key={step.name} delay={index * .06}><article><span className="service-sd-step-number">{String(index + 1).padStart(2, '0')}</span><h3>{step.name}</h3><p>{step.line}</p><ul className="service-sd-step-chips">{(!custom && index === 4 ? [service.formats, ...step.chips] : step.chips).map(chip => <li key={chip}>{chip}</li>)}</ul></article></ServiceLandingReveal>)}</div>
         <ServiceLandingReveal><div className="service-sd-rush"><div><h3>Need it faster?</h3><p>Delivery in {serviceDeliveryTerms.rushHours} hours is available for {serviceDeliveryTerms.rushExtraPercent}% extra.</p></div><Call service={service}>Discuss your deadline</Call></div></ServiceLandingReveal>
       </div>
     </section>
+    {service.faqs?.length ? <section className="service-sd-section service-sd-soft">
+      <div className="service-sd-inner"><Heading number="08" label="Questions" title="Questions about this service"/>
+        <div className="service-sd-faq">{service.faqs.map(item => <details key={item.question}><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div>
+      </div>
+    </section> : null}
   </div>;
 }
 

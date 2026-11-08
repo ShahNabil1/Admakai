@@ -5,11 +5,19 @@ export type Service = {
   whatYouGet: string[]; whatWeNeed: string[]; formats: string; delivery: string;
   pricing: 'quote' | 'per-minute' | 'monthly';
   priceMinUsd: number; priceMaxUsd: number;
-  priceUnit: 'project' | 'product' | 'pack of 20 products' | 'month' | 'video' | 'module' | 'person' | 'pack of 6' | 'minute' | 'track';
+  /** Free text so editors can add units; seeded values are project, product, pack of 20 products, month, video, module, person, pack of 6, minute, track. */
+  priceUnit: string;
   goals: string[]; related: string[]; compareNote?: string; featured?: boolean;
+  seoTitle?: string; seoDescription?: string;
+  /** Empty means the shared seven-step process on the detail page. */
+  processSteps?: ProcessStep[];
+  /** Empty means no service-specific FAQ section. */
+  faqs?: ServiceFaq[];
   heroTitle: { lead: string; accent: string; rest: string };
   heroMedia?: { reels: HeroMedia[]; sides: HeroMedia[] };
 };
+export type ProcessStep = { name: string; line: string; chips: string[] };
+export type ServiceFaq = { question: string; answer: string };
 export type HeroMedia = { src: string; poster?: string; aspect: '9:16' | '16:9' | '1:1'; label?: string };
 export const serviceCategories: ServiceCategory[] = [
   {
