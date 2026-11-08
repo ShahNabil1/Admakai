@@ -1,4 +1,6 @@
 # Tasks
+- [x] Offers: offers table with live-only public reads, booking/enquiry offer tagging, discounted prices on every price spot, offer bar, /pricing banner, admin Offers section with presets/preview/duplicate/on-off/end now/overlap warnings.
+- [ ] Offers admin editor in a signed-in browser (create, duplicate, turn on/off, end now, booking badges) — staff sign-in uses Branta Hub SSO, no test session available here.
 - [x] White job details page: hero/showcase/job card/timeline/FAQ/final CTA, light header pill only there, new intern copy and editable who-for/FAQ fields, saved roles, money wording removed from careers screens.
 - [ ] Job page video modal with a real internship video and admin who-for/FAQ save readback — no internship video is set and no signed-in staff session is available.
 - [x] Dashboard redesign: light shell/search/updates/collapsible sidebar/mobile drawer and tabbed settings; existing routes and server handlers preserved. 40 focused tests/build passed; sign-in gates on every dashboard route checked, browser-only samples verified all pages/tracker/settings save/search/read receipts/drawer navigation and desktop/mobile screenshots. Reference 4 absent, followed written layout. WhatsApp preference/read receipts are device-local; privacy uses existing email-request flow.

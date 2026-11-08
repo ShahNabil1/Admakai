@@ -14,7 +14,7 @@ export const getLiveOffers = createServerFn({ method: 'GET' }).handler(async () 
 });
 
 type DbError = { code?: string; message?: string } | null;
-function ok<T>(result: { data: T | null; error: DbError }): T {
+function ok<T>(result: { data: T; error: DbError }): NonNullable<T> {
   if (result.error) {
     console.error('Offer change failed', { code: result.error.code ?? null, message: result.error.message });
     if (result.error.code === '23505') throw new Error('Another offer already uses this slug.');
@@ -22,7 +22,7 @@ function ok<T>(result: { data: T | null; error: DbError }): T {
     if (result.error.code === '23514') throw new Error('Some values are not allowed. Check the dates, discount and colours.');
     throw new Error('This change could not be saved. Please try again.');
   }
-  if (result.data === null) throw new Error('This offer no longer exists. Please refresh.');
+  if (result.data === null || result.data === undefined) throw new Error('This offer no longer exists. Please refresh.');
   return result.data;
 }
 async function requireEditor(context: { supabase: SupabaseClient<Database> }) {
