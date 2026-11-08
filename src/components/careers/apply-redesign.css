@@ -1,0 +1,38 @@
+.apply-auth-page,.apply-wizard-page { background:var(--apply-backdrop); min-height:100svh; padding:130px 32px 72px; color:var(--ink); }
+.apply-signin,.apply-wizard-card { max-width:1100px; margin:auto; display:grid; grid-template-columns: .95fr 1.05fr; background:var(--service-landing-bg); border-radius:24px; box-shadow:var(--apply-shadow); overflow:hidden; position:relative; }
+.apply-logo { width:150px; height:42px; object-fit:contain; object-position:left center; }
+.apply-signin-story { background:var(--apply-story); padding:48px; display:flex; flex-direction:column; justify-content:space-between; gap:65px; }
+.apply-kicker {font-size:11px; margin-bottom:20px; color:var(--pricing-copy);}
+.apply-signin-story h1 {font-size:38px; line-height:1.25; font-weight:500; max-width:360px;}
+.apply-signin-story ul {display:grid;gap:24px; margin-top:40px;}
+.apply-signin-story li {display:flex;align-items:center;gap:15px;font-size:14px;line-height:1.6;}
+.apply-signin-story li span {width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--service-landing-button-line);border-radius:8px;flex-shrink:0;}
+.apply-story-footer {font-size:11px;color:var(--pricing-copy);}
+.apply-signin-fields {padding:70px 54px 48px;min-width:0;}
+.apply-signin-fields h2 {font-size:27px;line-height:1.35;font-weight:500;margin-bottom:32px;}
+.apply-signin-fields .google-signin {width:100%; min-height:50px;}
+.apply-signin-fields .auth-divider {margin:25px 0;color:var(--pricing-copy);font-size:11px;}
+.apply-signin-fields .auth-divider span {font-size:0;}.apply-signin-fields .auth-divider span:after {content:'OR';font-size:11px;}
+.apply-updates {margin-top:24px;font-size:12px;align-items:center!important;}
+.apply-legal {font-size:11px;line-height:1.9;color:var(--pricing-copy);margin-top:22px;}.apply-legal a {text-decoration:underline;color:var(--ink);}
+.apply-already {border-top:1px solid var(--service-landing-line);padding-top:22px;margin-top:28px;font-size:12px;}.apply-already button {color:var(--ink);padding:0 5px;}
+.apply-signin-fields .signin-links {display:grid;gap:10px;font-size:11px;margin-top:12px;}.apply-signin-fields .signin-links button {font-size:11px;justify-content:start;padding:0;}
+.apply-wizard-card {grid-template-columns:290px minmax(0,1fr);min-height:680px;}
+.apply-wizard-rail {background:var(--apply-rail);padding:40px 28px;display:flex;flex-direction:column;}
+.apply-wizard-rail h1 {font-size:23px;font-weight:500;margin-top:44px;line-height:1.4;}.apply-job-title {font-size:12px;color:var(--pricing-copy);margin-top:8px;line-height:1.7;}
+.apply-step-list {display:grid;gap:12px;margin-top:34px;}.apply-step-list li {display:flex;align-items:center;gap:12px;padding:12px 10px;font-size:12px;color:var(--service-landing-muted);border-radius:7px;}.apply-step-list li>span {width:24px;height:24px;border:1px solid var(--service-landing-button-line);border-radius:50%;display:grid;place-items:center;flex-shrink:0;font-size:10px;}.apply-step-list .current {background:var(--service-landing-bg);color:var(--ink);font-weight:600;}.apply-step-list .current>span {background:var(--service-landing-yellow);border-color:var(--service-landing-yellow);}.apply-step-list .done {color:var(--ink);}.apply-step-list .done>span {background:var(--ink);border-color:var(--ink);color:var(--paper);}
+.apply-rail-footer {margin-top:auto;padding-top:40px;font-size:11px;color:var(--pricing-copy);line-height:2;}.apply-rail-footer a {text-decoration:underline;}
+.apply-close {position:absolute;top:15px;right:15px;z-index:2;width:34px;height:34px;padding:0;color:var(--ink);border-radius:50%;}
+.apply-wizard-fields.application-panel {padding:54px 48px 32px;background:var(--service-landing-bg);border-radius:0;}
+.apply-wizard-fields h2 {font-size:26px;margin-bottom:30px;}.apply-wizard-fields .application-form {gap:25px;}
+.apply-personal-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;}.apply-personal-grid>div:first-child {grid-column:1/-1;}.apply-personal-grid .application-check {font-size:11px;}.apply-personal-grid input[type=checkbox] {width:14px;height:14px;}
+.apply-wizard-fields .application-field {position:relative;}.apply-wizard-fields textarea {padding-bottom:30px;}.apply-wizard-fields .application-counter {position:absolute;bottom:14px;right:14px;pointer-events:none;font-size:10px;}.apply-wizard-fields .application-field:has(.application-error) .application-counter {bottom:42px;}
+.apply-wizard-fields .application-upload {margin-top:15px;}.apply-wizard-fields .application-upload img {width:70px;height:90px;border-radius:5px;object-fit:cover;}
+.apply-navigation {display:flex;align-items:center;gap:10px;}.apply-save-close {padding-left:0;font-size:12px;}.apply-wizard-fields .application-actions {margin-top:10px;gap:8px;}.apply-wizard-fields .application-actions button {font-size:12px;}.apply-wizard-fields .application-next {min-width:105px;border-radius:6px;}
+.apply-mobile-progress {display:none;}
+.apply-wizard-fields .application-upload button,.passport-actions button:first-child {background:var(--service-landing-bg);color:var(--ink);border-color:var(--service-landing-button-line);}
+.apply-updates input {accent-color:var(--ink);}
+.passport-dialog {background:var(--paper);color:var(--ink);}.passport-crop {position:relative;height:400px;background:var(--ink);}.passport-actions {display:flex;justify-content:space-between;}.passport-dialog input[type=range] {width:100%;accent-color:var(--ink);}
+@media(width<850px) {.apply-wizard-card {grid-template-columns:240px minmax(0,1fr);}.apply-wizard-fields.application-panel {padding:54px 26px 30px;}.apply-signin-story {padding:35px;}.apply-signin-fields {padding:50px 30px;}.apply-signin-story h1 {font-size:30px;}}
+@media(width<640px) {.apply-auth-page,.apply-wizard-page {padding:100px 0 0;}.apply-signin,.apply-wizard-card {border-radius:0;box-shadow:none;grid-template-columns:minmax(0,1fr);}.apply-signin-story {padding:30px 24px;gap:28px;}.apply-signin-story h1 {font-size:28px;max-width:330px;}.apply-signin-story ul {gap:14px;margin-top:22px;}.apply-story-footer {display:none;}.apply-signin-fields {padding:32px 24px 40px;}.apply-signin-fields h2 {font-size:24px;}.apply-wizard-rail {padding:25px 24px 20px;}.apply-wizard-rail .apply-logo {width:120px;height:32px;}.apply-wizard-rail h1 {margin-top:18px;font-size:22px;}.apply-step-list,.apply-rail-footer {display:none;}.apply-mobile-progress {display:block;margin-top:20px;}.apply-mobile-progress p {font-size:11px;margin-bottom:12px;}.apply-wizard-fields.application-panel {padding:32px 24px;}.apply-personal-grid {grid-template-columns:minmax(0,1fr);gap:20px;}.apply-close {top:22px;right:18px;}.apply-wizard-fields .application-actions {flex-wrap:wrap;}.apply-navigation {margin-left:auto;}.passport-crop {height:340px;}}
+@media(prefers-reduced-motion:no-preference) {.apply-current-spinner {animation:spin 2s linear infinite;}}

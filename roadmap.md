@@ -1,4 +1,6 @@
 # Tasks
+- [x] Apply redesign: shared split sign-in, six-step intern wizard, required private passport crop, 16 beginner job questions; 68 focused tests, Careers/apply smoke and desktop/mobile crop/navigation fixtures passed.
+- [ ] Apply redesign real signed-in passport upload and submission readback — external unmanaged Supabase provides no authenticated test session.
 - [x] Hiring Prompt 7 implementation: team journeys, private versioned letters, candidate Journey, email/role/pipeline editors; 64 focused tests, rollback privacy/milestone/role tests and desktop/mobile smoke passed. Launch checklist in supabase/HIRING_STEP_7.md.
 - [ ] Hiring Prompt 7 real signed-in staff/member PDF/Storage/email/Realtime and role/editor end-to-end — external unmanaged Supabase has no managed test session; legal approval of seeded letters required before issuance.
 - [x] Hiring Prompt 6: overview, applications board/table/profile, checked staff transitions, interviews/results, calendar emails and manual reminders plus protected endpoint. Focused tests, rollback-only staff/privacy workflow and Careers/me/admin smoke passed; desktop/mobile board and schedule-dialog fixtures passed. Existing admin page bodies/data unchanged; no Cloud or Edge Functions.

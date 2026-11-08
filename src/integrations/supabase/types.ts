@@ -258,6 +258,7 @@ export type Database = {
           is_draft: boolean
           is_test: boolean | null
           job_id: string
+          passport_photo_path: string | null
           public_code: string
           status_key: string
           submitted_at: string | null
@@ -275,6 +276,7 @@ export type Database = {
           is_draft?: boolean
           is_test?: boolean | null
           job_id: string
+          passport_photo_path?: string | null
           public_code: string
           status_key?: string
           submitted_at?: string | null
@@ -292,6 +294,7 @@ export type Database = {
           is_draft?: boolean
           is_test?: boolean | null
           job_id?: string
+          passport_photo_path?: string | null
           public_code?: string
           status_key?: string
           submitted_at?: string | null
@@ -1339,6 +1342,7 @@ export type Database = {
           options: Json | null
           question_id: string | null
           required: boolean
+          retired: boolean
           section: string | null
           sort_order: number
           type: string
@@ -1353,6 +1357,7 @@ export type Database = {
           options?: Json | null
           question_id?: string | null
           required?: boolean
+          retired?: boolean
           section?: string | null
           sort_order?: number
           type: string
@@ -1367,6 +1372,7 @@ export type Database = {
           options?: Json | null
           question_id?: string | null
           required?: boolean
+          retired?: boolean
           section?: string | null
           sort_order?: number
           type?: string
@@ -2844,6 +2850,7 @@ export type Database = {
           is_draft: boolean
           is_test: boolean | null
           job_id: string
+          passport_photo_path: string | null
           public_code: string
           status_key: string
           submitted_at: string | null

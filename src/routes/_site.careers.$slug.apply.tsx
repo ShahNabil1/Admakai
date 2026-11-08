@@ -14,7 +14,7 @@ export const Route = createFileRoute("/_site/careers/$slug/apply")({
     seoHead({
       title: "Apply | Careers at Admakai",
       description:
-        "Apply to Admakai with a secure seven-step application, portfolio and signed agreement.",
+        "Start your Admakai application with secure sign-in, saved progress and a signed agreement.",
       path: `/careers/${params.slug}/apply`,
       noindex: true,
     }),

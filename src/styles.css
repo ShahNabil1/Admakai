@@ -58,6 +58,10 @@
 :root,
 .dark {
   --radius: 12px;
+  --apply-backdrop: linear-gradient(145deg, oklch(.22 0 0), oklch(.78 0 0) 55%, oklch(.93 0 0));
+  --apply-story: linear-gradient(140deg, oklch(.98 .006 95), oklch(.91 .055 95));
+  --apply-rail: oklch(.962 0 0);
+  --apply-shadow: 0 24px 90px oklch(0 0 0 / .16);
   --service-landing-bg: oklch(1 0 0);
   --service-landing-soft: oklch(.975 .003 106);
   --service-landing-ink: oklch(.145 0 0);

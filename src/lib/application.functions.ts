@@ -5,6 +5,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { decode } from "fast-png";
+import { passportFileError, passportJpegDimensions, PASSPORT_WIDTH, PASSPORT_HEIGHT } from './passport-rules';
 import { candidateDraftSchema, CV_LIMIT, PHOTO_LIMIT, type Answer } from "./application-rules";
 import type { CareerJob } from "./careers.functions";
 type Tables = Database["public"]["Tables"];
@@ -111,9 +112,9 @@ export const readApplication = createServerFn({ method: "POST" })
           (await db.storage.from("signatures").createSignedUrl(signed.signature_path, 900)).data
             ?.signedUrl ?? null;
     }
-    if (candidate.photo_url)
+    if (app?.passport_photo_path || candidate.photo_url)
       photoUrl =
-        (await db.storage.from("task-files").createSignedUrl(candidate.photo_url, 900)).data
+        (await db.storage.from("task-files").createSignedUrl(app?.passport_photo_path ?? candidate.photo_url ?? '', 900)).data
           ?.signedUrl ?? null;
     const stages =
       checked(
@@ -139,6 +140,10 @@ export const readApplication = createServerFn({ method: "POST" })
     };
   });
 export type ApplicationData = Awaited<ReturnType<typeof readApplication>>;
+export const saveOpeningsPreference = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).inputValidator(z.object({ enabled: z.boolean() })).handler(async ({ data, context }) => {
+  checked(await context.supabase.from('candidates').update({ email_notifications: data.enabled }).eq('id', context.userId));
+  return { ok: true };
+});
 export const saveCandidate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(candidateDraftSchema)
@@ -182,7 +187,7 @@ export const uploadApplicationFile = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     setResponseHeader("Cache-Control", "no-store");
     const applicationId = z.string().uuid().parse(data.get("applicationId"));
-    const kind = z.enum(["cv", "photo", "signature"]).parse(data.get("kind"));
+    const kind = z.enum(["cv", "photo", "signature", "passport"]).parse(data.get("kind"));
     const file = data.get("file");
     if (!(file instanceof File) || file.size === 0) throw new Error("Choose a file.");
     const app = checked(
@@ -194,9 +199,15 @@ export const uploadApplicationFile = createServerFn({ method: "POST" })
         .single(),
     );
     if (!app || !app.is_draft) throw new Error("Submitted files cannot be changed.");
-    if (file.size > (kind === "cv" ? CV_LIMIT : PHOTO_LIMIT))
+    if (kind === 'passport') {
+      const error = passportFileError(file); if (error) throw new Error(error);
+    } else if (file.size > (kind === "cv" ? CV_LIMIT : PHOTO_LIMIT))
       throw new Error(kind === "cv" ? "PDF must be under 5 MB." : "Image must be under 2 MB.");
     const bytes = new Uint8Array(await file.arrayBuffer());
+    if (kind === 'passport') {
+      const dimensions = passportJpegDimensions(bytes);
+      if (file.type !== 'image/jpeg' || dimensions?.width !== PASSPORT_WIDTH || dimensions.height !== PASSPORT_HEIGHT) throw new Error('Use the passport crop tool to save a 700 × 900 JPG.');
+    }
     let extension = "png";
     let mime = "image/png";
     if (kind === "cv") {
@@ -251,7 +262,7 @@ export const uploadApplicationFile = createServerFn({ method: "POST" })
           throw new Error("Please draw a fuller signature.");
       }
     }
-    const path = `${context.userId}/${app.id}/${kind === "photo" ? `photo-${crypto.randomUUID()}.${extension}` : kind === "cv" ? "cv.pdf" : "signature.png"}`;
+    const path = `${context.userId}/${app.id}/${kind === 'passport' ? 'passport.jpg' : kind === "photo" ? `photo-${crypto.randomUUID()}.${extension}` : kind === "cv" ? "cv.pdf" : "signature.png"}`;
     if (kind === "signature") {
       // The fixed signature path is privileged only after ownership, draft and PNG checks above.
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -264,8 +275,12 @@ export const uploadApplicationFile = createServerFn({ method: "POST" })
       checked(
         await context.supabase.storage
           .from(kind === "cv" ? "resumes" : "task-files")
-          .upload(path, bytes, { contentType: mime, upsert: kind === "cv" }),
+          .upload(path, bytes, { contentType: mime, upsert: kind === "cv" || kind === 'passport' }),
       );
+    if (kind === 'passport') {
+      checked(await context.supabase.from('applications').update({ passport_photo_path: path }).eq('id', app.id).eq('candidate_id', context.userId).eq('is_draft', true).select('id').single());
+      checked(await context.supabase.from('candidates').update({ photo_url: path }).eq('id', context.userId).is('photo_url', null));
+    }
     if (kind === "photo")
       checked(
         await context.supabase
@@ -274,7 +289,7 @@ export const uploadApplicationFile = createServerFn({ method: "POST" })
           .eq("id", context.userId),
       );
     const signedUrl =
-      kind === "signature" || kind === "photo"
+      kind === "signature" || kind === "photo" || kind === 'passport'
         ? ((
             await context.supabase.storage
               .from(kind === "signature" ? "signatures" : "task-files")

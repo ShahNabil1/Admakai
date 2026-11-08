@@ -2,8 +2,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState, type FormEvent } from 'react';
 import { ArrowUpRight, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { EmailCodeForm } from '@/components/careers/EmailCodeForm';
-import { GoogleButton } from '@/components/account/GoogleButton';
+import { ApplicationSignIn } from '@/components/careers/ApplicationSignIn';
 import { supabase } from '@/lib/supabase';
 import { safeReturnPath, signedInHome } from '@/lib/account-rules';
 import { isStaffAccount, useAuth } from '@/lib/auth-state';
@@ -77,11 +76,6 @@ function SignIn() {
     if (error) { if (/email not confirmed/i.test(error.message)) { await supabase.auth.resend({ type: 'signup', email: cleanEmail }); setMode('verify'); setSeconds(60); setNotice('Your email isn’t confirmed yet. We sent a new 6-digit code.'); return; } throw error; }
   }, 'Sign-in failed. Please try again.'); };
 
-  const google = () => void run(async () => {
-    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/signin${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ''}` } });
-    if (error) throw error;
-  }, 'Google sign-in could not start.');
-
   const verifySignup = (e: FormEvent) => { e.preventDefault(); void run(async () => {
     if (!isOtp(code)) throw new Error('Enter the 6-digit code from your email.');
     const { error } = await supabase.auth.verifyOtp({ email: cleanEmail, token: code, type: 'signup' });
@@ -122,20 +116,12 @@ function SignIn() {
   const codeField = <><label htmlFor="auth-code">6-digit code</label><input id="auth-code" className="auth-otp" inputMode="numeric" autoComplete="one-time-code" placeholder="••••••" value={code} onChange={e => setCode(normalizeOtp(e.target.value))} /></>;
   const resendButton = <Button type="button" variant="link" className="client-text-button auth-resend" disabled={!!seconds || busy} onClick={resend}>{seconds ? `Resend code in ${seconds}s` : 'Resend code'}</Button>;
 
+  if (mode === 'code') return <main className="apply-auth-page"><ApplicationSignIn returnPath={redirect ?? '/dashboard'} onSignedIn={() => undefined}>
+    <div className="signin-links"><Button type="button" variant="link" className="application-back" onClick={() => go('signin')}>Sign in with password instead</Button><a className="auth-link" href="/admin">Team member? Sign in with Branta Console</a></div>
+  </ApplicationSignIn></main>;
   return <main className="client-signin"><section className="client-signin-card">
     <span className="client-signin-icon"><Icon /></span>
     <h1>{title}</h1>
-
-    {mode === 'code' && <>
-      <p>New here? Either option creates your account.</p>
-      <GoogleButton onClick={google} disabled={busy} />
-      <div className="auth-divider"><span>or get a code by email</span></div>
-      <div className="signin-code"><EmailCodeForm returnPath={`/signin${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ''}`} onSignedIn={() => undefined} /></div>
-      <div className="signin-links">
-        <button type="button" className="auth-link" onClick={() => go('signin')}>Sign in with password instead</button>
-        <a className="auth-link" href="/admin">Team member? Sign in with Branta Console</a>
-      </div>
-    </>}
 
     {mode === 'signin' && <form onSubmit={signInPassword}>
       <label htmlFor="auth-email">Email</label><input id="auth-email" type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} />

@@ -41,6 +41,7 @@ export const hiringWorkspace = createServerFn({ method: "POST" })
       db
         .from("job_questions")
         .select("*,question_bank(label,help_text,max_length)")
+        .eq('retired', false)
         .order("sort_order"),
       db.from("pipelines").select("*"),
       db.from("pipeline_stages").select("*").order("sort_order"),

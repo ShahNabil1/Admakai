@@ -2,10 +2,10 @@ import { z } from "zod";
 export const APPLICATION_STEPS = [
   "Sign in",
   "About you",
-  "Screening questions",
-  "Portfolio and CV",
+  "Your answers",
+  "Your work (optional)",
   "Practical task",
-  "Agreement and signature",
+  "Declaration and signature",
   "Review and submit",
 ];
 export const PHOTO_LIMIT = 2 * 1024 * 1024;
@@ -82,7 +82,7 @@ export function answerError(q: ApplicationQuestion, value: Answer | undefined) {
   return null;
 }
 export function questionStep(q: ApplicationQuestion) {
-  return q.section?.toLowerCase() === "portfolio"
+  return ["portfolio", "your work"].includes(q.section?.toLowerCase() ?? "")
     ? 4
     : q.section?.toLowerCase() === "practical task"
       ? 5

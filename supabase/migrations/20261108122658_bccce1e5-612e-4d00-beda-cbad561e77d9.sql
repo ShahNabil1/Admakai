@@ -1,0 +1,3 @@
+UPDATE public.job_questions SET knockout_rule='{}'::jsonb WHERE job_id='e2000000-0000-4000-8000-000000000001' AND retired;
+UPDATE public.job_questions SET knockout_rule=jsonb_build_object('equals',knockout_rule->'value') WHERE job_id='e2000000-0000-4000-8000-000000000001' AND NOT retired AND knockout_rule ? 'value';
+UPDATE public.question_bank b SET knockout_rule=q.knockout_rule FROM public.job_questions q WHERE q.question_id=b.id AND q.job_id='e2000000-0000-4000-8000-000000000001' AND NOT q.retired AND q.knockout_rule IS NOT NULL;

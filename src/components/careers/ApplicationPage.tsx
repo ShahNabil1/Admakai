@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, ArrowRight, Check, Loader2, Upload } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Loader2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import {
   APPLICATION_STEPS,
   AUTOSAVE_MS,
   CV_LIMIT,
-  PHOTO_LIMIT,
   answerError,
   candidateSchema,
   candidateDraftSchema,
@@ -23,6 +22,7 @@ import {
 } from "@/lib/application-rules";
 import {
   readApplication,
+  saveOpeningsPreference,
   saveCandidate,
   saveApplication,
   uploadApplicationFile,
@@ -37,7 +37,11 @@ import {
 import { ApplicationQuestion } from "./ApplicationQuestion";
 import { ApplicationSignature } from "./ApplicationSignature";
 import { HiringRichText } from './HiringRichText';
-import { EmailCodeForm } from './EmailCodeForm';
+import { ApplicationSignIn } from './ApplicationSignIn';
+import { PassportCrop } from './PassportCrop';
+import { passportFileError } from '@/lib/passport-rules';
+import logo from '@/assets/brand/logo-dark-cropped.png.asset.json';
+import './apply-redesign.css';
 import "./application.css";
 
 const emptyCandidate: CandidateFields = {
@@ -84,6 +88,7 @@ export function ApplicationPage({
   const navigate = useNavigate();
   const read = useServerFn(readApplication),
     savePerson = useServerFn(saveCandidate),
+    savePreference = useServerFn(saveOpeningsPreference),
     save = useServerFn(saveApplication),
     upload = useServerFn(uploadApplicationFile),
     removeCv = useServerFn(removeApplicationCv),
@@ -100,6 +105,8 @@ export function ApplicationPage({
     [cvPath, setCvPath] = useState<string | null>(null),
     [cvName, setCvName] = useState(""),
     [photo, setPhoto] = useState<File | null>(null),
+    [cropFile, setCropFile] = useState<File | null>(null),
+    [passportPath, setPassportPath] = useState<string | null>(null),
     [photoUrl, setPhotoUrl] = useState<string | null>(null),
     [samePhone, setSamePhone] = useState(true),
     [taskUrl, setTaskUrl] = useState(""),
@@ -155,6 +162,9 @@ export function ApplicationPage({
         return;
       }
       setData(result);
+      const preference = sessionStorage.getItem("admakai-openings-updates");
+      if (preference !== null) { await savePreference({ data: { enabled: preference === "true" } }); sessionStorage.removeItem("admakai-openings-updates"); }
+      setPassportPath(result.application?.passport_photo_path ?? null);
       const c = result.candidate;
       setCandidate({
         full_name: c.full_name,
@@ -174,7 +184,7 @@ export function ApplicationPage({
       setLater(!result.application?.task_submission_url);
       setSigned(result.signed);
       setSignatureUrl(result.signatureUrl);
-      setPhotoUrl(result.photoUrl);
+      setPhotoUrl(result.application?.passport_photo_path ? result.photoUrl : null);
       setSignedName(result.signed?.signer_full_name ?? "");
       setTerms(
         Array.isArray(result.signed?.accepted_terms)
@@ -310,6 +320,7 @@ export function ApplicationPage({
   const validate = (current: number) => {
     const nextErrors: Record<string, string> = {};
     if (current === 2) {
+      if (!photo && !passportPath) nextErrors["passport"] = "Choose and crop your passport size photo.";
       const result = candidateSchema.safeParse(candidate);
       if (!result.success)
         for (const issue of result.error.issues) {
@@ -373,7 +384,7 @@ export function ApplicationPage({
     }
   };
   const uploadFile = async (
-    kind: "photo" | "cv" | "signature",
+    kind: "photo" | "cv" | "signature" | "passport",
     file: File,
     app: ApplicationRow,
   ) => {
@@ -391,8 +402,9 @@ export function ApplicationPage({
       if (!app || !data) return;
       let latestCv = cvPath;
       if (step === 2 && photo) {
-        const result = await uploadFile("photo", photo, app);
+        const result = await uploadFile("passport", photo, app);
         setPhotoUrl(result.signedUrl);
+        setPassportPath(result.path);
         setPhoto(null);
       }
       if (step === 6 && signature) {
@@ -461,6 +473,21 @@ export function ApplicationPage({
   const currentQuestions = data?.questions.filter((q) => questionStep(q) === step) ?? [];
   let section: string | null = null;
   const title = data?.job.title ?? publicTitle ?? "Your application";
+  const visibleSteps = APPLICATION_STEPS.map((name, i) => ({ name, number: i + 1 })).filter(s => s.number !== 5 || (data?.job.task_enabled ?? slug !== 'ai-artist-intern'));
+  const visibleIndex = Math.max(0, visibleSteps.findIndex(s => s.number === step));
+  const exit = (dashboard: boolean) => void run(async () => {
+    if (signedIn && data) {
+      if (candidateSchema.safeParse(candidate).success) {
+        const app = await serialized(step);
+        if (photo && app) { const result = await uploadFile('passport', photo, app); setPassportPath(result.path); setPhoto(null); }
+      } else {
+        const draft = candidateDraftSchema.safeParse(candidate);
+        if (!draft.success) throw new Error('Please correct your personal details before saving.');
+        await queue.current.catch(() => undefined); await savePerson({ data: draft.data });
+      }
+    }
+    await navigate({ href: dashboard ? '/dashboard' : `/careers/${encodeURIComponent(slug)}` });
+  });
   const currentSignatureValid =
     !!signed &&
     normalizeName(signed.signer_full_name) === normalizeName(candidate.full_name) &&
@@ -471,7 +498,7 @@ export function ApplicationPage({
       section = q.section;
       return (
         <div key={q.id}>
-          {heading && q.section && <h3 className="application-section-title">{q.section}</h3>}
+          {heading && q.section && <><h3 className="application-section-title">{q.section}</h3>{q.section === "About you as a creator" && <p className="application-hint">There are no right or wrong answers. We want to know how you think, not what you already know.</p>}</>}
           <ApplicationQuestion
             question={q}
             value={answers[q.id]}
@@ -496,46 +523,19 @@ export function ApplicationPage({
       {content}
     </section>
   );
+  if (!loading && !signedIn) return <div className="apply-auth-page"><ApplicationSignIn returnPath={`/careers/${encodeURIComponent(slug)}/apply`} onSignedIn={load} googleEnabled={googleEnabled} /></div>;
   return (
-    <div className="application-page">
-      <div className="application-wrap">
-        <header className="application-heading">
-          <Link className="career-back" to="/careers/$slug" params={{ slug }}>
-            <ArrowLeft size={14} /> Back to role
-          </Link>
-          <p className="application-eyebrow">Careers at Admakai</p>
-          <h1>{title}</h1>
-          <div
-            className="application-progress"
-            role="progressbar"
-            aria-valuemin={1}
-            aria-valuemax={7}
-            aria-valuenow={step}
-            aria-label="Application progress"
-          >
-            {APPLICATION_STEPS.map((_, i) => (
-              <span
-                key={i}
-                className={
-                  i === 4 && data && !data.job.task_enabled ? "skipped" : i < step ? "complete" : ""
-                }
-              />
-            ))}
-          </div>
-          <p className="application-hint">
-            Step {step} of 7 · {APPLICATION_STEPS[step - 1]}
-          </p>
-          <div className="application-step-labels">
-            {APPLICATION_STEPS.map((name, i) => (
-              <span className={i + 1 === step ? "active" : ""} key={name}>
-                {i + 1}. {name}
-                {i === 4 && data && !data.job.task_enabled ? " (skipped)" : ""}
-              </span>
-            ))}
-          </div>
-        </header>
-        <div className="application-layout">
-          <div className="application-panel" key={step}>
+    <div className="application-page apply-wizard-page">
+      <div className="apply-wizard-card">
+        <Button type="button" variant="ghost" className="apply-close" aria-label="Save draft and close" title="Save draft and close" disabled={busy} onClick={() => exit(false)}><X size={20} /></Button>
+        <aside className="apply-wizard-rail">
+          <img className="apply-logo" src={logo.url} alt="Admakai" />
+          <h1>Apply to Admakai</h1><p className="apply-job-title">{title}</p>
+          <div className="apply-mobile-progress"><p>Step {visibleIndex + 1} of {visibleSteps.length}</p><div className="application-progress" role="progressbar" aria-valuemin={1} aria-valuemax={visibleSteps.length} aria-valuenow={visibleIndex + 1} aria-label="Application progress">{visibleSteps.map(s => <span key={s.number} className={s.number <= step ? 'complete' : ''} />)}</div></div>
+          <ol className="apply-step-list">{visibleSteps.map((s, index) => <li key={s.number} className={s.number === step ? 'current' : s.number < step ? 'done' : ''}><span>{s.number < step ? <Check size={15} /> : s.number === step ? <Loader2 size={15} className="apply-current-spinner" /> : index + 1}</span>{s.name}</li>)}</ol>
+          <div className="apply-rail-footer"><p>Saves automatically</p>{application && <p>{application.public_code}</p>}{whatsappHelpUrl && /^https:\/\/(wa\.me|api\.whatsapp\.com|chat\.whatsapp\.com)\//.test(whatsappHelpUrl) && <a href={whatsappHelpUrl} target="_blank" rel="noopener noreferrer">WhatsApp help</a>}</div>
+        </aside>
+        <div className="application-panel apply-wizard-fields" key={step}>
             {data?.job.status === "draft" && (
               <p className="career-draft">Draft preview · This is a test application</p>
             )}
@@ -551,9 +551,7 @@ export function ApplicationPage({
                     {notice}
                   </p>
                 )}
-                {step === 1 && !signedIn ? (
-                  <EmailCodeForm returnPath={`/careers/${encodeURIComponent(slug)}/apply`} onSignedIn={load} googleEnabled={googleEnabled}/>
-                ) : data ? (
+                {data ? (
                   <form
                     className="application-form"
                     onSubmit={(e) => {
@@ -564,7 +562,7 @@ export function ApplicationPage({
                   >
                     {step === 2 && (
                       <>
-                        {(Object.keys(personalLabels) as (keyof CandidateFields)[]).map((key) => (
+                        <div className="apply-personal-grid">{(Object.keys(personalLabels) as (keyof CandidateFields)[]).map((key) => (
                           <div
                             className={`application-field ${errors[key] ? "invalid" : ""}`}
                             key={key}
@@ -620,16 +618,12 @@ export function ApplicationPage({
                               </p>
                             )}
                           </div>
-                        ))}
-                        <div>
-                          <label>
-                            Photo{" "}
-                            <span className="application-hint">
-                              Optional · PNG, JPEG or WebP · up to 2 MB
-                            </span>
-                          </label>
+                        ))}</div>
+                        <div id="field-passport" tabIndex={-1} className={errors['passport'] ? 'application-field invalid' : 'application-field'}>
+                          <label>Passport size photo *</label>
+                          <p className="application-hint">A recent photo with your face clearly visible, plain light background, no sunglasses or filters.</p>
                           <div className="application-upload">
-                            {photoUrl && <img src={photoUrl} alt="Your photo" />}
+                            {photoUrl && <img src={photoUrl} alt="Your passport photo" />}
                             <span>
                               {photo?.name ?? (photoUrl ? "Photo saved" : "No photo selected")}
                             </span>
@@ -639,29 +633,25 @@ export function ApplicationPage({
                               onClick={() => photoInput.current?.click()}
                             >
                               <Upload />
-                              Choose photo
+                              {photoUrl ? "Replace" : "Choose photo"}
                             </Button>
                           </div>
                           <input
                             className="application-file-input"
                             ref={photoInput}
                             type="file"
-                            accept="image/png,image/jpeg,image/webp"
+                            accept="image/*"
                             onChange={(e) => {
                               const file = e.target.files?.[0];
                               if (!file) return;
-                              if (file.size > PHOTO_LIMIT) {
-                                setNotice("Photo must be under 2 MB.");
-                                return;
-                              }
-                              if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
-                                setNotice("Choose a PNG, JPEG or WebP image.");
-                                return;
-                              }
-                              setPhoto(file);
+                              e.target.value = '';
+                              const error = passportFileError(file);
+                              if (error) { setNotice(error); return; }
+                              setCropFile(file);
                               setNotice(null);
                             }}
                           />
+                          {errors['passport'] && <p className="application-error" role="alert">{errors['passport']}</p>}
                         </div>
                       </>
                     )}
@@ -866,7 +856,7 @@ export function ApplicationPage({
                             <dt>Photo</dt>
                             <dd>
                               {photoUrl ? (
-                                <img width={56} height={56} src={photoUrl} alt="Your photo" />
+                                <img width={56} height={56} src={photoUrl} alt="Your passport photo" />
                               ) : (
                                 "Not provided"
                               )}
@@ -914,9 +904,7 @@ export function ApplicationPage({
                                 ))}
                             </dl>,
                           )
-                        ) : (
-                          <p className="application-hint">Practical task · skipped</p>
-                        )}
+                        ) : null}
                         {reviewGroup(
                           6,
                           <>
@@ -955,6 +943,8 @@ export function ApplicationPage({
                       {saved}
                     </p>
                     <div className="application-actions">
+                      <Button variant="ghost" className="application-back apply-save-close" type="button" disabled={busy} onClick={() => exit(true)}>Save and close</Button>
+                      <div className="apply-navigation">
                       {step > 2 ? (
                         <Button
                           variant="ghost"
@@ -1015,6 +1005,7 @@ export function ApplicationPage({
                           )}
                         </Button>
                       )}
+                      </div>
                     </div>
                   </form>
                 ) : (
@@ -1024,15 +1015,9 @@ export function ApplicationPage({
                 )}
               </>
             )}
-          </div>
-          <aside className="application-side">
-            <h3>{title}</h3>
-            <p>Saves automatically</p>
-            {application && <p>{application.public_code}</p>}
-            {whatsappHelpUrl && /^https:\/\/(wa\.me|api\.whatsapp\.com|chat\.whatsapp\.com)\//.test(whatsappHelpUrl) && <a href={whatsappHelpUrl} target="_blank" rel="noopener noreferrer">WhatsApp help</a>}
-          </aside>
         </div>
       </div>
+      {cropFile && <PassportCrop file={cropFile} onCancel={() => setCropFile(null)} onSave={file => { setPhoto(file); setPhotoUrl(URL.createObjectURL(file)); setCropFile(null); setErrors(old => ({ ...old, passport: '' })); changed(); }} />}
     </div>
   );
 }

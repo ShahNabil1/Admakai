@@ -7,3 +7,4 @@
 - Signature object writes are privileged only after user-scoped draft ownership and PNG checks; restrictive storage policies block browser bypass. Candidate name changes invalidate unfinished signatures in SQL.
 - Candidate URLs use a client-only pathless layout and shared email-code form; each private handler independently authenticates and filters ownership, including staff viewing their own applications.
 - Submitted PDF finalization changes only validated path/hash; the exact signed template/version and signature content remain immutable, and failed delivery cannot undo submission.
+- Shared ApplicationSignIn keeps apply/sign-in identical; visible steps map to existing saved numbers, retired questions retain answer references, and browser passport crops require server dimension/ownership checks.

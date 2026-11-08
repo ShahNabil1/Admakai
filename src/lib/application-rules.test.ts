@@ -14,9 +14,19 @@ import {
   answerError,
   fillAgreement,
   adminAccessAllowed,
+  questionStep,
   type ApplicationQuestion,
 } from "./application-rules";
 describe("Application requirements", () => {
+  it('places optional Your work questions in step 4 and Last thing in answers', () => {
+    const q = { id: 'q', label: 'Creative work', type: 'long_text', options: null, required: false, section: 'Your work', sort_order: 1, max_length: 400, help_text: null };
+    expect(questionStep(q)).toBe(4); expect(questionStep({...q,section:'Last thing'})).toBe(3);
+  });
+  it('enforces beginner creator limits of 600 and 400 characters', () => {
+    const q = { id: 'q', label: 'Idea', type: 'long_text', options: null, required: true, section: 'About you as a creator', sort_order: 1, max_length: 600, help_text: null };
+    expect(answerError(q, 'a'.repeat(600))).toBeNull(); expect(answerError(q, 'a'.repeat(601))).not.toBeNull();
+    expect(answerError({...q,max_length:400}, 'a'.repeat(401))).not.toBeNull();
+  });
   it('requires English-letter NID names', () => {
     const fields={full_name:'নাবিল',phone:'01712345678',whatsapp:'',area:'Dhaka',education:'College',current_occupation:'Student'};
     expect(candidateSchema.safeParse(fields).success).toBe(false);

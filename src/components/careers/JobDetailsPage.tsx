@@ -175,8 +175,7 @@ export function JobDetailsPage({ slug }: { slug: string }) {
             <Reveal>
               <h2>Before you apply</h2>
               <p>
-                Keep your portfolio link and CV ready. The application takes about 20 minutes and
-                saves automatically, so you can finish later.
+                {job.id === 'e2000000-0000-4000-8000-000000000001' ? 'No experience needed. Keep a clear passport size photo ready. It takes about 10 minutes and saves automatically.' : 'Keep your portfolio link and CV ready. The application takes about 20 minutes and saves automatically, so you can finish later.'}
               </p>
               <ApplyLink job={job} existing={existing} />
             </Reveal>
