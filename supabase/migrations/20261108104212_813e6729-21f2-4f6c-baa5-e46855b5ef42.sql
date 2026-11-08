@@ -1,0 +1,5 @@
+CREATE FUNCTION hiring_private.hiring_assigned_application(_id uuid) RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER SET search_path='' AS $$ SELECT public.has_role(auth.uid(),'admin') OR public.has_role(auth.uid(),'reviewer') OR EXISTS(SELECT 1 FROM public.interviews WHERE application_id=_id AND interviewer_id=auth.uid()) $$;
+REVOKE ALL ON FUNCTION hiring_private.hiring_assigned_application(uuid) FROM PUBLIC,anon;GRANT EXECUTE ON FUNCTION hiring_private.hiring_assigned_application(uuid) TO authenticated,service_role;
+CREATE FUNCTION public.hiring_assigned_application(_id uuid) RETURNS boolean LANGUAGE sql STABLE SET search_path='' AS $$ SELECT hiring_private.hiring_assigned_application(_id) $$;
+REVOKE ALL ON FUNCTION public.hiring_assigned_application(uuid) FROM PUBLIC,anon;GRANT EXECUTE ON FUNCTION public.hiring_assigned_application(uuid) TO authenticated,service_role;
+CREATE POLICY hiring6_exact_application_scope ON public.applications AS RESTRICTIVE FOR SELECT TO authenticated USING(candidate_id=auth.uid() OR public.hiring_assigned_application(id));

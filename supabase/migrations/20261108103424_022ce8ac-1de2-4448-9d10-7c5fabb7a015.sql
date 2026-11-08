@@ -1,0 +1,3 @@
+ALTER TABLE public.interviews ADD COLUMN IF NOT EXISTS reminder_sent_at timestamptz;
+CREATE FUNCTION public.hiring_profile_access(_candidate uuid) RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER SET search_path='' AS $$ SELECT public.has_role(auth.uid(),'admin') OR public.has_role(auth.uid(),'reviewer') OR EXISTS(SELECT 1 FROM public.interviews i JOIN public.applications a ON a.id=i.application_id WHERE a.candidate_id=_candidate AND i.interviewer_id=auth.uid()) $$;
+REVOKE ALL ON FUNCTION public.hiring_profile_access(uuid) FROM PUBLIC,anon; GRANT EXECUTE ON FUNCTION public.hiring_profile_access(uuid) TO authenticated,service_role;

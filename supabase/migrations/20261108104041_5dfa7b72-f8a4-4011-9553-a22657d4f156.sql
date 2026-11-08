@@ -1,0 +1,25 @@
+DO $test$ DECLARE ca uuid:='e6000000-0000-4000-8000-000000000001'; cb uuid:='e6000000-0000-4000-8000-000000000002'; reviewer uuid:='e6000000-0000-4000-8000-000000000003'; interviewer uuid:='e6000000-0000-4000-8000-000000000004'; adm uuid:='e6000000-0000-4000-8000-000000000005'; jid uuid:='e6000000-0000-4000-8000-000000000006'; aid uuid:='e6000000-0000-4000-8000-000000000007'; otheraid uuid:='e6000000-0000-4000-8000-000000000008'; tid uuid; pid uuid; jpid uuid; iid uuid; BEGIN BEGIN
+INSERT INTO auth.users(id,email,raw_user_meta_data) VALUES(ca,'step6-a@example.invalid','{}'),(cb,'step6-b@example.invalid','{}'),(reviewer,'step6-reviewer@example.invalid','{}'),(interviewer,'step6-interviewer@example.invalid','{}'),(adm,'step6-admin@example.invalid','{}');
+INSERT INTO public.hiring_user_roles(user_id,role) VALUES(reviewer,'reviewer'),(interviewer,'interviewer'),(adm,'admin');
+INSERT INTO public.candidates(id,full_name,phone,area,education,current_occupation) VALUES(ca,'Test Applicant','01712345678','Dhaka','College','Student'),(cb,'Other Applicant','01712345679','Dhaka','College','Student');
+SELECT id INTO tid FROM public.agreement_templates ORDER BY created_at LIMIT 1; SELECT id INTO pid FROM public.pipelines WHERE kind='application' AND is_default LIMIT 1; SELECT id INTO jpid FROM public.pipelines WHERE kind='journey' LIMIT 1;
+INSERT INTO public.jobs(id,slug,title,type,work_mode,status,application_pipeline_id,journey_pipeline_id,agreement_template_id) VALUES(jid,'step6-rollback','Step Six Test','internship','remote','draft',pid,jpid,tid);
+INSERT INTO public.applications(id,job_id,candidate_id) VALUES(aid,jid,ca),(otheraid,jid,cb);
+UPDATE public.applications SET is_draft=false,status_key='submitted',submitted_at=now() WHERE id IN(aid,otheraid);
+PERFORM set_config('request.jwt.claim.sub',reviewer::text,true);PERFORM set_config('request.jwt.claims',jsonb_build_object('sub',reviewer,'role','authenticated')::text,true);SET LOCAL ROLE authenticated;
+PERFORM public.change_application_status(aid,'in_review','Reviewing','');PERFORM public.change_application_status(aid,'shortlisted','Shortlisted','');
+BEGIN PERFORM public.change_application_status(aid,'selected','','');RAISE EXCEPTION 'Reviewer selected applicant';EXCEPTION WHEN insufficient_privilege THEN NULL;END;
+PERFORM public.hiring_save_review(aid,5,4,3);IF NOT EXISTS(SELECT 1 FROM public.application_reviews WHERE application_id=aid AND reviewer_id=reviewer AND skill_score=5 AND thinking_score=4 AND commitment_score=3) THEN RAISE EXCEPTION 'Review failed';END IF;
+iid:=public.schedule_interview(aid,now()+interval '2 days',30,'meet','https://meet.google.com/abc-defg-hij','',interviewer,'Interview scheduled');
+IF (SELECT status_key FROM public.applications WHERE id=aid)<>'interview_scheduled' THEN RAISE EXCEPTION 'Scheduling did not move stage';END IF;
+RESET ROLE;PERFORM set_config('request.jwt.claim.sub',interviewer::text,true);PERFORM set_config('request.jwt.claims',jsonb_build_object('sub',interviewer,'role','authenticated')::text,true);SET LOCAL ROLE authenticated;
+IF NOT EXISTS(SELECT 1 FROM public.applications WHERE id=aid) OR EXISTS(SELECT 1 FROM public.applications WHERE id=otheraid) OR EXISTS(SELECT 1 FROM public.candidates WHERE id=cb) THEN RAISE EXCEPTION 'Interviewer applicant scope failed';END IF;
+BEGIN PERFORM public.change_application_status(aid,'selected','','');RAISE EXCEPTION 'Interviewer moved status';EXCEPTION WHEN insufficient_privilege THEN NULL;END;
+PERFORM public.reschedule_interview(iid,now()+interval '3 days','New time');PERFORM public.save_interview_result(iid,5,'Strong','None','select');
+IF (SELECT status_key FROM public.applications WHERE id=aid)<>'interview_done' OR NOT EXISTS(SELECT 1 FROM public.interviews WHERE id=iid AND status='done' AND result_score=5) THEN RAISE EXCEPTION 'Result did not move interview_done';END IF;
+RESET ROLE;PERFORM set_config('request.jwt.claim.sub',adm::text,true);PERFORM set_config('request.jwt.claims',jsonb_build_object('sub',adm,'role','authenticated')::text,true);SET LOCAL ROLE authenticated;
+PERFORM public.change_application_status(aid,'selected','Selected','');IF (SELECT status_key FROM public.applications WHERE id=aid)<>'selected' THEN RAISE EXCEPTION 'Admin select failed';END IF;
+RESET ROLE;PERFORM set_config('request.jwt.claim.sub',cb::text,true);PERFORM set_config('request.jwt.claims',jsonb_build_object('sub',cb,'role','authenticated')::text,true);SET LOCAL ROLE authenticated;
+IF EXISTS(SELECT 1 FROM public.applications WHERE id=aid) OR EXISTS(SELECT 1 FROM public.interviews WHERE id=iid) OR EXISTS(SELECT 1 FROM public.application_reviews WHERE application_id=aid) OR EXISTS(SELECT 1 FROM public.candidate_interviews WHERE id=iid) THEN RAISE EXCEPTION 'Candidate privacy failure';END IF;
+RESET ROLE;RAISE EXCEPTION 'step6_rollback' USING ERRCODE='Z0001';EXCEPTION WHEN SQLSTATE 'Z0001' THEN NULL;END;
+IF EXISTS(SELECT 1 FROM auth.users WHERE id IN(ca,cb,reviewer,interviewer,adm)) THEN RAISE EXCEPTION 'Fixtures not rolled back';END IF;END $test$;

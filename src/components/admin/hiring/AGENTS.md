@@ -1,0 +1,3 @@
+- Applications and interview mutations use authenticated server functions and checked SQL RPCs; SQL stage guards enforce reviewer limits even when RPCs are called directly.
+- Interviewer applicant reads stay scoped by restrictive RLS to assigned interviews; service file signing follows a successful user-scoped application read.
+- Hiring review styling is scoped to review.css; reuse AdminShell, Action, Modal and the shared notification system without altering unrelated admin screens.

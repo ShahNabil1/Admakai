@@ -7,6 +7,9 @@ import { JobsList, JobEditor } from "./Jobs";
 import { QuestionBank } from "./QuestionBank";
 import { Agreements } from "./Agreements";
 import { Settings } from "./Settings";
+import {ApplicationBoard,ApplicantProfile,HiringOverview} from './Applications';
+import {Interviews} from './Interviews';
+import './review.css';
 import "./hiring.css";
 export function HiringWorkspace() {
   const read = useServerFn(hiringWorkspace),
@@ -25,7 +28,7 @@ export function HiringWorkspace() {
     void reload();
   }, [reload]);
   const parts = location.pathname.split("/"),
-    page = parts[3] ?? "jobs",
+    page = parts[3] || "overview",
     id = parts[4];
   if (error)
     return (
@@ -40,6 +43,8 @@ export function HiringWorkspace() {
   return (
     <section className="hiring-content">
       <nav className="hiring-nav" aria-label="Hiring sections">
+        {data.roles.some(r=>['admin','reviewer'].includes(r))&&<><Link to="/admin/hiring" className="admin-btn-ghost">Overview</Link><Link to="/admin/hiring/applications" className="admin-btn-ghost">Applications</Link></>}
+        <Link to="/admin/hiring/interviews" className="admin-btn-ghost">Interviews</Link>
         <Link to="/admin/hiring/jobs" className="admin-btn-ghost">
           Jobs
         </Link>
@@ -62,7 +67,7 @@ export function HiringWorkspace() {
           <h1>No access</h1>
           <p>Only hiring admins can open this page.</p>
         </>
-      ) : page === "jobs" ? (
+      ) : page === 'overview' ? <HiringOverview/> : page === 'applications' ? (id?<ApplicantProfile key={id} id={id}/>:<ApplicationBoard/>) : page === 'interviews' ? <Interviews/> : page === "jobs" ? (
         id ? (
           <JobEditor key={id} id={id} data={data} admin={admin} reload={reload} />
         ) : (

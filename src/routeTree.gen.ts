@@ -42,14 +42,19 @@ import { Route as SiteMeLoginRouteImport } from './routes/_site.me.login'
 import { Route as SiteServicesSlugRouteImport } from './routes/_site.services_.$slug'
 import { Route as SiteWorkIndexRouteImport } from './routes/_site.work.index'
 import { Route as SiteWorkSlugRouteImport } from './routes/_site.work.$slug'
+import { Route as AdminHiringIndexRouteImport } from './routes/admin_.hiring.index'
 import { Route as AdminHiringAgreementsRouteImport } from './routes/admin_.hiring.agreements'
+import { Route as AdminHiringApplicationsRouteImport } from './routes/admin_.hiring.applications'
+import { Route as AdminHiringInterviewsRouteImport } from './routes/admin_.hiring.interviews'
 import { Route as AdminHiringJobsRouteImport } from './routes/admin_.hiring.jobs'
 import { Route as AdminHiringQuestionsRouteImport } from './routes/admin_.hiring.questions'
 import { Route as AdminHiringSettingsRouteImport } from './routes/admin_.hiring.settings'
+import { Route as ApiPublicHiringRemindersRouteImport } from './routes/api/public/hiring-reminders'
 import { Route as AuthSsoCallbackRouteImport } from './routes/auth.sso.callback'
 import { Route as CandidateMeApplicationsIdRouteImport } from './routes/_candidate.me.applications.$id'
 import { Route as SiteCareersSlugIndexRouteImport } from './routes/_site.careers.$slug.index'
 import { Route as SiteCareersSlugApplyRouteImport } from './routes/_site.careers.$slug.apply'
+import { Route as AdminHiringApplicationsIdRouteImport } from './routes/admin_.hiring.applications_.$id'
 import { Route as AdminHiringJobsIdRouteImport } from './routes/admin_.hiring.jobs_.$id'
 import { Route as SiteCareersSlugApplyIndexRouteImport } from './routes/_site.careers.$slug.apply.index'
 import { Route as SiteCareersSlugApplyDoneRouteImport } from './routes/_site.careers.$slug.apply.done'
@@ -218,9 +223,24 @@ const SiteWorkSlugRoute = SiteWorkSlugRouteImport.update({
   path: '/work/$slug',
   getParentRoute: () => SiteRoute,
 } as any)
+const AdminHiringIndexRoute = AdminHiringIndexRouteImport.update({
+  id: '/admin_/hiring/',
+  path: '/admin/hiring/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminHiringAgreementsRoute = AdminHiringAgreementsRouteImport.update({
   id: '/admin_/hiring/agreements',
   path: '/admin/hiring/agreements',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminHiringApplicationsRoute = AdminHiringApplicationsRouteImport.update({
+  id: '/admin_/hiring/applications',
+  path: '/admin/hiring/applications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminHiringInterviewsRoute = AdminHiringInterviewsRouteImport.update({
+  id: '/admin_/hiring/interviews',
+  path: '/admin/hiring/interviews',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminHiringJobsRoute = AdminHiringJobsRouteImport.update({
@@ -238,6 +258,12 @@ const AdminHiringSettingsRoute = AdminHiringSettingsRouteImport.update({
   path: '/admin/hiring/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHiringRemindersRoute =
+  ApiPublicHiringRemindersRouteImport.update({
+    id: '/api/public/hiring-reminders',
+    path: '/api/public/hiring-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthSsoCallbackRoute = AuthSsoCallbackRouteImport.update({
   id: '/auth/sso/callback',
   path: '/auth/sso/callback',
@@ -259,6 +285,12 @@ const SiteCareersSlugApplyRoute = SiteCareersSlugApplyRouteImport.update({
   path: '/careers/$slug/apply',
   getParentRoute: () => SiteRoute,
 } as any)
+const AdminHiringApplicationsIdRoute =
+  AdminHiringApplicationsIdRouteImport.update({
+    id: '/admin_/hiring/applications_/$id',
+    path: '/admin/hiring/applications/$id',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminHiringJobsIdRoute = AdminHiringJobsIdRouteImport.update({
   id: '/admin_/hiring/jobs_/$id',
   path: '/admin/hiring/jobs/$id',
@@ -304,17 +336,22 @@ export interface FileRoutesByFullPath {
   '/services/$slug': typeof SiteServicesSlugRoute
   '/work/$slug': typeof SiteWorkSlugRoute
   '/admin/hiring/agreements': typeof AdminHiringAgreementsRoute
+  '/admin/hiring/applications': typeof AdminHiringApplicationsRoute
+  '/admin/hiring/interviews': typeof AdminHiringInterviewsRoute
   '/admin/hiring/jobs': typeof AdminHiringJobsRoute
   '/admin/hiring/questions': typeof AdminHiringQuestionsRoute
   '/admin/hiring/settings': typeof AdminHiringSettingsRoute
+  '/api/public/hiring-reminders': typeof ApiPublicHiringRemindersRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/me/': typeof CandidateMeIndexRoute
   '/blog/': typeof SiteBlogIndexRoute
   '/careers/': typeof SiteCareersIndexRoute
   '/work/': typeof SiteWorkIndexRoute
+  '/admin/hiring/': typeof AdminHiringIndexRoute
   '/me/applications/$id': typeof CandidateMeApplicationsIdRoute
   '/careers/$slug/apply': typeof SiteCareersSlugApplyRouteWithChildren
+  '/admin/hiring/applications/$id': typeof AdminHiringApplicationsIdRoute
   '/admin/hiring/jobs/$id': typeof AdminHiringJobsIdRoute
   '/careers/$slug/': typeof SiteCareersSlugIndexRoute
   '/careers/$slug/apply/done': typeof SiteCareersSlugApplyDoneRoute
@@ -345,16 +382,21 @@ export interface FileRoutesByTo {
   '/services/$slug': typeof SiteServicesSlugRoute
   '/work/$slug': typeof SiteWorkSlugRoute
   '/admin/hiring/agreements': typeof AdminHiringAgreementsRoute
+  '/admin/hiring/applications': typeof AdminHiringApplicationsRoute
+  '/admin/hiring/interviews': typeof AdminHiringInterviewsRoute
   '/admin/hiring/jobs': typeof AdminHiringJobsRoute
   '/admin/hiring/questions': typeof AdminHiringQuestionsRoute
   '/admin/hiring/settings': typeof AdminHiringSettingsRoute
+  '/api/public/hiring-reminders': typeof ApiPublicHiringRemindersRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/me': typeof CandidateMeIndexRoute
   '/blog': typeof SiteBlogIndexRoute
   '/careers': typeof SiteCareersIndexRoute
   '/work': typeof SiteWorkIndexRoute
+  '/admin/hiring': typeof AdminHiringIndexRoute
   '/me/applications/$id': typeof CandidateMeApplicationsIdRoute
+  '/admin/hiring/applications/$id': typeof AdminHiringApplicationsIdRoute
   '/admin/hiring/jobs/$id': typeof AdminHiringJobsIdRoute
   '/careers/$slug': typeof SiteCareersSlugIndexRoute
   '/careers/$slug/apply/done': typeof SiteCareersSlugApplyDoneRoute
@@ -391,17 +433,22 @@ export interface FileRoutesById {
   '/_site/services_/$slug': typeof SiteServicesSlugRoute
   '/_site/work/$slug': typeof SiteWorkSlugRoute
   '/admin_/hiring/agreements': typeof AdminHiringAgreementsRoute
+  '/admin_/hiring/applications': typeof AdminHiringApplicationsRoute
+  '/admin_/hiring/interviews': typeof AdminHiringInterviewsRoute
   '/admin_/hiring/jobs': typeof AdminHiringJobsRoute
   '/admin_/hiring/questions': typeof AdminHiringQuestionsRoute
   '/admin_/hiring/settings': typeof AdminHiringSettingsRoute
+  '/api/public/hiring-reminders': typeof ApiPublicHiringRemindersRoute
   '/auth/sso/callback': typeof AuthSsoCallbackRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_candidate/me/': typeof CandidateMeIndexRoute
   '/_site/blog/': typeof SiteBlogIndexRoute
   '/_site/careers/': typeof SiteCareersIndexRoute
   '/_site/work/': typeof SiteWorkIndexRoute
+  '/admin_/hiring/': typeof AdminHiringIndexRoute
   '/_candidate/me/applications/$id': typeof CandidateMeApplicationsIdRoute
   '/_site/careers/$slug/apply': typeof SiteCareersSlugApplyRouteWithChildren
+  '/admin_/hiring/applications_/$id': typeof AdminHiringApplicationsIdRoute
   '/admin_/hiring/jobs_/$id': typeof AdminHiringJobsIdRoute
   '/_site/careers/$slug/': typeof SiteCareersSlugIndexRoute
   '/_site/careers/$slug/apply/done': typeof SiteCareersSlugApplyDoneRoute
@@ -436,17 +483,22 @@ export interface FileRouteTypes {
     | '/services/$slug'
     | '/work/$slug'
     | '/admin/hiring/agreements'
+    | '/admin/hiring/applications'
+    | '/admin/hiring/interviews'
     | '/admin/hiring/jobs'
     | '/admin/hiring/questions'
     | '/admin/hiring/settings'
+    | '/api/public/hiring-reminders'
     | '/auth/sso/callback'
     | '/app/'
     | '/me/'
     | '/blog/'
     | '/careers/'
     | '/work/'
+    | '/admin/hiring/'
     | '/me/applications/$id'
     | '/careers/$slug/apply'
+    | '/admin/hiring/applications/$id'
     | '/admin/hiring/jobs/$id'
     | '/careers/$slug/'
     | '/careers/$slug/apply/done'
@@ -477,16 +529,21 @@ export interface FileRouteTypes {
     | '/services/$slug'
     | '/work/$slug'
     | '/admin/hiring/agreements'
+    | '/admin/hiring/applications'
+    | '/admin/hiring/interviews'
     | '/admin/hiring/jobs'
     | '/admin/hiring/questions'
     | '/admin/hiring/settings'
+    | '/api/public/hiring-reminders'
     | '/auth/sso/callback'
     | '/app'
     | '/me'
     | '/blog'
     | '/careers'
     | '/work'
+    | '/admin/hiring'
     | '/me/applications/$id'
+    | '/admin/hiring/applications/$id'
     | '/admin/hiring/jobs/$id'
     | '/careers/$slug'
     | '/careers/$slug/apply/done'
@@ -522,17 +579,22 @@ export interface FileRouteTypes {
     | '/_site/services_/$slug'
     | '/_site/work/$slug'
     | '/admin_/hiring/agreements'
+    | '/admin_/hiring/applications'
+    | '/admin_/hiring/interviews'
     | '/admin_/hiring/jobs'
     | '/admin_/hiring/questions'
     | '/admin_/hiring/settings'
+    | '/api/public/hiring-reminders'
     | '/auth/sso/callback'
     | '/_authenticated/app/'
     | '/_candidate/me/'
     | '/_site/blog/'
     | '/_site/careers/'
     | '/_site/work/'
+    | '/admin_/hiring/'
     | '/_candidate/me/applications/$id'
     | '/_site/careers/$slug/apply'
+    | '/admin_/hiring/applications_/$id'
     | '/admin_/hiring/jobs_/$id'
     | '/_site/careers/$slug/'
     | '/_site/careers/$slug/apply/done'
@@ -546,10 +608,15 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   SigninRoute: typeof SigninRoute
   AdminHiringAgreementsRoute: typeof AdminHiringAgreementsRoute
+  AdminHiringApplicationsRoute: typeof AdminHiringApplicationsRoute
+  AdminHiringInterviewsRoute: typeof AdminHiringInterviewsRoute
   AdminHiringJobsRoute: typeof AdminHiringJobsRoute
   AdminHiringQuestionsRoute: typeof AdminHiringQuestionsRoute
   AdminHiringSettingsRoute: typeof AdminHiringSettingsRoute
+  ApiPublicHiringRemindersRoute: typeof ApiPublicHiringRemindersRoute
   AuthSsoCallbackRoute: typeof AuthSsoCallbackRoute
+  AdminHiringIndexRoute: typeof AdminHiringIndexRoute
+  AdminHiringApplicationsIdRoute: typeof AdminHiringApplicationsIdRoute
   AdminHiringJobsIdRoute: typeof AdminHiringJobsIdRoute
 }
 
@@ -786,11 +853,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteWorkSlugRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/admin_/hiring/': {
+      id: '/admin_/hiring/'
+      path: '/admin/hiring'
+      fullPath: '/admin/hiring/'
+      preLoaderRoute: typeof AdminHiringIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin_/hiring/agreements': {
       id: '/admin_/hiring/agreements'
       path: '/admin/hiring/agreements'
       fullPath: '/admin/hiring/agreements'
       preLoaderRoute: typeof AdminHiringAgreementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin_/hiring/applications': {
+      id: '/admin_/hiring/applications'
+      path: '/admin/hiring/applications'
+      fullPath: '/admin/hiring/applications'
+      preLoaderRoute: typeof AdminHiringApplicationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin_/hiring/interviews': {
+      id: '/admin_/hiring/interviews'
+      path: '/admin/hiring/interviews'
+      fullPath: '/admin/hiring/interviews'
+      preLoaderRoute: typeof AdminHiringInterviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin_/hiring/jobs': {
@@ -812,6 +900,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/hiring/settings'
       fullPath: '/admin/hiring/settings'
       preLoaderRoute: typeof AdminHiringSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hiring-reminders': {
+      id: '/api/public/hiring-reminders'
+      path: '/api/public/hiring-reminders'
+      fullPath: '/api/public/hiring-reminders'
+      preLoaderRoute: typeof ApiPublicHiringRemindersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/sso/callback': {
@@ -841,6 +936,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/careers/$slug/apply'
       preLoaderRoute: typeof SiteCareersSlugApplyRouteImport
       parentRoute: typeof SiteRoute
+    }
+    '/admin_/hiring/applications_/$id': {
+      id: '/admin_/hiring/applications_/$id'
+      path: '/admin/hiring/applications/$id'
+      fullPath: '/admin/hiring/applications/$id'
+      preLoaderRoute: typeof AdminHiringApplicationsIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin_/hiring/jobs_/$id': {
       id: '/admin_/hiring/jobs_/$id'
@@ -995,10 +1097,15 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   SigninRoute: SigninRoute,
   AdminHiringAgreementsRoute: AdminHiringAgreementsRoute,
+  AdminHiringApplicationsRoute: AdminHiringApplicationsRoute,
+  AdminHiringInterviewsRoute: AdminHiringInterviewsRoute,
   AdminHiringJobsRoute: AdminHiringJobsRoute,
   AdminHiringQuestionsRoute: AdminHiringQuestionsRoute,
   AdminHiringSettingsRoute: AdminHiringSettingsRoute,
+  ApiPublicHiringRemindersRoute: ApiPublicHiringRemindersRoute,
   AuthSsoCallbackRoute: AuthSsoCallbackRoute,
+  AdminHiringIndexRoute: AdminHiringIndexRoute,
+  AdminHiringApplicationsIdRoute: AdminHiringApplicationsIdRoute,
   AdminHiringJobsIdRoute: AdminHiringJobsIdRoute,
 }
 export const routeTree = rootRouteImport

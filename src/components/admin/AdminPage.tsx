@@ -121,7 +121,7 @@ function readTab(): Tab {
 function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; email: string }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const isHiring = location.pathname.startsWith('/admin/hiring/');
+  const isHiring = location.pathname === '/admin/hiring' || location.pathname.startsWith('/admin/hiring/');
   const [hiringRoles, setHiringRoles] = useState<string[]>([]);
   const [hiringExpanded, setHiringExpanded] = useState(isHiring);
   useEffect(() => { void supabase.from('hiring_user_roles').select('role').eq('user_id', userId).then(({data}) => setHiringRoles(data?.map(r => r.role) ?? [])); }, [userId]);
@@ -221,7 +221,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
               {n.id === 'bookings' && pending.length > 0 && <em>{pending.length}</em>}
             </button>
           ))}
-          {hiringRoles.length > 0 && <><Button variant="ghost" className={isHiring ? 'is-active' : ''} aria-expanded={hiringExpanded} onClick={() => setHiringExpanded(!hiringExpanded)}><BriefcaseBusiness size={17}/><span>Hiring</span><ChevronDown size={14}/></Button>{hiringExpanded && <div className="hiring-side-links"><Link to="/admin/hiring/jobs" aria-current={location.pathname.includes('/hiring/jobs')?'page':undefined}>Jobs</Link><Link to="/admin/hiring/questions" aria-current={location.pathname.endsWith('/questions')?'page':undefined}>Question bank</Link>{hiringRoles.includes('admin') && <><Link to="/admin/hiring/agreements">Agreements</Link><Link to="/admin/hiring/settings">Settings</Link></>}</div>}</>}
+          {hiringRoles.length > 0 && <><Button variant="ghost" className={isHiring ? 'is-active' : ''} aria-expanded={hiringExpanded} onClick={() => setHiringExpanded(!hiringExpanded)}><BriefcaseBusiness size={17}/><span>Hiring</span><ChevronDown size={14}/></Button>{hiringExpanded && <div className="hiring-side-links">{hiringRoles.some(r=>['admin','reviewer'].includes(r)) && <><Link to="/admin/hiring">Overview</Link><Link to="/admin/hiring/applications">Applications</Link></>}<Link to="/admin/hiring/interviews">Interviews</Link><Link to="/admin/hiring/jobs" aria-current={location.pathname.includes('/hiring/jobs')?'page':undefined}>Jobs</Link><Link to="/admin/hiring/questions" aria-current={location.pathname.endsWith('/questions')?'page':undefined}>Question bank</Link>{hiringRoles.includes('admin') && <><Link to="/admin/hiring/agreements">Agreements</Link><Link to="/admin/hiring/settings">Settings</Link></>}</div>}</>}
         </nav>
         <div className="admin-me"><span className="truncate">{email}</span><small>{role}</small>
           <button onClick={() => confirm({ title: 'Sign out?', description: 'You will need Branta Hub to sign in again.', confirmLabel: 'Sign out', run: async () => { await supabase.auth.signOut(); window.location.assign('/'); } })}><LogOut size={14} /> Sign out</button>

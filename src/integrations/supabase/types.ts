@@ -1018,6 +1018,7 @@ export type Database = {
           mode: string
           office_address: string | null
           recommendation: string | null
+          reminder_sent_at: string | null
           result_score: number | null
           scheduled_at: string
           status: string
@@ -1035,6 +1036,7 @@ export type Database = {
           mode: string
           office_address?: string | null
           recommendation?: string | null
+          reminder_sent_at?: string | null
           result_score?: number | null
           scheduled_at: string
           status?: string
@@ -1052,6 +1054,7 @@ export type Database = {
           mode?: string
           office_address?: string | null
           recommendation?: string | null
+          reminder_sent_at?: string | null
           result_score?: number | null
           scheduled_at?: string
           status?: string
@@ -2340,6 +2343,10 @@ export type Database = {
       }
     }
     Functions: {
+      cancel_interview: {
+        Args: { _interview_id: string; _reason: string }
+        Returns: string
+      }
       change_application_status: {
         Args: {
           _application_id: string
@@ -2423,6 +2430,11 @@ export type Database = {
           google_login_enabled: boolean
         }[]
       }
+      hiring_assign_reviewer: {
+        Args: { _ids: string[]; _reviewer: string }
+        Returns: undefined
+      }
+      hiring_assigned_application: { Args: { _id: string }; Returns: boolean }
       hiring_can_apply: {
         Args: { _job_id: string; _user_id: string }
         Returns: boolean
@@ -2481,6 +2493,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      hiring_profile_access: { Args: { _candidate: string }; Returns: boolean }
       hiring_public_help: { Args: never; Returns: string }
       hiring_public_internship_video: {
         Args: never
@@ -2521,6 +2534,23 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      hiring_save_review: {
+        Args: {
+          _application_id: string
+          _commitment: number
+          _skill: number
+          _thinking: number
+        }
+        Returns: undefined
+      }
+      hiring_staff_contacts: {
+        Args: { _ids: string[] }
+        Returns: {
+          email: string
+          full_name: string
+          user_id: string
+        }[]
+      }
       hiring_storage_path_owned: { Args: { _name: string }; Returns: boolean }
       hiring_template_is_latest: { Args: { _id: string }; Returns: boolean }
       hiring_validate_answer: {
@@ -2528,6 +2558,14 @@ export type Database = {
         Returns: undefined
       }
       is_hiring_staff: { Args: { _user_id: string }; Returns: boolean }
+      list_hiring_staff: {
+        Args: never
+        Returns: {
+          email: string
+          roles: string[]
+          user_id: string
+        }[]
+      }
       open_slots: {
         Args: { p_from?: string; p_to?: string }
         Returns: {
@@ -2547,6 +2585,33 @@ export type Database = {
           _signature_path: string
           _signer_full_name: string
           _user_agent: string
+        }
+        Returns: string
+      }
+      reschedule_interview: {
+        Args: { _interview_id: string; _message: string; _scheduled_at: string }
+        Returns: string
+      }
+      save_interview_result: {
+        Args: {
+          _concerns: string
+          _interview_id: string
+          _recommendation: string
+          _score: number
+          _strengths: string
+        }
+        Returns: string
+      }
+      schedule_interview: {
+        Args: {
+          _application_id: string
+          _duration_minutes: number
+          _interviewer_id: string
+          _meet_link: string
+          _message: string
+          _mode: string
+          _office_address: string
+          _scheduled_at: string
         }
         Returns: string
       }

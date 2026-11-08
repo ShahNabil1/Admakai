@@ -59,7 +59,7 @@ export async function generateAgreementPdf(id: string) {
   return path;
 }
 const escape=(s:string)=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c] ?? c));
-export async function sendHiringEmail(trigger:string,id:string,extra:Record<string,string>={}) {
+export async function sendHiringEmail(trigger:string,id:string,extra:Record<string,string>={},extraAttachments:Array<{filename:string;content:string}>=[]) {
   const {app,candidate,job,profile,settings}=await hiringDeliveryContext(id);
   const template=required(await db.from('email_templates').select('*').eq('trigger_key',trigger).single());
   const admin=trigger==='admin_new_application';const recipients=admin?settings.notify_admin_emails:[profile.email];
@@ -72,7 +72,7 @@ export async function sendHiringEmail(trigger:string,id:string,extra:Record<stri
       try{let content=fill(template.body);if(admin)content+=`\nCandidate: ${candidate.full_name}\nJob: ${job.title}\nKnockout flags: ${extra['knockout_flags'] ?? 'None'}\nhttps://admakai.com/admin/hiring/jobs`;
         const button=admin?'https://admakai.com/admin/hiring/jobs':tracker;
         const html=`<!doctype html><html><body style="background:#f6f6f6;color:#111;font-family:Arial,sans-serif;margin:0;padding:32px"><div style="max-width:560px;margin:auto"><img src="https://admakai.com${emailLogo.url}" alt="Admakai" width="160"><h1 style="font-size:24px">${escape(fill(template.subject))}</h1><p style="line-height:1.7;white-space:pre-line">${escape(content)}</p><a href="${button}" style="display:inline-block;background:#111;color:#fff;padding:14px 22px;text-decoration:none">${admin?'Review applications':'Track your application'}</a><p style="font-size:12px;color:#666;margin-top:32px">Admakai<br>${escape(settings.company_address ?? '')}</p></div></body></html>`;
-        const attachments:Array<{filename:string;content:string}>=[];
+        const attachments:Array<{filename:string;content:string}>=[...extraAttachments];
         if(trigger==='application_submitted'){
           const agreement=await db.from('signed_agreements').select('pdf_path').eq('application_id',id).maybeSingle();
           if(agreement.data?.pdf_path){const file=await db.storage.from('agreements').download(agreement.data.pdf_path);if(file.data){const bytes=new Uint8Array(await file.data.arrayBuffer());let binary='';for(const b of bytes)binary+=String.fromCharCode(b);attachments.push({filename:`agreement-${app.public_code}.pdf`,content:btoa(binary)});}}
