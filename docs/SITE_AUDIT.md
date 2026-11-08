@@ -14,7 +14,7 @@ Files below are relative to `src/routes/`. `:slug` and `:id` denote dynamic segm
 
 | Route | File | Page title | Who can open / purpose / state |
 |---|---|---|---|
-| `/` | `_site.index.tsx` \| Admakai | AI Ad Agency in Bangladesh for Commercials | Public; studio Home, services, proof and booking links. |
+| `/` | `_site.index.tsx` | Admakai \| AI Ad Agency in Bangladesh for Commercials | Public; studio Home, services, proof and booking links. |
 | `/pricing` | `_site.pricing.tsx` | AI Ad Pricing in Bangladesh \| Admakai | Public; shared monthly plans and service estimates. |
 | `/services` | `_site.services.tsx` | AI Advertising Services: Commercials and UGC \| Admakai | Public; 37-service catalogue, filters and browser-only service finder. |
 | `/services/:slug` | `_site.services_.$slug.tsx` | [Service name] \| Admakai | Public; service detail and portfolio. Unknown/unpublished slugs redirect to Services. |
