@@ -19,6 +19,7 @@ import { matchesJob } from "@/lib/careers-rules";
 import { useCareersIdentity } from "./useCareersIdentity";
 import { ApplyLink, Deadline, DraftBanner, JobBadges } from "./CareerShared";
 import { TalentPool } from "./TalentPool";
+import { HiringCover } from "./HiringCover";
 const filters = ["All", "Internship", "Full-time", "Freelance", "Office", "Remote", "Hybrid"];
 const faq = [
   ["What are the working hours?", "3 PM to 6 PM and 8 PM to 11 PM, Bangladesh time."],
@@ -156,6 +157,7 @@ export function CareersPage() {
           {jobs.map((job, i) => (
             <Reveal key={job.id} delay={i * 0.07}>
               <article className="career-job-card">
+                <HiringCover value={job.cover_image_url} title={job.title} />
                 {job.status === "draft" && <DraftBanner />}
                 <div className="career-card-top">
                   <span className="career-badge">{job.type}</span>

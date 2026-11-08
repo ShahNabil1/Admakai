@@ -8,6 +8,7 @@ import { careerDetailOptions, internshipVideoOptions } from "@/lib/careers-query
 import { showInternshipVideo } from '@/lib/internship-video';
 import { InternshipVideo } from './InternshipVideo';
 import { HiringRichText } from './HiringRichText';
+import { HiringCover } from './HiringCover';
 import { ApplyLink, CareerUnavailable, Deadline, DraftBanner, JobBadges } from "./CareerShared";
 import { useCareersIdentity } from "./useCareersIdentity";
 import "@/components/public/pages.css";
@@ -82,6 +83,7 @@ export function JobDetailsPage({ slug }: { slug: string }) {
       </header>
       <div className="container-site career-detail-layout">
         <div className="career-detail-copy">
+          <HiringCover value={job.cover_image_url} title={job.title} />
           <section>
             <Reveal>
               <h2>About this role</h2>

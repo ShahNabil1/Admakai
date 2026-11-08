@@ -559,9 +559,9 @@ export function JobEditor({
           {admin && (
             <ImageUpload
               label="Cover image"
-              bucket="hiring-public"
+              bucket="hiring-media"
               value={job.cover_image_url}
-              onChange={(_, cover_image_url) => patch({ cover_image_url })}
+              onChange={(cover_image_url) => patch({ cover_image_url })}
             />
           )}
         </fieldset>

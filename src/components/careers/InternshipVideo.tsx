@@ -1,13 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
-import { previewLoopTime, resolveInternshipVideo, type InternshipVideoSettings } from '@/lib/internship-video';
+import { previewLoopTime, resolveInternshipVideo, youtubePoster, type InternshipVideoSettings } from '@/lib/internship-video';
+import { useHiringMedia } from '@/hooks/use-hiring-media';
 
 export function InternshipVideo({ settings, compact = false }: { settings: InternshipVideoSettings; compact?: boolean }) {
   const [playing, setPlaying] = useState(false);
   const [failed, setFailed] = useState(false);
   const [posterFailed, setPosterFailed] = useState(false);
+  const [thumbnailFallback, setThumbnailFallback] = useState(false);
+  const uploadedPoster = useHiringMedia(settings.internship_video_poster_url);
+  const automaticPoster = !settings.internship_video_poster_url;
+  const poster = automaticPoster ? youtubePoster(settings.internship_video_url, thumbnailFallback) : uploadedPoster;
+  useEffect(() => { setPosterFailed(false); setThumbnailFallback(false); }, [settings.internship_video_poster_url, settings.internship_video_url]);
+  const failPoster = () => {
+    if (automaticPoster && !thumbnailFallback) setThumbnailFallback(true);
+    else setPosterFailed(true);
+  };
   const video = resolveInternshipVideo(settings.internship_video_url);
   if (!video) return null;
   const title = settings.internship_video_title?.trim() || 'Hear it from our AI Director';
@@ -15,7 +25,7 @@ export function InternshipVideo({ settings, compact = false }: { settings: Inter
     {playing ? video.kind === 'mp4' ? <video src={video.src} controls playsInline aria-label={title}
       ref={node => { if (node) void node.play().catch(() => setFailed(true)); }}
       onError={() => setFailed(true)} /> : <iframe src={video.src} title={title} allow="autoplay; fullscreen; picture-in-picture" allowFullScreen /> : <>
-      {settings.internship_video_poster_url && !posterFailed && <img className="career-video-poster" src={settings.internship_video_poster_url} alt="" onError={() => setPosterFailed(true)} />}
+      {poster && !posterFailed && <img className="career-video-poster" src={poster} alt="" onError={failPoster} onLoad={event => { if (automaticPoster && !thumbnailFallback && event.currentTarget.naturalWidth <= 120) setThumbnailFallback(true); }} />}
       <div className="career-video-shade" />
       <Button variant="ghost" size="icon" className="career-video-play" aria-label={`Play ${title}`} onClick={() => { setFailed(false); setPlaying(true); }}><Play fill="currentColor" /></Button>
       <div className="career-video-caption"><h3>{title}</h3><p>2 min · Everything about the program, in his own words</p></div>

@@ -198,9 +198,9 @@ export function Settings() {
               </label>
               <ImageUpload
                 label="Poster image"
-                bucket="hiring-public"
+                bucket="hiring-media"
                 value={settings.internship_video_poster_url}
-                onChange={(_, internship_video_poster_url) =>
+                onChange={(internship_video_poster_url) =>
                   patch({ internship_video_poster_url })
                 }
               />

@@ -4,6 +4,7 @@ import { ArrowDown, ArrowUp, Bold, Heading2, Link, List, Plus, Trash2, Upload } 
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { uploadHiringImage } from "@/lib/hiring-admin.functions";
+import { useHiringMedia } from "@/hooks/use-hiring-media";
 export function Action({
   children,
   onClick,
@@ -169,17 +170,18 @@ export function ImageUpload({
   onChange,
 }: {
   label: string;
-  bucket: "hiring-public" | "hiring-assets";
+  bucket: "hiring-media" | "hiring-assets";
   value: string | null;
   onChange: (path: string, url: string) => void;
 }) {
   const upload = useServerFn(uploadHiringImage);
+  const mediaUrl = useHiringMedia(bucket === "hiring-media" ? value : null);
   const ref = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   return (
     <div className="hiring-upload">
       <span>{label}</span>
-      {value && <img src={value} alt={label} />}
+      {(bucket === "hiring-media" ? mediaUrl : value) && <img src={(bucket === "hiring-media" ? mediaUrl : value) ?? undefined} alt={label} />}
       <input
         ref={ref}
         type="file"
@@ -196,11 +198,7 @@ export function ImageUpload({
             const r = await upload({ data: form });
             onChange(r.path, r.url);
           } catch {
-            toast.error(
-              bucket === "hiring-public"
-                ? "Public image storage is unavailable. Public buckets must be allowed in workspace settings."
-                : "Image could not upload.",
-            );
+            toast.error("Image could not upload.");
           } finally {
             setBusy(false);
             e.target.value = "";

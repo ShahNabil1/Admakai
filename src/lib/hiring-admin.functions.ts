@@ -315,7 +315,7 @@ export const uploadHiringImage = createServerFn({ method: "POST" })
   })
   .handler(async ({ data, context }) => {
     await requireAdmin(context);
-    const bucket = z.enum(["hiring-public", "hiring-assets"]).parse(data.get("bucket"));
+    const bucket = z.enum(["hiring-media", "hiring-assets"]).parse(data.get("bucket"));
     const file = data.get("file");
     if (!(file instanceof File) || file.size === 0 || file.size > 5 * 1024 * 1024)
       throw new Error("Choose an image under 5 MB.");
@@ -332,12 +332,10 @@ export const uploadHiringImage = createServerFn({ method: "POST" })
         contentType: png ? "image/png" : jpg ? "image/jpeg" : "image/webp",
       }),
     );
-    if (bucket === "hiring-public")
-      return { path, url: context.supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl };
     return {
       path,
       url:
-        checked(await context.supabase.storage.from(bucket).createSignedUrl(path, 900))
+        checked(await context.supabase.storage.from(bucket).createSignedUrl(path, bucket === "hiring-media" ? 3600 : 900))
           ?.signedUrl ?? "",
     };
   });
