@@ -22,6 +22,7 @@ import { readableOn } from '@/lib/offer-rules';
 import { ActivityLog, fetchActivity } from './ActivityLog';
 import { BookingSubmission, type BookingSubmissionData } from './BookingSubmission';
 import { Empty, Modal, Pill, Timeline, fmtDate, label, useConfirm } from './ui';
+import logoDark from '@/assets/brand/logo-dark-cropped.png.asset.json';
 import './admin.css';
 
 type ClientRef = { contact_name: string | null; email: string | null; brand_name?: string | null; whatsapp?: string | null } | null;
@@ -248,11 +249,11 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
 
   return (
     <>
-      <Toaster position="top-center" theme="dark" richColors closeButton />
+      <Toaster position="top-center" theme="light" richColors closeButton />
     <div className="admin-shell">
 
       <aside className="admin-side" aria-label="Admin navigation">
-        <strong className="admin-brand">Admakai<small>Studio admin</small></strong>
+        <strong className="admin-brand"><img src={logoDark.url} alt="Admakai" width="118" height="28" /><small>Studio admin</small></strong>
         <nav>
           {NAV.map((n) => (
             <button key={n.id} className={!elsewhere && tab === n.id ? 'is-active' : ''} aria-current={!elsewhere && tab === n.id ? 'page' : undefined} onClick={() => { setTab(n.id); if (openBooking) setOpenBooking(null); }}>
@@ -270,7 +271,7 @@ function AdminShell({ role, userId, email }: { role: StaffRole; userId: string; 
       </aside>
 
       <header className="admin-topbar">
-        <strong className="admin-brand">Admakai</strong>
+        <strong className="admin-brand"><img src={logoDark.url} alt="Admakai" width="100" height="24" /></strong>
         <button className="admin-icon-btn" aria-label="Sign out" onClick={() => confirm({ title: 'Sign out?', description: 'You will need Branta Hub to sign in again.', confirmLabel: 'Sign out', run: async () => { await supabase.auth.signOut(); window.location.assign('/'); } })}><LogOut size={17} /></button>
       </header>
 

@@ -1,5 +1,17 @@
 /* Admin shell — uses site tokens only; cards, dialogs and pipeline. */
-.admin-shell,.admin-center,.admin-dialog,.client-content{--line:oklch(0.31 0 0)}
+.client-content{--line:oklch(0.31 0 0)}
+/* The whole staff admin is light: re-point the site's dark tokens inside the shell, its popups and side panels. The SSO gate keeps its own look. */
+.admin-shell,.admin-center:not(.sso-gate),.admin-dialog,.sc-sheet,.admin-shell .client-content{
+  color-scheme:light;
+  --bg:var(--admin-page);--surface:var(--admin-soft);--line:var(--admin-line);--fg:var(--admin-ink);--muted:var(--admin-muted);--accent:var(--admin-yellow);
+  --paper:var(--admin-panel);--ink:var(--admin-ink);
+  --background:var(--admin-panel);--foreground:var(--admin-ink);--card:var(--admin-panel);--card-foreground:var(--admin-ink);--popover:var(--admin-panel);--popover-foreground:var(--admin-ink);
+  --primary:var(--admin-ink);--primary-foreground:var(--admin-panel);--secondary-foreground:var(--admin-ink);--accent-foreground:var(--admin-ink);
+  --destructive:var(--admin-danger);--destructive-foreground:var(--admin-panel);--ring:var(--admin-ink);--muted-foreground:var(--admin-muted);
+  --journey-warning:var(--admin-warning);--finder-success:var(--admin-success);
+}
+.admin-center:not(.sso-gate){background:var(--admin-page)}
+.admin-dialog,.sc-sheet{background:var(--admin-panel)!important;color:var(--admin-ink)!important}
 .admin-center{min-height:100dvh;display:grid;place-items:center;background:var(--background);color:var(--foreground);padding:1.5rem}
 .admin-card{max-width:26rem;width:100%;border:1px solid var(--line);border-radius:1.25rem;padding:2rem;background:var(--card);text-align:center}
 .admin-card h1{font-size:1.25rem;font-weight:600;margin-bottom:.5rem}
@@ -19,9 +31,11 @@
 .admin-icon-btn{display:grid;place-items:center;width:2.25rem;height:2.25rem;flex-shrink:0;border-radius:999px;color:var(--muted);border:1px solid var(--line)}
 .admin-icon-btn:hover{color:var(--foreground)}
 
-.admin-shell{min-height:100dvh;display:grid;grid-template-columns:232px minmax(0,1fr);background:var(--background);color:var(--foreground)}
-.admin-side{position:sticky;top:0;height:100dvh;border-right:1px solid var(--line);padding:1.5rem .9rem;display:flex;flex-direction:column;gap:1.25rem}
-.admin-brand{display:flex;flex-direction:column;font-size:1.15rem;padding:0 .7rem;letter-spacing:-.01em}
+.admin-shell{min-height:100dvh;display:grid;grid-template-columns:232px minmax(0,1fr);background:var(--admin-page);color:var(--foreground)}
+.admin-side{position:sticky;top:0;height:100dvh;overflow-y:auto;padding:1.5rem .9rem;display:flex;flex-direction:column;gap:1.25rem}
+.admin-brand{display:flex;flex-direction:column;gap:.35rem;font-size:1.15rem;padding:0 .7rem;letter-spacing:-.01em}
+.admin-brand img{width:118px;height:auto;display:block}
+.admin-side nav button.is-active,.admin-side nav a.is-active{background:var(--admin-panel)!important;box-shadow:var(--admin-shadow)}
 .admin-brand small{font-size:.72rem;font-weight:400;color:var(--muted)}
 .admin-side nav{display:flex;flex-direction:column;gap:.2rem}
 .admin-side nav button{display:flex;align-items:center;gap:.65rem;text-align:left;padding:.6rem .7rem;border-radius:.75rem;color:var(--muted);font-size:.9rem;transition:background .2s,color .2s}
@@ -33,7 +47,8 @@
 .admin-me button:hover{color:var(--foreground)}
 .admin-topbar,.admin-tabbar{display:none}
 
-.admin-main{padding:2rem clamp(1rem,3vw,2.5rem) 3rem;min-width:0;animation:admin-in .35s ease both}
+.admin-main{margin:.75rem .75rem .75rem 0;padding:2rem clamp(1rem,3vw,2.5rem) 3rem;min-width:0;min-height:calc(100dvh - 1.5rem);background:var(--admin-panel);border:1px solid var(--admin-line);border-radius:1.5rem;box-shadow:var(--admin-shadow);animation:admin-in .35s ease both}
+.admin-main:has(.apps-page){background:var(--admin-soft)}
 .admin-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.25rem}
 .admin-head>div{min-width:0}
 .admin-head h1{font-size:clamp(1.6rem,3vw,2.1rem);font-weight:600;letter-spacing:-.02em;line-height:1.1}
@@ -78,8 +93,8 @@ button.admin-stat:hover{border-color:color-mix(in oklab,var(--foreground) 35%,tr
 .admin-progress i{display:block;height:100%;background:var(--foreground);border-radius:inherit;transition:width .5s ease}
 
 .admin-pill{display:inline-flex;align-items:center;white-space:nowrap;font-size:.7rem;padding:.15rem .55rem;border-radius:999px;text-transform:capitalize;border:1px solid var(--line);color:var(--muted)}
-.admin-pill.is-confirmed,.admin-pill.is-paid,.admin-pill.is-won,.admin-pill.is-delivered,.admin-pill.is-completed,.admin-pill.is-approved{color:oklch(.78 .15 150);border-color:color-mix(in oklab,oklch(.78 .15 150) 40%,transparent)}
-.admin-pill.is-requested,.admin-pill.is-in_review,.admin-pill.is-sent,.admin-pill.is-partially_paid,.admin-pill.is-submitted,.admin-pill.is-resubmitted{color:oklch(.82 .13 85);border-color:color-mix(in oklab,oklch(.82 .13 85) 40%,transparent)}
+.admin-pill.is-confirmed,.admin-pill.is-paid,.admin-pill.is-won,.admin-pill.is-delivered,.admin-pill.is-completed,.admin-pill.is-approved{color:var(--admin-success);background:var(--admin-success-soft);border-color:color-mix(in oklab,var(--admin-success) 30%,transparent)}
+.admin-pill.is-requested,.admin-pill.is-in_review,.admin-pill.is-sent,.admin-pill.is-partially_paid,.admin-pill.is-submitted,.admin-pill.is-resubmitted{color:var(--admin-warning);background:var(--admin-warning-soft);border-color:color-mix(in oklab,var(--admin-warning) 30%,transparent)}
 .admin-pill.is-cancelled,.admin-pill.is-no_show,.admin-pill.is-overdue,.admin-pill.is-lost,.admin-pill.is-void,.admin-pill.is-changes_requested{color:var(--destructive);border-color:color-mix(in oklab,var(--destructive) 40%,transparent)}
 
 /* Pipeline */
@@ -90,7 +105,7 @@ button.admin-stat:hover{border-color:color-mix(in oklab,var(--foreground) 35%,tr
 .admin-col h3 small{margin-left:auto;color:var(--muted);font-weight:400}
 .admin-col-body{display:flex;flex-direction:column;gap:.55rem}
 .admin-dot{width:.5rem;height:.5rem;border-radius:50%;background:var(--muted);flex-shrink:0}
-.admin-dot.is-won{background:oklch(.78 .15 150)}.admin-dot.is-lost{background:var(--destructive)}.admin-dot.is-proposal_sent,.admin-dot.is-qualified{background:oklch(.82 .13 85)}
+.admin-dot.is-won{background:var(--admin-success)}.admin-dot.is-lost{background:var(--destructive)}.admin-dot.is-proposal_sent,.admin-dot.is-qualified{background:var(--admin-warning)}
 
 /* Dialogs */
 .admin-dialog{width:calc(100vw - 1.5rem)!important;max-width:34rem!important;max-height:calc(100dvh - 2rem);overflow-y:auto;overscroll-behavior:contain;border-radius:1.25rem!important;background:var(--card)!important;border:1px solid var(--line)!important;color:var(--foreground)}
@@ -250,3 +265,14 @@ button.admin-stat:hover{border-color:color-mix(in oklab,var(--foreground) 35%,tr
 .sso-glow{font-weight:600;color:var(--branta-2);text-shadow:0 0 10px color-mix(in oklab,var(--branta) 80%,transparent);animation:sso-glow 2.8s ease-in-out infinite}
 @keyframes sso-glow{50%{text-shadow:0 0 16px var(--branta),0 0 4px var(--branta-2)}}
 @media (prefers-reduced-motion:reduce){.sso-glow{animation:none}}
+
+/* Light admin: phone layout keeps the panel edge-to-edge. */
+@media (max-width:760px){
+  .admin-main{margin:0;min-height:0;border:0;border-radius:0;box-shadow:none}
+}
+.admin-shell .hiring-content{--hiring-success:var(--admin-success);--hiring-warning:var(--admin-warning)}
+.admin-shell .hiring-signature{background:var(--admin-panel);border:1px solid var(--admin-line);border-radius:.5rem}
+@media (max-width:1024px){.admin-side .admin-brand img{width:54px}}
+@media (min-width:1025px){.admin-side nav>button{justify-content:flex-start}}
+.admin-shell .admin-form input[type=search],.admin-shell .hiring-filters input[type=search]{width:100%;min-width:0;background:var(--admin-panel);border:1px solid var(--admin-line);border-radius:.7rem;padding:.55rem .75rem;color:var(--admin-ink);font-size:.875rem}
+@media (min-width:1025px){.admin-side nav>button>svg:last-child:not(:first-child){margin-left:auto}}

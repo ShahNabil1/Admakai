@@ -10,3 +10,15 @@ export function interviewIcs(i:{id:string;scheduled_at:string;duration_minutes:n
  return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Admakai//Hiring//EN','BEGIN:VEVENT',`UID:${i.id}@admakai.com`,`DTSTAMP:${stamp(Date.now())}`,`DTSTART:${stamp(start)}`,`DTEND:${stamp(start+i.duration_minutes*60000)}`,`SUMMARY:${safe('Admakai interview: '+title)}`,`LOCATION:${safe(i.mode==='meet'?i.meet_link ?? '':i.office_address ?? '')}`,'END:VEVENT','END:VCALENDAR',''].join('\r\n');
 }
 export function csvCell(value:unknown){const s=String(value??'');return '"'+(/^[=+@-]/.test(s)?"'"+s:s).replace(/"/g,'""')+'"';}
+/** Rating chip tone: no reviews stays neutral; 4+ is strong, 2.5+ is mixed, lower is weak. */
+export function ratingTone(average:number,reviewCount:number):'none'|'good'|'mid'|'low'{if(!reviewCount||average<=0)return 'none';return average>=4?'good':average>=2.5?'mid':'low';}
+/** Applications in the last 7 Dhaka days vs the 7 before, plus a per-day count (oldest first) for the mini chart. */
+export function weeklyApplyRatio(dates:string[],now=new Date()){
+ const day=(t:number)=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Dhaka'}).format(new Date(t));
+ const keys=Array.from({length:14},(_,i)=>day(now.getTime()-(13-i)*86400000));
+ const counts=new Map(keys.map(k=>[k,0]));
+ for(const d of dates){const k=day(new Date(d).getTime());if(counts.has(k))counts.set(k,(counts.get(k)??0)+1);}
+ const series=keys.map(k=>counts.get(k)??0),previous=series.slice(0,7).reduce((a,b)=>a+b,0),current=series.slice(7).reduce((a,b)=>a+b,0);
+ const change=previous?Math.round((current-previous)/previous*100):null;
+ return {current,previous,change,days:series.slice(7)};
+}

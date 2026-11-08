@@ -80,6 +80,27 @@
   --job-page-line: oklch(0 0 0 / 0.08);
   --job-page-shadow: 0 1px 2px oklch(0 0 0 / 0.04), 0 12px 32px -18px oklch(0 0 0 / 0.18);
   --job-page-video-badge: oklch(0.6 0.21 27);
+  /* Light admin workspace */
+  --admin-page: oklch(0.955 0.002 95);
+  --admin-panel: oklch(1 0 0);
+  --admin-soft: oklch(0.975 0.002 95);
+  --admin-ink: oklch(0.178 0 0);
+  --admin-line: oklch(0.915 0.003 95);
+  --admin-muted: oklch(0.52 0.006 95);
+  --admin-yellow: oklch(0.882 0.164 91);
+  --admin-success: oklch(0.52 0.13 155);
+  --admin-success-soft: oklch(0.955 0.04 160);
+  --admin-warning: oklch(0.58 0.13 70);
+  --admin-warning-soft: oklch(0.965 0.05 90);
+  --admin-danger: oklch(0.56 0.2 25);
+  --admin-danger-soft: oklch(0.955 0.035 15);
+  --admin-tint-1: oklch(0.93 0.07 91);
+  --admin-tint-2: oklch(0.92 0.05 160);
+  --admin-tint-3: oklch(0.92 0.05 40);
+  --admin-tint-4: oklch(0.91 0.05 290);
+  --admin-tint-5: oklch(0.92 0.05 230);
+  --admin-shadow: 0 1px 2px oklch(0 0 0 / 0.04), 0 18px 40px -28px oklch(0 0 0 / 0.22);
+  --admin-glow: radial-gradient(120% 80% at 20% 0%, oklch(0.93 0.09 60 / 0.65), transparent 60%), radial-gradient(90% 70% at 85% 40%, oklch(0.95 0.11 95 / 0.75), transparent 65%), radial-gradient(70% 60% at 100% 100%, oklch(0.94 0.04 340 / 0.6), transparent 70%), oklch(0.985 0.006 80);
   --service-landing-button-line: oklch(.885 0 0);
   --service-landing-glow: radial-gradient(ellipse at 50% 45%, color-mix(in oklch, var(--service-landing-yellow) 15%, transparent), transparent 65%);
   --service-landing-fade: linear-gradient(to right, transparent, var(--service-landing-ink) 120px, var(--service-landing-ink) calc(100% - 120px), transparent);

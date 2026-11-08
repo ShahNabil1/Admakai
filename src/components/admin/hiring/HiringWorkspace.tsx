@@ -13,6 +13,7 @@ import {TeamJourney} from './Journey';
 import {HiringEmails} from './Emails';
 import './review.css';
 import "./hiring.css";
+import "./apps.css";
 export function HiringWorkspace() {
   const read = useServerFn(hiringWorkspace),
     location = useLocation();
@@ -45,7 +46,7 @@ export function HiringWorkspace() {
   return (
     <section className="hiring-content">
       <nav className="hiring-nav" aria-label="Hiring sections">
-        {data.roles.some(r=>['admin','reviewer'].includes(r))&&<><Link to="/admin/hiring" className="admin-btn-ghost">Overview</Link><Link to="/admin/hiring/applications" className="admin-btn-ghost">Applications</Link></>}
+        {data.roles.some(r=>['admin','reviewer'].includes(r))&&<><Link to="/admin/hiring" activeOptions={{exact:true}} className="admin-btn-ghost">Overview</Link><Link to="/admin/hiring/applications" className="admin-btn-ghost">Applications</Link></>}
         <Link to="/admin/hiring/interviews" className="admin-btn-ghost">Interviews</Link>
         <Link to="/admin/hiring/jobs" className="admin-btn-ghost">
           Jobs

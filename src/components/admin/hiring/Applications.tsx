@@ -2,10 +2,10 @@ import {useState,useEffect,useCallback} from 'react';
 import {Link} from '@tanstack/react-router';
 import {useServerFn} from '@tanstack/react-start';
 import {toast} from 'sonner';
-import {Flag,LayoutGrid,List,Download,ArrowLeft} from 'lucide-react';
+import {Flag,LayoutGrid,List,Download,ArrowLeft,Sparkles,Maximize2,Search,BriefcaseBusiness,PieChart,Plus,X,ArrowUpRight,UserRound,SlidersHorizontal,ChevronDown} from 'lucide-react';
 import {hiringReviewWorkspace,hiringApplicant,saveHiringRating,assignHiringReviewer,addHiringNote,type HiringReviewData,type HiringApplicantData} from '@/lib/hiring-review.functions';
 import {regenerateHiringPdf} from '@/lib/candidate.functions';
-import {averageRating,stageDays,canMoveHiring,csvCell} from '@/lib/hiring-review-rules';
+import {averageRating,stageDays,canMoveHiring,csvCell,ratingTone,weeklyApplyRatio} from '@/lib/hiring-review-rules';
 import {supabase} from '@/lib/supabase';
 import {fmtDate} from '../ui';
 import {Action,DeliveryList,Pager} from './Controls';
@@ -15,22 +15,110 @@ import {MoveDialog,InterviewDialog,Stars} from './ReviewDialogs';
 import {HiringRichText} from '@/components/careers/HiringRichText';
 export function useReviewData(){const read=useServerFn(hiringReviewWorkspace);const [data,setData]=useState<HiringReviewData|null>(null),[error,setError]=useState('');const reload=useCallback(async()=>{try{setData(await read());setError('');}catch(e){setError(e instanceof Error?e.message:'Hiring unavailable');}},[read]);useEffect(()=>{void reload();},[reload]);useEffect(()=>{const channel=supabase.channel(`hiring-review-${crypto.randomUUID()}`).on('postgres_changes',{event:'*',schema:'public',table:'applications'},()=>void reload()).on('postgres_changes',{event:'*',schema:'public',table:'interviews'},()=>void reload()).subscribe();return()=>{void supabase.removeChannel(channel);};},[reload]);return {data,error,reload};}
 function applicantName(d:HiringReviewData,a:HiringReviewData['applications'][number]){return d.candidates.find(c=>c.id===a.candidate_id)?.full_name??'Applicant';}
-export function ApplicationBoard(){const {data,error,reload}=useReviewData();const [page,setPage]=useState(0);const [job,setJob]=useState(''),[status,setStatus]=useState(''),[search,setSearch]=useState(''),[tests,setTests]=useState(false),[flags,setFlags]=useState(false),[min,setMin]=useState(0),[max,setMax]=useState(5),[from,setFrom]=useState(''),[to,setTo]=useState(''),[view,setView]=useState('kanban'),[selected,setSelected]=useState<string[]>([]),[move,setMove]=useState<{ids:string[];target:string}|null>(null),[drag,setDrag]=useState<string|null>(null),[reviewer,setReviewer]=useState('');const assign=useServerFn(assignHiringReviewer);
- useEffect(()=>{setView(localStorage.getItem('hiring-applications-view')??'kanban');},[]);
+function tintOf(id:string){let h=0;for(const ch of id)h=(h*31+ch.charCodeAt(0))>>>0;return h%5+1;}
+function initials(name:string){return name.split(/\s+/).filter(Boolean).map(n=>n[0]).slice(0,2).join('').toUpperCase()||'A';}
+export function ApplicationBoard(){
+ const {data,error,reload}=useReviewData();
+ const [page,setPage]=useState(0);
+ const [job,setJob]=useState(''),[status,setStatus]=useState(''),[search,setSearch]=useState(''),[tests,setTests]=useState(false),[flags,setFlags]=useState(false),[min,setMin]=useState(0),[max,setMax]=useState(5),[from,setFrom]=useState(''),[to,setTo]=useState(''),[view,setView]=useState('table'),[selected,setSelected]=useState<string[]>([]),[move,setMove]=useState<{ids:string[];target:string}|null>(null),[drag,setDrag]=useState<string|null>(null),[reviewer,setReviewer]=useState(''),[more,setMore]=useState(false);
+ const assign=useServerFn(assignHiringReviewer);
+ useEffect(()=>{setView(localStorage.getItem('hiring-applications-view')??'table');},[]);
+ const chooseView=(v:'table'|'kanban')=>{setView(v);localStorage.setItem('hiring-applications-view',v);};
  if(error)return <p role="alert">{error}</p>;if(!data)return <div className="admin-skeleton"/>;
  const reviewerOnly=!data.roles.includes('admin')&&!data.roles.includes('reviewer');if(reviewerOnly)return <p>Open your assigned applicants from Interviews.</p>;
+ type App=HiringReviewData['applications'][number];
  const pipeline=data.jobs.find(j=>j.id===job)?.application_pipeline_id??data.pipelines.find(p=>p.kind==='application'&&p.is_default)?.id;
  const stages=data.stages.filter(s=>s.pipeline_id===pipeline);
- const stageAt=(a:typeof data.applications[number])=>data.events.filter(e=>e.application_id===a.id).at(-1)?.created_at??a.submitted_at??a.created_at;
- const rating=(a:typeof data.applications[number])=>averageRating(data.reviews.filter(r=>r.application_id===a.id));
- const flagged=(a:typeof data.applications[number])=>data.reviews.some(r=>r.application_id===a.id&&Array.isArray(r.knockout_flags)&&r.knockout_flags.length>0);
- const rows=data.applications.filter(a=>!a.is_draft&&(tests||!a.is_test)&&(!job||a.job_id===job)&&(!status||a.status_key===status)&&(!flags||flagged(a))&&rating(a)>=min&&rating(a)<=max&&(!from||(a.submitted_at??a.created_at)>=from)&&(!to||(a.submitted_at??a.created_at)<to+'T23:59:59Z')&&`${applicantName(data,a)} ${data.contacts.find(c=>c.user_id===a.candidate_id)?.email??''} ${data.candidates.find(c=>c.id===a.candidate_id)?.phone??''} ${a.public_code}`.toLowerCase().includes(search.toLowerCase()));
- const exportCsv=()=>{const lines=[['Name','Job','Code','Status','Average rating','Flags','Applied date','Days in stage'],...rows.filter(a=>!selected.length||selected.includes(a.id)).map(a=>[applicantName(data,a),data.jobs.find(j=>j.id===a.job_id)?.title,a.public_code,a.status_key,rating(a).toFixed(1),flagged(a)?'Yes':'No',a.submitted_at,stageDays(stageAt(a))])];const url=URL.createObjectURL(new Blob([lines.map(r=>r.map(csvCell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download='admakai-applications.csv';link.click();URL.revokeObjectURL(url);};
- return <><header className="admin-head"><div><h1>Applications</h1><p>{rows.length} applications</p></div><div className="admin-actions"><Action title="Kanban view" onClick={()=>{setView('kanban');localStorage.setItem('hiring-applications-view','kanban');}}><LayoutGrid size={17}/></Action><Action title="Table view" onClick={()=>{setView('table');localStorage.setItem('hiring-applications-view','table');}}><List size={17}/></Action><Action onClick={exportCsv}><Download size={15}/>Export CSV</Action></div></header>
- <div className="hiring-filters admin-form"><input aria-label="Search applicants" placeholder="Name, email, phone or code" value={search} onChange={e=>setSearch(e.target.value)}/><select aria-label="Job" value={job} onChange={e=>{setJob(e.target.value);setSelected([]);}}><option value="">All jobs</option>{data.jobs.map(j=><option key={j.id} value={j.id}>{j.title}</option>)}</select><select aria-label="Status" value={status} onChange={e=>setStatus(e.target.value)}><option value="">All statuses</option>{stages.map(s=><option key={s.id} value={s.key}>{s.admin_label}</option>)}</select><label>Rating min<input type="number" min="0" max="5" step="0.5" value={min} onChange={e=>setMin(Number(e.target.value))}/></label><label>Rating max<input type="number" min="0" max="5" step="0.5" value={max} onChange={e=>setMax(Number(e.target.value))}/></label><label>From<input type="date" value={from} onChange={e=>setFrom(e.target.value)}/></label><label>To<input type="date" value={to} onChange={e=>setTo(e.target.value)}/></label><label className="hiring-check"><input type="checkbox" checked={flags} onChange={e=>setFlags(e.target.checked)}/>Knockout flags</label><label className="hiring-check"><input type="checkbox" checked={tests} onChange={e=>setTests(e.target.checked)}/>Show test applications</label></div>
- {!!selected.length&&<div className="hiring-filters admin-form"><Action onClick={()=>setMove({ids:selected,target:''})}>Move {selected.length} selected</Action><select aria-label="Assign reviewer" value={reviewer} onChange={e=>setReviewer(e.target.value)}><option value="">Assign reviewer</option>{data.staff.filter(s=>s.roles.some(r=>['admin','reviewer'].includes(r))).map(s=><option value={s.user_id} key={s.user_id}>{s.email}</option>)}</select><Action disabled={!reviewer} onClick={async()=>{try{await assign({data:{ids:selected,reviewer}});toast.success('Reviewer assigned');await reload();}catch(e){toast.error(e instanceof Error?e.message:'Assignment failed');}}}>Assign</Action></div>}
- {view==='table'?<div className="hiring-table-wrap"><table className="hiring-table"><thead><tr><th><input aria-label="Select all" type="checkbox" checked={rows.length>0&&rows.every(a=>selected.includes(a.id))} onChange={e=>setSelected(e.target.checked?rows.map(a=>a.id):[])}/></th>{['Name','Job','Code','Status','Rating','Flags','Applied','Days in stage'].map(h=><th key={h}>{h}</th>)}</tr></thead><tbody>{rows.slice(Math.min(page,Math.max(0,Math.ceil(rows.length/50)-1))*50,Math.min(page,Math.max(0,Math.ceil(rows.length/50)-1))*50+50).map(a=><tr key={a.id}><td><input type="checkbox" aria-label={`Select ${applicantName(data,a)}`} checked={selected.includes(a.id)} onChange={e=>setSelected(e.target.checked?[...selected,a.id]:selected.filter(id=>id!==a.id))}/></td><td><Link to="/admin/hiring/applications/$id" params={{id:a.id}}>{applicantName(data,a)}</Link></td><td>{data.jobs.find(j=>j.id===a.job_id)?.title}</td><td>{a.public_code}</td><td><Action onClick={()=>setMove({ids:[a.id],target:''})}>{data.stages.find(s=>s.pipeline_id===data.jobs.find(j=>j.id===a.job_id)?.application_pipeline_id&&s.key===a.status_key)?.admin_label??a.status_key}</Action></td><td>{rating(a).toFixed(1)} ★</td><td>{flagged(a)&&<Flag size={15} className="hiring-flag"/>}</td><td>{a.submitted_at?fmtDate(a.submitted_at,false):'Draft'}</td><td>{stageDays(stageAt(a))}</td></tr>)}</tbody></table><Pager page={Math.min(page,Math.max(0,Math.ceil(rows.length/50)-1))} total={rows.length} onPage={setPage}/></div>:<div className="hiring-kanban" data-lenis-prevent>{stages.map(s=><section key={s.id} className="hiring-column" onDragOver={e=>e.preventDefault()} onDrop={()=>{if(drag&&canMoveHiring(data.roles,s.key))setMove({ids:[drag],target:s.key});setDrag(null);}}><header><h2>{s.admin_label}</h2><span>{rows.filter(a=>a.status_key===s.key).length}</span></header>{rows.filter(a=>a.status_key===s.key).map(a=><article draggable onDragStart={()=>setDrag(a.id)} key={a.id} className="hiring-app-card"><div className="hiring-avatar">{applicantName(data,a).split(' ').map(n=>n[0]).slice(0,2).join('')}</div><Link to="/admin/hiring/applications/$id" params={{id:a.id}}><strong>{applicantName(data,a)}</strong></Link><p>{data.jobs.find(j=>j.id===a.job_id)?.title}</p><Stars label="Rating" value={rating(a)}/>{flagged(a)&&<Flag size={15} className="hiring-flag"/>}<small>{stageDays(stageAt(a))} days in stage · {a.public_code}</small><Action onClick={()=>setMove({ids:[a.id],target:''})}>Move status</Action></article>)}</section>)}</div>}
- {!rows.length&&<p className="admin-empty">No applications match these filters.</p>}{move&&<MoveDialog data={data} {...move} onClose={()=>setMove(null)} reload={reload}/>}</>;
+ const stageAt=(a:App)=>data.events.filter(e=>e.application_id===a.id).at(-1)?.created_at??a.submitted_at??a.created_at;
+ const reviewsOf=(a:App)=>data.reviews.filter(r=>r.application_id===a.id);
+ const rating=(a:App)=>averageRating(reviewsOf(a));
+ const flagged=(a:App)=>data.reviews.some(r=>r.application_id===a.id&&Array.isArray(r.knockout_flags)&&r.knockout_flags.length>0);
+ const emailOf=(a:App)=>data.contacts.find(c=>c.user_id===a.candidate_id)?.email;
+ const jobTitle=(a:App)=>data.jobs.find(j=>j.id===a.job_id)?.title;
+ const stageLabel=(a:App)=>data.stages.find(s=>s.pipeline_id===data.jobs.find(j=>j.id===a.job_id)?.application_pipeline_id&&s.key===a.status_key)?.admin_label??a.status_key.replaceAll('_',' ');
+ const base=data.applications.filter(a=>!a.is_draft&&(tests||!a.is_test)&&(!job||a.job_id===job)&&(!flags||flagged(a))&&rating(a)>=min&&rating(a)<=max&&(!from||(a.submitted_at??a.created_at)>=from)&&(!to||(a.submitted_at??a.created_at)<to+'T23:59:59Z')&&`${applicantName(data,a)} ${emailOf(a)??''} ${data.candidates.find(c=>c.id===a.candidate_id)?.phone??''} ${a.public_code}`.toLowerCase().includes(search.toLowerCase()));
+ const rows=base.filter(a=>!status||a.status_key===status);
+ const ratio=weeklyApplyRatio(data.applications.flatMap(a=>!a.is_draft&&(tests||!a.is_test)&&a.submitted_at?[a.submitted_at]:[]));
+ const peak=Math.max(1,...ratio.days);
+ const pageIndex=Math.min(page,Math.max(0,Math.ceil(rows.length/50)-1));
+ const pageRows=rows.slice(pageIndex*50,pageIndex*50+50);
+ const moreCount=[min>0,max<5,!!from,!!to,flags,tests].filter(Boolean).length;
+ const hasShortlist=stages.some(s=>s.key==='shortlisted');
+ const pickStatus=(key:string)=>{setStatus(key);setPage(0);};
+ const exportCsv=()=>{const lines=[['Name','Job','Code','Status','Average rating','Flags','Applied date','Days in stage'],...rows.filter(a=>!selected.length||selected.includes(a.id)).map(a=>[applicantName(data,a),jobTitle(a),a.public_code,a.status_key,rating(a).toFixed(1),flagged(a)?'Yes':'No',a.submitted_at,stageDays(stageAt(a))])];const url=URL.createObjectURL(new Blob([lines.map(r=>r.map(csvCell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download='admakai-applications.csv';link.click();URL.revokeObjectURL(url);};
+ const toggleOne=(id:string,on:boolean)=>setSelected(on?[...selected,id]:selected.filter(x=>x!==id));
+ return <div className="apps-page">
+  <aside className="apps-aside">
+   <section className="apps-ask">
+    <div className="apps-card-top"><span className="apps-ask-icon"><Sparkles size={17} aria-hidden="true"/></span><strong>Hiring desk</strong><Link to="/admin/hiring" className="apps-round" aria-label="Open hiring overview" title="Hiring overview"><Maximize2 size={15}/></Link></div>
+    <h2>Ready to find top <b>candidates</b> or revisit your pipeline?</h2>
+    <div className="apps-ask-chips">
+     {hasShortlist&&<button type="button" onClick={()=>{pickStatus('shortlisted');chooseView('table');}}><Search size={13} aria-hidden="true"/>Shortlisted</button>}
+     <button type="button" onClick={()=>chooseView('kanban')}><BriefcaseBusiness size={13} aria-hidden="true"/>My pipeline</button>
+     <Link to="/admin/hiring"><PieChart size={13} aria-hidden="true"/>Insights</Link>
+    </div>
+    <label className="apps-ask-search"><Plus size={16} aria-hidden="true"/><input type="search" aria-label="Search applicants" placeholder="Search applicants…" value={search} onChange={e=>{setSearch(e.target.value);setPage(0);}}/>{search&&<button type="button" aria-label="Clear search" onClick={()=>setSearch('')}><X size={14}/></button>}</label>
+   </section>
+   <section className="apps-ratio">
+    <div className="apps-card-top"><div><strong>Applying ratio</strong><small>This week</small></div><Link to="/admin/hiring" className="apps-round" aria-label="Open hiring overview" title="Hiring overview"><ArrowUpRight size={15}/></Link></div>
+    <p className="apps-ratio-value">{ratio.change===null?ratio.current:`${ratio.change>0?'+':''}${ratio.change}`}<small>{ratio.change===null?(ratio.current===1?' application':' applications'):'%'}</small></p>
+    <p className="apps-ratio-note">{ratio.current} in the last 7 days · {ratio.previous} the week before</p>
+    <div className="apps-bars" aria-hidden="true">{ratio.days.map((n,i)=><i key={i} className={i===6?'is-today':''} style={{height:`${Math.max(8,n/peak*100)}%`}}/>)}</div>
+   </section>
+  </aside>
+  <div className="apps-main">
+   <header className="apps-welcome">
+    <div><p className="admin-eyebrow">Applications</p><h1>Welcome back,</h1><p>Great talent awaits. Let’s hire smart!</p></div>
+    <div className="apps-count"><strong>{ratio.current}</strong><small><UserRound size={13} aria-hidden="true"/>New this week</small></div>
+   </header>
+   <section className="apps-board">
+    <div className="apps-toolbar">
+     <div className="apps-tabs" role="group" aria-label="Filter by status">
+      <button type="button" aria-pressed={!status} className={!status?'is-active':''} onClick={()=>pickStatus('')}>All<small>{base.length}</small></button>
+      {stages.flatMap(s=>{const n=base.filter(a=>a.status_key===s.key).length;return n||status===s.key?[<button type="button" key={s.id} aria-pressed={status===s.key} className={status===s.key?'is-active':''} onClick={()=>pickStatus(status===s.key?'':s.key)}>{s.admin_label}<small>{n}</small></button>]:[];})}
+     </div>
+    </div>
+    <div className="apps-filters">
+     <select aria-label="Job" value={job} onChange={e=>{setJob(e.target.value);setStatus('');setSelected([]);setPage(0);}}><option value="">All jobs</option>{data.jobs.map(j=><option key={j.id} value={j.id}>{j.title}</option>)}</select>
+     <button type="button" className={`admin-btn-ghost apps-more-btn ${more?'is-active':''}`} aria-expanded={more} onClick={()=>setMore(!more)}><SlidersHorizontal size={15}/>More filters{moreCount>0&&<em>{moreCount}</em>}</button>
+     <span className="apps-total">{rows.length} {rows.length===1?'application':'applications'}</span>
+     <div className="apps-tools">
+      <div className="apps-view" role="group" aria-label="Choose view">
+       <button type="button" aria-pressed={view==='table'} className={view==='table'?'is-active':''} aria-label="Table view" title="Table view" onClick={()=>chooseView('table')}><List size={16}/></button>
+       <button type="button" aria-pressed={view==='kanban'} className={view==='kanban'?'is-active':''} aria-label="Kanban view" title="Kanban view" onClick={()=>chooseView('kanban')}><LayoutGrid size={16}/></button>
+      </div>
+      <button type="button" className="admin-btn-ghost" onClick={exportCsv}><Download size={15}/>Export CSV</button>
+     </div>
+    </div>
+    {more&&<div className="apps-more admin-form">
+     <label>Rating min<input type="number" min="0" max="5" step="0.5" value={min} onChange={e=>setMin(Number(e.target.value))}/></label>
+     <label>Rating max<input type="number" min="0" max="5" step="0.5" value={max} onChange={e=>setMax(Number(e.target.value))}/></label>
+     <label>From<input type="date" value={from} onChange={e=>setFrom(e.target.value)}/></label>
+     <label>To<input type="date" value={to} onChange={e=>setTo(e.target.value)}/></label>
+     <label className="hiring-check"><input type="checkbox" checked={flags} onChange={e=>setFlags(e.target.checked)}/>Knockout flags</label>
+     <label className="hiring-check"><input type="checkbox" checked={tests} onChange={e=>setTests(e.target.checked)}/>Show test applications</label>
+    </div>}
+    {!!selected.length&&<div className="apps-bulk admin-form">
+     <strong>{selected.length} selected</strong>
+     <Action onClick={()=>setMove({ids:selected,target:''})}>Move status</Action>
+     <select aria-label="Assign reviewer" value={reviewer} onChange={e=>setReviewer(e.target.value)}><option value="">Assign reviewer</option>{data.staff.filter(s=>s.roles.some(r=>['admin','reviewer'].includes(r))).map(s=><option value={s.user_id} key={s.user_id}>{s.email}</option>)}</select>
+     <Action disabled={!reviewer} onClick={async()=>{try{await assign({data:{ids:selected,reviewer}});toast.success('Reviewer assigned');await reload();}catch(e){toast.error(e instanceof Error?e.message:'Assignment failed');}}}>Assign</Action>
+     <button type="button" className="apps-clear" onClick={()=>setSelected([])}>Clear</button>
+    </div>}
+    {view==='table'?<><div className="apps-table-wrap"><table className="apps-table"><thead><tr><th className="apps-check"><input aria-label="Select all" type="checkbox" checked={rows.length>0&&rows.every(a=>selected.includes(a.id))} onChange={e=>setSelected(e.target.checked?rows.map(a=>a.id):[])}/></th>{['Name','Rating','Applied role','Status'].map(h=><th key={h}>{h}</th>)}</tr></thead>
+     <tbody>{pageRows.map(a=>{const name=applicantName(data,a),reviews=reviewsOf(a),avg=averageRating(reviews),tone=ratingTone(avg,reviews.length),on=selected.includes(a.id);return <tr key={a.id} className={on?'is-selected':''}>
+      <td className="apps-check"><input type="checkbox" aria-label={`Select ${name}`} checked={on} onChange={e=>toggleOne(a.id,e.target.checked)}/></td>
+      <td><Link to="/admin/hiring/applications/$id" params={{id:a.id}} className="apps-person"><span className={`apps-avatar is-tint-${tintOf(a.id)}`} aria-hidden="true">{initials(name)}</span><span><strong>{name}</strong><small>{emailOf(a)??'No email'}</small></span></Link></td>
+      <td><span className="apps-score-cell"><span className={`apps-score is-${tone}`}>{tone==='none'?'Not rated':`${avg.toFixed(1)} / 5`}</span>{flagged(a)&&<span className="hiring-flag" title="Knockout flag"><Flag size={14} aria-hidden="true"/><span className="sr-only">Knockout flag</span></span>}</span></td>
+      <td className="apps-when"><span>{jobTitle(a)}</span><small>Applied {a.submitted_at?fmtDate(a.submitted_at,false):'Draft'}</small></td>
+      <td className="apps-when"><button type="button" className="apps-status" title="Move status" onClick={()=>setMove({ids:[a.id],target:''})}><span>{stageLabel(a)}</span><ChevronDown size={13} aria-hidden="true"/></button><small title={a.public_code}>{stageDays(stageAt(a))} days in stage{a.is_test&&<em>Test</em>}</small></td>
+     </tr>;})}</tbody></table></div><Pager page={pageIndex} total={rows.length} onPage={setPage}/></>
+    :<div className="hiring-kanban apps-kanban" data-lenis-prevent>{stages.map(s=><section key={s.id} className="hiring-column" onDragOver={e=>e.preventDefault()} onDrop={()=>{if(drag&&canMoveHiring(data.roles,s.key))setMove({ids:[drag],target:s.key});setDrag(null);}}><header><h2>{s.admin_label}</h2><span>{rows.filter(a=>a.status_key===s.key).length}</span></header>{rows.filter(a=>a.status_key===s.key).map(a=>{const name=applicantName(data,a);return <article draggable onDragStart={()=>setDrag(a.id)} key={a.id} className="hiring-app-card"><div className="apps-person"><span className={`apps-avatar is-tint-${tintOf(a.id)}`} aria-hidden="true">{initials(name)}</span><span><Link to="/admin/hiring/applications/$id" params={{id:a.id}}><strong>{name}</strong></Link><small>{jobTitle(a)}</small></span></div><Stars label="Rating" value={rating(a)}/>{flagged(a)&&<Flag size={15} className="hiring-flag"/>}<small>{stageDays(stageAt(a))} days in stage · {a.public_code}</small><Action onClick={()=>setMove({ids:[a.id],target:''})}>Move status</Action></article>;})}</section>)}</div>}
+    {!rows.length&&<div className="apps-empty"><p>No applications match these filters.</p>{(status||search||job||moreCount>0)&&<button type="button" className="admin-btn-ghost" onClick={()=>{setStatus('');setSearch('');setJob('');setMin(0);setMax(5);setFrom('');setTo('');setFlags(false);setTests(false);}}>Clear filters</button>}</div>}
+   </section>
+  </div>
+  {move&&<MoveDialog data={data} {...move} onClose={()=>setMove(null)} reload={reload}/>}
+ </div>;
 }
 export function ApplicantProfile({id}:{id:string}){const {data,error,reload:reloadWorkspace}=useReviewData();const read=useServerFn(hiringApplicant),rate=useServerFn(saveHiringRating),assign=useServerFn(assignHiringReviewer),noteSave=useServerFn(addHiringNote),regenerate=useServerFn(regenerateHiringPdf),retryOne=useServerFn(retryDelivery);const [detail,setDetail]=useState<HiringApplicantData|null>(null),[detailError,setDetailError]=useState(''),[move,setMove]=useState<string|null>(null),[note,setNote]=useState(''),[scores,setScores]=useState([3,3,3]),[edit,setEdit]=useState<{interview:HiringReviewData['interviews'][number];action:'reschedule'|'cancel'|'result'}|null>(null);
  const reload=useCallback(async()=>{await reloadWorkspace();try{setDetail(await read({data:{id}}));setDetailError('');}catch(e){setDetailError(e instanceof Error?e.message:'Applicant unavailable');}},[id,read,reloadWorkspace]);useEffect(()=>{void reload();},[reload]);useEffect(()=>{const own=data?.reviews.find(r=>r.application_id===id&&r.reviewer_id===data.userId);if(own)setScores([own.skill_score??3,own.thinking_score??3,own.commitment_score??3]);},[data,id]);
