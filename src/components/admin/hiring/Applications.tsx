@@ -5,7 +5,7 @@ import {toast} from 'sonner';
 import {Flag,LayoutGrid,List,Download,ArrowLeft,Sparkles,Maximize2,Search,BriefcaseBusiness,PieChart,Plus,X,ArrowUpRight,UserRound,SlidersHorizontal,ChevronDown} from 'lucide-react';
 import {hiringReviewWorkspace,hiringApplicant,saveHiringRating,assignHiringReviewer,addHiringNote,type HiringReviewData,type HiringApplicantData} from '@/lib/hiring-review.functions';
 import {regenerateHiringPdf} from '@/lib/candidate.functions';
-import {averageRating,stageDays,canMoveHiring,csvCell,ratingTone,weeklyApplyRatio} from '@/lib/hiring-review-rules';
+import {averageRating,stageDays,canMoveHiring,ratingTone,weeklyApplyRatio} from '@/lib/hiring-review-rules';
 import {supabase} from '@/lib/supabase';
 import {fmtDate} from '../ui';
 import {Action,DeliveryList,Pager} from './Controls';
@@ -45,7 +45,7 @@ export function ApplicationBoard(){
  const moreCount=[min>0,max<5,!!from,!!to,flags,tests].filter(Boolean).length;
  const hasShortlist=stages.some(s=>s.key==='shortlisted');
  const pickStatus=(key:string)=>{setStatus(key);setPage(0);};
- const exportCsv=()=>{const lines=[['Name','Job','Code','Status','Average rating','Flags','Applied date','Days in stage'],...rows.filter(a=>!selected.length||selected.includes(a.id)).map(a=>[applicantName(data,a),jobTitle(a),a.public_code,a.status_key,rating(a).toFixed(1),flagged(a)?'Yes':'No',a.submitted_at,stageDays(stageAt(a))])];const url=URL.createObjectURL(new Blob([lines.map(r=>r.map(csvCell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download='admakai-applications.csv';link.click();URL.revokeObjectURL(url);};
+ const exportCsv=async()=>{const picked=rows.filter(a=>!selected.length||selected.includes(a.id));const head=['#','Name','Email','WhatsApp','Phone','Area','Education','Occupation','Job','Application code','Status','Average rating','Flagged','Applied date','Days in stage'];const widths=[5,24,30,18,18,18,22,22,26,16,16,12,9,14,12];const cell=(v:unknown)=>({value:v==null||v===''?'—':String(v),wrap:true});const sheet=[head.map(h=>({value:h,fontWeight:'bold' as const,color:'#FFFFFF',backgroundColor:'#111111'})),...picked.map((a,i)=>{const c=data.candidates.find(x=>x.id===a.candidate_id);const at=a.submitted_at??a.created_at;return [{value:i+1},cell(applicantName(data,a)),cell(emailOf(a)),cell(c?.whatsapp),cell(c?.phone),cell(c?.area),cell(c?.education),cell(c?.current_occupation),cell(jobTitle(a)),cell(a.public_code),cell(stageLabel(a)),{value:Number(rating(a).toFixed(1))},cell(flagged(a)?'Yes':'No'),cell(at?new Date(at).toLocaleDateString('en-GB',{timeZone:'Asia/Dhaka'}):''),{value:stageDays(stageAt(a))}];})];const {default:writeExcelFile}=await import('write-excel-file/browser');await writeExcelFile(sheet as never,{columns:widths.map(width=>({width})),stickyRowsCount:1,sheet:'Applications'} as never).toFile(`admakai-applications-${new Date().toISOString().slice(0,10)}.xlsx`);};
  const toggleOne=(id:string,on:boolean)=>setSelected(on?[...selected,id]:selected.filter(x=>x!==id));
  return <div className="apps-page">
   <aside className="apps-aside">
@@ -87,7 +87,7 @@ export function ApplicationBoard(){
        <button type="button" aria-pressed={view==='table'} className={view==='table'?'is-active':''} aria-label="Table view" title="Table view" onClick={()=>chooseView('table')}><List size={16}/></button>
        <button type="button" aria-pressed={view==='kanban'} className={view==='kanban'?'is-active':''} aria-label="Kanban view" title="Kanban view" onClick={()=>chooseView('kanban')}><LayoutGrid size={16}/></button>
       </div>
-      <button type="button" className="admin-btn-ghost" onClick={exportCsv}><Download size={15}/>Export CSV</button>
+      <button type="button" className="admin-btn-ghost" onClick={exportCsv}><Download size={15}/>Export Excel</button>
      </div>
     </div>
     {more&&<div className="apps-more admin-form">
