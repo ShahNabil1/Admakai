@@ -19,9 +19,8 @@ describe('Branta Hub SSO', () => {
   it.each([
     'https://admakai.com',
     'https://www.admakai.com',
-    'https://admakai.lovable.app',
-    'https://id-preview--501d0449-9e53-4830-89e1-c51ec60b3911.lovable.app',
-    'https://project--501d0449-9e53-4830-89e1-c51ec60b3911-dev.lovable.app',
+    'https://preview.admakai.example',
+    'http://localhost:8080',
   ])('returns sign-in to the same Admakai origin: %s', (origin) => {
     const url = new URL(buildHubSsoUrl(origin, 'test-state'));
     expect(url.origin).toBe('https://console.brantatech.com');

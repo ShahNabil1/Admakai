@@ -13,7 +13,6 @@ import { useEffect, type ReactNode } from "react";
 import { pageLang } from "@/lib/page-lang";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "../lib/auth-state";
 import { initSmoothScroll } from "../lib/smooth-scroll";
 import { CurrencyProvider } from '../lib/currency';
@@ -43,9 +42,6 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">

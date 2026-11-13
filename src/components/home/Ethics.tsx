@@ -5,7 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useMotionPreference } from "@/hooks/use-motion-preference";
 import { gsap, registerGsap } from "@/lib/gsap";
-import ethicsImage from "@/assets/about/ethics.jpg.asset.json";
+import ethicsImage from "@/assets/about/ethics.jpg";
 import "./ethics.css";
 
 const points = [
@@ -34,7 +34,7 @@ export function Ethics() {
         <motion.div className="ethics-panel" initial={reduce ? false : "hidden"} animate={reduce ? "visible" : false} whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: reduce ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }}>
           <div className="ethics-media">
             <motion.div className="ethics-image" variants={{ hidden: { clipPath: "inset(0 100% 0 0)" }, visible: { clipPath: "inset(0 0% 0 0)" } }} transition={{ duration: reduce ? 0 : 1, ease: [0.22, 1, 0.36, 1] }}>
-              <img ref={image} src={ethicsImage.url} alt="A smiling man seated in an armchair beside a palm in a colourful studio" loading="lazy" width="1152" height="768" />
+              <img ref={image} src={ethicsImage} alt="A smiling man seated in an armchair beside a palm in a colourful studio" loading="lazy" width="1152" height="768" />
             </motion.div>
             <span className="ethics-caption">Made with AI, finished by people</span>
           </div>

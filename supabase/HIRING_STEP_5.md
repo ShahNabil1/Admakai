@@ -18,7 +18,7 @@
 - One task-files owner-read policy for profile photo paths. No buckets were created or made public.
 
 ## Architecture deviation
-The project's enforced server architecture does not permit new Supabase Edge Functions. Equivalent operations use authenticated TanStack server functions and server-only helpers against the existing external Supabase; no Deno functions were deployed. RESEND_API_KEY was saved as a project runtime secret, not confirmed as an external Supabase Edge Function secret. No Lovable Cloud was enabled.
+The project's enforced server architecture does not permit new Supabase Edge Functions. Equivalent operations use authenticated TanStack server functions and server-only helpers against the existing external Supabase; no Deno functions were deployed. RESEND_API_KEY was saved as a project runtime secret, not confirmed as an external Supabase Edge Function secret.
 
 ## Verification and limits
 Focused tests cover A4 multi-page PDF bytes, canonical path/digest, exact template version, skipped/sent/failed email, missing signature, delivery-failure isolation, names, preferences, Meet join threshold, due dates, timeline and polling.

@@ -20,4 +20,4 @@
 - Anonymous desktop/mobile browser fixture confirms signed covers render, two covers share one signing request, maxres failure selects hq, Vimeo has no poster, and no overflow/runtime errors.
 - Real admin upload followed by anonymous job-page readback is **not verified**: this external Supabase/Hub provides no authenticated test session. Current database has only a draft job with no cover and no configured video/poster; no test job was published or personal account modified.
 
-No Lovable Cloud, public bucket or workspace-setting changes. Other bucket policies and existing admin page bodies/data were untouched. Fourteen pre-existing security advisories remain; this migration introduced none.
+No public bucket or workspace-setting changes. Other bucket policies and existing admin page bodies/data were untouched. Fourteen pre-existing security advisories remain; this migration introduced none.

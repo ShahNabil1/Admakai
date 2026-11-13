@@ -26,4 +26,4 @@
 - Real Hub-authenticated admin/reviewer workflows, actual uploads, and published Careers readback remain unverified: external unmanaged Supabase supplies no authenticated test session. No live job was published for testing.
 - Public covers/posters remain blocked by workspace policy. An owner/admin must enable public buckets under workspace Settings → Privacy & Security, then hiring-public can be created.
 - Existing Today, Bookings, Pipeline, Projects, Work, Billing and Activity page bodies and their records were not changed. Shell changes only add Hiring/navigation; visiting Hiring avoids unrelated booking/lead reads.
-- External Supabase only. Lovable Cloud was not enabled. No new security-linter findings remain; 14 pre-existing advisories remain unchanged.
+- Uses the existing Supabase project. No new security-linter findings remain; 14 pre-existing advisories remain unchanged.

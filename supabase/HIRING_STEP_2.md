@@ -22,7 +22,7 @@
 - Existing regression suite plus eight careers rule tests: 500 passed; preview build OK.
 - Authenticated staff draft preview, own-application link and real job detail interaction remain unverified end-to-end: external unmanaged Supabase provides no browser session here. No credentials requested, existing owners not promoted, draft not published for testing.
 - Fourteen pre-existing security advisories remain unchanged (one RLS/no-policy informational finding, twelve executable definer-function advisories, leaked-password protection disabled). This migration introduced none.
-- No Lovable Cloud enabled. Existing database definitions and bucket settings not changed; only new objects and requested seed records added.
+- Existing database definitions and bucket settings not changed; only new objects and requested seed records added.
 
 ## URLs
 - /careers

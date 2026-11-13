@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { Link } from '@tanstack/react-router';
 import { GraduationCap, Film, BriefcaseBusiness } from 'lucide-react';
-import logo from '@/assets/brand/logo-dark-cropped.png.asset.json';
+import { DARK_LOGO_PATH } from '@/data/site';
 import { Button } from '@/components/ui/button';
 import { EmailCodeForm } from './EmailCodeForm';
 import './apply-redesign.css';
@@ -10,7 +10,7 @@ export function ApplicationSignIn({ returnPath, onSignedIn, googleEnabled = true
   const [updates, setUpdates] = useState(true);
   return <section className="apply-signin">
     <div className="apply-signin-story">
-      <img className="apply-logo" src={logo.url} alt="Admakai" />
+      <img className="apply-logo" src={DARK_LOGO_PATH} alt="Admakai" />
       <div><p className="apply-kicker">YOUR NEXT CHAPTER</p><h1>Start your journey in AI filmmaking</h1>
       <ul>{[[GraduationCap, 'Learn from zero'], [Film, 'Learn beside a working AI film team'], [BriefcaseBusiness, 'Work on real brand projects']].map(([Icon, text]) => { const FactIcon = Icon as typeof Film; return <li key={String(text)}><span><FactIcon size={20} /></span>{String(text)}</li>; })}</ul></div>
       <p className="apply-story-footer">Admakai · A Branta Tech sister concern</p>

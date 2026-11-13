@@ -8,7 +8,7 @@ import { useAccount } from '@/components/account/useAccount';
 import { dashboardUnread, dhakaClock, searchDashboard, type DashboardItem } from '@/lib/dashboard-rules';
 import { dhakaDate } from '@/lib/candidate-rules';
 import { useNow } from '@/components/account/useAccount';
-import logo from '@/assets/brand/logo-dark-cropped.png.asset.json';
+import { DARK_LOGO_PATH } from '@/data/site';
 import '@/components/careers/application.css';
 import '@/components/careers/candidate.css';
 import '@/components/client/client-area.css';
@@ -31,7 +31,7 @@ export function DashboardShell(){
   const initial=a.name?.split(' ').map(s=>s[0]).slice(0,2).join('')||'A';
   const stage=a.journey?.label??(a.latest?`Applicant · ${a.latestStage?.candidate_label??a.latest.status_key}`:'');
   const allTabs=[...base,{to:'/dashboard/profile' as const,label:'Profile',Icon:Settings},...(a.hasJourney?[{to:'/dashboard/journey' as const,label:'Journey',Icon:RouteIcon}]:[])];
-  const sidebar=<><div className="dash-brand"><Link to="/dashboard" aria-label="Admakai dashboard"><img src={logo.url} alt="Admakai"/></Link><Button variant="ghost" size="icon" title={collapsed?'Expand sidebar':'Collapse sidebar'} aria-label={collapsed?'Expand sidebar':'Collapse sidebar'} onClick={()=>setCollapsed(!collapsed)}>{collapsed?<PanelLeftOpen size={17}/>:<PanelLeftClose size={17}/>}</Button></div>
+  const sidebar=<><div className="dash-brand"><Link to="/dashboard" aria-label="Admakai dashboard"><img src={DARK_LOGO_PATH} alt="Admakai"/></Link><Button variant="ghost" size="icon" title={collapsed?'Expand sidebar':'Collapse sidebar'} aria-label={collapsed?'Expand sidebar':'Collapse sidebar'} onClick={()=>setCollapsed(!collapsed)}>{collapsed?<PanelLeftOpen size={17}/>:<PanelLeftClose size={17}/>}</Button></div>
     <Button variant="outline" className="dash-side-search" onClick={()=>setSearchOpen(true)}><Search size={15}/><span>Search</span><kbd>⌘K</kbd></Button>
     <p className="dash-group-label">General</p><nav aria-label="Dashboard menu">{base.map(({to,label,Icon})=>{const count=to==='/dashboard/calls'?(a.client?.bookings.filter(c=>Date.parse(c.slot_at)>a.now&&['confirmed','requested','rescheduled'].includes(c.status)).length??0):to==='/dashboard/careers'?unread.filter(i=>i.kind==='application').length:to==='/dashboard/documents'?unread.filter(i=>i.kind==='document').length:0;return <Link to={to} key={to} title={label} activeOptions={{exact:to==='/dashboard'}} onClick={()=>setDrawer(false)}><Icon size={18}/><span>{label}</span>{count>0&&<small>{count}</small>}</Link>;})}</nav>
     {a.hasJourney&&<><p className="dash-group-label">My journey</p><nav><Link to="/dashboard/journey" title="Journey" onClick={()=>setDrawer(false)}><RouteIcon size={18}/><span>Journey</span><small>{a.journey?.label??'Active'}</small></Link></nav></>}

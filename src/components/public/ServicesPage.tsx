@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
 import { filterServicesByGoal, serviceGoals, toggleServiceGoal, type ServiceGoal } from '@/data/service-goals';
 import { filterServicesByCategory, serviceCategoryTabs, type ServiceCategoryFilter } from '@/data/service-category-filter';
-import footerImage from "@/assets/services-sky-hills.png.asset.json";
+import footerImage from "@/assets/services-sky-hills.png";
 import { Reveal } from '@/components/motion/Reveal';
 import { publishedServices, visibleCategories, findPublishedService } from '@/data/services';
 import { ServiceCatalogueCard } from '@/components/services/ServiceCatalogueCard';
@@ -50,7 +50,7 @@ export function ServicesPage() {
       setCategoryFilter('all');
       window.setTimeout(() => document.getElementById(category ?? 'service-catalogue')?.scrollIntoView({ block: 'start', behavior: reduce ? 'instant' : 'smooth' }), reduce ? 0 : 320);
     }}/>
-    <section className="service-catalogue-section" id="service-catalogue" style={{ '--service-catalogue-photo': `url("${footerImage.url}")` } as CSSProperties}>
+    <section className="service-catalogue-section" id="service-catalogue" style={{ '--service-catalogue-photo': `url("${footerImage}")` } as CSSProperties}>
       <div className="service-catalogue-section-inner">
       <header className="service-catalogue-section-header"><h2>{publishedServices().length} ways to make an ad without a shoot.</h2>
         <p><Link to="/work">See our work</Link></p>

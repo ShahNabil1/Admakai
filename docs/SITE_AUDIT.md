@@ -1,6 +1,6 @@
 # Admakai — Full Site Audit
 
-**Audit date:** 8 November 2026 (UTC). **Mode:** read-only investigation; this report is the only project file added. No application code, content, database, policies, buckets or settings changed. Lovable Cloud was not enabled. No tests or builds were run.
+**Audit date:** 8 November 2026 (UTC). **Mode:** read-only investigation; this report is the only project file added. No application code, content, database, policies, buckets or settings changed. No tests or builds were run.
 
 **Evidence:** current source, read-only queries against the connected external Supabase, its database linter, secret-name/presence checks, existing preview logs and signed-out browser observations. This audits the current checkout/preview, not proof that the published domain has the same version. Authenticated end-to-end checks are unavailable for this external/unmanaged Supabase; provider settings, real uploads, inbox delivery and cross-user browser sessions remain unverified. No personal account emails or secret values are reproduced.
 
@@ -303,8 +303,8 @@ Names grouped by module under `src/lib/`; each name below is an exported `create
 
 ### Secrets/configuration — names only
 
-- Project secret listing: `RESEND_API_KEY`, `CRON_SECRET`, `LOVABLE_API_KEY`, `LOVABLE_CRON_SECRET`.
-- Sandbox presence checks also confirm `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`. These integration bindings are not shown in the four-name custom-secret listing.
+- Application secret names observed: `RESEND_API_KEY` and `CRON_SECRET`.
+- Sandbox presence checks also confirm `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`. These integration bindings are not shown in the custom-secret listing.
 - Browser configuration referenced in source: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, optional legacy `VITE_SUPABASE_ANON_KEY`, project ID configuration.
 - `SUPABASE_ANON_KEY` is absent in the checked sandbox environment but **not required** when `SUPABASE_PUBLISHABLE_KEY` is present. No required checked secret is missing.
 - Google client ID/secret, provider enablement, SMTP/auth-email templates and production redirects are hosted settings, not verified by this secret listing. Production secret validity/deployment was not independently tested.
@@ -415,7 +415,7 @@ The read-only Supabase linter reported **14 issues, no ERROR-level result**: one
 
 ## 9. YOUR RECOMMENDATION
 
-1. Keep one external Supabase Auth identity and reuse the current session; do not introduce another account database or Lovable Cloud.
+1. Keep one external Supabase Auth identity and reuse the current session without introducing a second identity store.
 2. Offer one public sign-in entry with email code as the common option; retain password/Google only where deliberately supported and configured.
 3. Keep Branta Console as staff SSO, returning to the same account/session system rather than replacing its trusted access checks.
 4. Create one shared account menu showing identity, Dashboard, Profile, Sign out and only the workspaces the account can actually use.

@@ -1,4 +1,5 @@
 export const SITE_URL = "https://admakai.com";
+export const DARK_LOGO_PATH = "/brand/logo-dark.png";
 export const EMAIL = "";
 export const WHATSAPP = "";
 export const WHATSAPP_DISPLAY = "";

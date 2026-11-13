@@ -1,7 +1,6 @@
-import { SITE_URL, siteFallback, type SiteDetails } from '@/data/site';
+import { SITE_URL, DARK_LOGO_PATH, siteFallback, type SiteDetails } from '@/data/site';
 import { contentPartner as currentContentPartner } from '@/data/pricing';
 import { publishedServices } from '@/data/services';
-import darkLogo from '@/assets/brand/logo-dark-cropped.png.asset.json';
 
 export type JsonLd = Record<string, unknown>;
 export function canonicalUrl(path: string) {
@@ -45,7 +44,7 @@ export function organizationSchema(site: SiteDetails = siteFallback): JsonLd {
   const contact = { ...(site.WHATSAPP ? { telephone: `+${site.WHATSAPP}` } : {}), ...(site.EMAIL ? { email: site.EMAIL } : {}) };
   return {
     '@context': 'https://schema.org', '@type': 'Organization', '@id': organizationId,
-    name: 'Admakai', url: SITE_URL, logo: new URL(darkLogo.url, SITE_URL).href,
+    name: 'Admakai', url: SITE_URL, logo: new URL(DARK_LOGO_PATH, SITE_URL).href,
     sameAs: Object.values(site.SOCIALS).filter(Boolean),
     ...(Object.keys(contact).length ? { contactPoint: { '@type': 'ContactPoint', contactType: 'customer service', ...contact } } : {}),
     address: { '@type': 'PostalAddress', addressLocality: 'Dhaka', addressCountry: 'BD' },

@@ -1,6 +1,6 @@
 # Hiring Step 3: seven-step application
 
-Uses the existing external Supabase; Lovable Cloud was not enabled. The user explicitly approved necessary existing hiring safeguard updates. Legacy roles are unchanged.
+Uses the existing Supabase project. The user explicitly approved necessary existing hiring safeguard updates. Legacy roles are unchanged.
 
 ## Added
 - `applications.cv_path`, `applications.is_test` and `hiring_settings.google_login_enabled` (false).

@@ -1,6 +1,6 @@
 # Hiring Step 1 inventory
 
-Applied to the existing external Supabase project. No UI changes. Lovable Cloud was not enabled.
+Applied to the existing external Supabase project. No UI changes.
 
 ## Compatibility and exceptions
 

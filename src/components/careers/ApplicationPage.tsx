@@ -41,7 +41,7 @@ import { HiringRichText } from './HiringRichText';
 import { ApplicationSignIn } from './ApplicationSignIn';
 import { PassportCrop } from './PassportCrop';
 import { passportFileError } from '@/lib/passport-rules';
-import logo from '@/assets/brand/logo-dark-cropped.png.asset.json';
+import { DARK_LOGO_PATH } from '@/data/site';
 import './apply-redesign.css';
 import "./application.css";
 
@@ -529,7 +529,7 @@ export function ApplicationPage({
       <div className="apply-wizard-card">
         <Button type="button" variant="ghost" className="apply-close" aria-label="Save draft and close" title="Save draft and close" disabled={busy} onClick={() => exit(false)}><X size={20} /></Button>
         <aside className="apply-wizard-rail">
-          <img className="apply-logo" src={logo.url} alt="Admakai" />
+          <img className="apply-logo" src={DARK_LOGO_PATH} alt="Admakai" />
           <h1>Apply to Admakai</h1><p className="apply-job-title">{title}</p>
           <div className="apply-mobile-progress"><p>Step {visibleIndex + 1} of {visibleSteps.length}</p><div className="application-progress" role="progressbar" aria-valuemin={1} aria-valuemax={visibleSteps.length} aria-valuenow={visibleIndex + 1} aria-label="Application progress">{visibleSteps.map(s => <span key={s.number} className={s.number <= step ? 'complete' : ''} />)}</div></div>
           <ol className="apply-step-list">{visibleSteps.map((s, index) => <li key={s.number} className={s.number === step ? 'current' : s.number < step ? 'done' : ''}><span>{s.number < step ? <Check size={15} /> : s.number === step ? <Loader2 size={15} className="apply-current-spinner" /> : index + 1}</span>{s.name}</li>)}</ol>

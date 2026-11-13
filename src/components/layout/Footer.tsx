@@ -6,8 +6,8 @@ import { Facebook, Instagram, Linkedin, Youtube, Music2, MessageCircle } from "l
 import { useMotionPreference } from "@/hooks/use-motion-preference";
 import { gsap, registerGsap } from "@/lib/gsap";
 import { siteQueryOptions } from "@/lib/site-query";
-import landscape from "@/assets/footer/footer-bg.jpg.asset.json";
-import logo from "@/assets/brand/logo-dark-cropped.png.asset.json";
+import landscape from "@/assets/footer/footer-bg.jpg";
+import { DARK_LOGO_PATH } from "@/data/site";
 import "./footer.css";
 
 const columns = [
@@ -44,7 +44,7 @@ export function Footer() {
   return <footer className="site-footer">
     <div className="container-site footer-top">
       <div className="footer-grid">
-        <div><Link to="/" aria-label="Admakai home"><img src={logo.url} className="footer-logo" loading="lazy" alt="Admakai" width="198" height="40" /></Link>
+        <div><Link to="/" aria-label="Admakai home"><img src={DARK_LOGO_PATH} className="footer-logo" loading="lazy" alt="Admakai" width="198" height="40" /></Link>
           <p className="footer-tagline">{site.TAGLINE}</p>
           <div className="footer-socials">
             {(Object.keys(socialIcons) as (keyof typeof socialIcons)[]).map(name => { const Icon = socialIcons[name]; return site.SOCIALS[name] ? <a className="footer-social" key={name} href={site.SOCIALS[name]} aria-label={name} target="_blank" rel="noopener noreferrer"><Icon /></a> : null; })}
@@ -59,9 +59,9 @@ export function Footer() {
       <p className="footer-copyright">© {year} {site.LEGAL_NAME}.{site.ADDRESS && <>{" "}<span>{site.ADDRESS}</span></>}</p>
     </div>
     <div className="footer-landscape" ref={scene}>
-      <img className="footer-landscape-image" src={landscape.url} alt="" loading="lazy" width="1280" height="720" />
+      <img className="footer-landscape-image" src={landscape} alt="" loading="lazy" width="1280" height="720" />
       <div className="footer-wordmark-parallax" ref={wordmark}><motion.span ref={text} className="footer-wordmark" aria-hidden="true" initial={reduce ? false : { opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: reduce ? 0 : 1, ease: [0.22, 1, 0.36, 1] }}>admakai</motion.span></div>
-      <img className="footer-landscape-image footer-foreground" src={landscape.url} alt="" aria-hidden="true" loading="lazy" width="1280" height="720" />
+      <img className="footer-landscape-image footer-foreground" src={landscape} alt="" aria-hidden="true" loading="lazy" width="1280" height="720" />
     </div>
   </footer>;
 }

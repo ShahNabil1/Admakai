@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { CalendarDays, ArrowLeft, Check, RotateCcw, MessageCircle, LoaderCircle, ArrowRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
-import panel from '@/assets/book/panel.jpg.asset.json';
+import panel from '@/assets/book/panel.png';
 import { BookingCalendar } from './BookingCalendar';
 import { Button } from '@/components/ui/button';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
@@ -129,7 +129,7 @@ export function SlotBookingPage({ search = {}, prefill, onBooked, embedded = fal
   const title = step === 1 ? 'What do you need' : step === 2 ? 'Select a date' : step === 3 ? (day ? dateTitle(day) : 'Pick a time') : step === 4 ? 'Your details' : 'You are booked';
   const availability = !hydrated || slots.isPending ? <div className="book-skeleton" aria-label="Loading available dates" role="status"><div className="book-skeleton-times">{Array.from({ length: 21 }, (_, i) => <span key={i} />)}</div></div> : slots.isError ? <div className="book-empty" role="alert"><CalendarDays /><h3>Available times couldn’t load.</h3><p>Please try again in a moment.</p><Button type="button" className="book-chip" onClick={() => void slots.refetch()}><RotateCcw />Retry</Button></div> : !groups.length ? <div className="book-empty"><CalendarDays /><h3>No open times right now.</h3><p>New times will appear when they become available.</p>{whatsapp ? <Button asChild className="book-submit"><a href={whatsapp}><MessageCircle />Chat on WhatsApp</a></Button> : <p>WhatsApp contact is not available yet.</p>}<Button type="button" className="book-chip" onClick={() => void slots.refetch()}>Check again</Button></div> : null;
   return <div className={`book-page${embedded ? ' book-embedded' : ''}`}>
-    <aside className="book-portrait"><img src={panel.url} alt="A seated creative professional" /><div className="book-portrait-shade" /><p className="book-display">Let's make the ad<br />your brand<br />actually needs</p></aside>
+    <aside className="book-portrait"><img src={panel} alt="A seated creative professional" /><div className="book-portrait-shade" /><p className="book-display">Let's make the ad<br />your brand<br />actually needs</p></aside>
     <div className="book-right" data-lenis-prevent><div className="book-column">
       <header className="book-heading"><h1>Book a call and tell us<br />what you are selling.</h1><p>Whether you are launching a product, running ads that are not working, or you just need content every month, this call is where we figure out what is actually worth making. Thirty minutes, no charge.</p></header>
       <motion.section className="book-card" layout={!reduce} transition={{ duration: reduce ? 0 : .24 }} aria-busy={busy}>
